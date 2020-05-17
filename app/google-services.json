@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "537327338370",
+    "firebase_url": "https://elemenophee-4ca2e.firebaseio.com",
+    "project_id": "elemenophee-4ca2e",
+    "storage_bucket": "elemenophee-4ca2e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537327338370:android:c0ecc7ac7dde0cb6af059b",
+        "android_client_info": {
+          "package_name": "org.wazir.build.elemenophee"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "537327338370-ae2ga5gj5s0dnsvchtv0hdmqec7b40vt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyy0wb6zN_uDiukUD7RXKg6ijwWkSxEwM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "537327338370-ae2ga5gj5s0dnsvchtv0hdmqec7b40vt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
