@@ -145,7 +145,6 @@ public class UploadActivity extends AppCompatActivity {
 
     }
 
-    //TODO : Create thumbnail for api lower than 27
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
