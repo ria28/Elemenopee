@@ -77,10 +77,10 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:fadingEdgeLength="5sp"
+        android:outlineSpotShadowColor="@color/color1"
         app:cardBackgroundColor="@color/color1"
         app:cardCornerRadius="25sp"
         app:cardElevation="7sp"
-        android:outlineSpotShadowColor="@color/color1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -106,8 +106,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8sp"
         android:layout_marginEnd="16dp"
-        android:outlineSpotShadowColor="@color/color1"
         android:fadingEdgeLength="5sp"
+        android:outlineSpotShadowColor="@color/color4"
         app:cardCornerRadius="25sp"
         app:cardElevation="7sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -143,7 +143,8 @@
         android:id="@+id/cardView"
         android:layout_width="0sp"
         android:layout_height="wrap_content"
-        android:fadingEdgeLength="5sp"
+        android:fadingEdgeLength="10sp"
+        android:outlineSpotShadowColor="@color/color1"
         app:cardCornerRadius="7sp"
         app:cardElevation="7sp"
         app:layout_constraintStart_toEndOf="parent"
@@ -171,7 +172,8 @@
                     android:layout_height="wrap_content"
                     android:drawableStart="@drawable/ic_mail_icon"
                     android:drawablePadding="4sp"
-                    android:hint="Email ID" />
+                    android:hint="Email ID"
+                    android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -182,7 +184,9 @@
                 android:theme="@style/CustomTextAppearance"
                 app:layout_constraintEnd_toEndOf="@+id/id_li_mail"
                 app:layout_constraintStart_toStartOf="@+id/id_li_mail"
-                app:layout_constraintTop_toBottomOf="@+id/id_li_mail">
+                app:layout_constraintTop_toBottomOf="@+id/id_li_mail"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@color/white">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -190,6 +194,7 @@
                     android:drawableStart="@drawable/ic_password"
                     android:drawablePadding="4sp"
                     android:hint="Password"
+                    android:inputType="textPassword"
                     android:paddingStart="8sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -226,7 +231,8 @@
         android:id="@+id/cardView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fadingEdgeLength="5sp"
+        android:fadingEdgeLength="10sp"
+        android:outlineSpotShadowColor="@color/color1"
         app:cardCornerRadius="7sp"
         app:cardElevation="7sp"
         app:layout_constraintStart_toEndOf="parent"
@@ -267,7 +273,7 @@
                 app:layout_constraintStart_toStartOf="@+id/id_su_mail"
                 app:layout_constraintTop_toBottomOf="@+id/id_su_mail"
                 app:passwordToggleEnabled="true"
-                app:passwordToggleTint="@color/color2">
+                app:passwordToggleTint="@color/white">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
