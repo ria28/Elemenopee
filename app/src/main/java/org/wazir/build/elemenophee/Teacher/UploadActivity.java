@@ -24,6 +24,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -34,6 +37,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import org.wazir.build.elemenophee.R;
+import org.wazir.build.elemenophee.Utils.UploadUtil;
 
 
 public class UploadActivity extends AppCompatActivity {
@@ -42,14 +46,13 @@ public class UploadActivity extends AppCompatActivity {
     Button uploadBtn;
     Spinner classD, subjectD;
     TextView header;
-    ProgressBar progressBar;
 
 
     private static final int PICK_FILE = 101;
     Uri selectedFilePath;
 
-    private StorageReference ref;
-    private String absolutePath;
+    public static final String UPLOAD_UTIL = "UPLOAD_UTIL";
+
 
     ArrayAdapter<String> classSpinnerAdapter;
     ArrayAdapter<String> subjectSpinnerAdapter;
@@ -61,12 +64,11 @@ public class UploadActivity extends AppCompatActivity {
 
         final String fileType = getIntent().getStringExtra("FILE_TYPE");
         Toast.makeText(getApplicationContext(), fileType, Toast.LENGTH_SHORT).show();
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
-        progressBar = findViewById(R.id.progressBar);
-        progressBar.setMax(100);
+
+
+
 
 
 
@@ -78,7 +80,6 @@ public class UploadActivity extends AppCompatActivity {
             @SuppressLint("IntentReset")
             @Override
             public void onClick(View v) {
-
 
                 if (fileType.equals("VIDEO")) {
                     Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -106,39 +107,24 @@ public class UploadActivity extends AppCompatActivity {
                     startActivityForResult(chooserIntent, PICK_FILE);
                 }
 
-
             }
         });
 
 
         uploadBtn.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("RestrictedApi")
             @Override
             public void onClick(View v) {
+                Data data =  new Data.Builder()
+//                        .put(UPLOAD_UTIL, new UploadModel("Title","Description"))
+                        .putString("fileURI",selectedFilePath.toString())
+                        .build();
 
+                 OneTimeWorkRequest request =  new OneTimeWorkRequest.Builder(UploadUtil.class)
+                        .setInputData(data)
+                        .build();
 
-
-                StorageReference reference = ref.child("random");
-                reference.putFile(selectedFilePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                        int progress = (int) ((100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
-                        try {
-                            progressBar.setProgress(progress);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+                WorkManager.getInstance().enqueue(request);
             }
         });
 
@@ -176,9 +162,6 @@ public class UploadActivity extends AppCompatActivity {
 
         classD.setAdapter(classSpinnerAdapter);
         subjectD.setAdapter(subjectSpinnerAdapter);
-
-
-        ref = FirebaseStorage.getInstance("gs://elemenophee-a0ac5.appspot.com/").getReference();
 
     }
 
