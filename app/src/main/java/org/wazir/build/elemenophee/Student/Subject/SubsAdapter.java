@@ -1,6 +1,7 @@
 package org.wazir.build.elemenophee.Student.Subject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import org.wazir.build.elemenophee.R;
+import org.wazir.build.elemenophee.Student.Videos.VideoActivity;
 
 import java.util.ArrayList;
 
@@ -43,6 +45,7 @@ public class SubsAdapter extends RecyclerView.Adapter<SubsAdapter.SubsViewHolder
             @Override
             public void onClick(View view) {
 //                interact.showTeachers(subs.get(position).getSubId());
+                Intent intent = new Intent(ctx, VideoActivity.class);
             }
         });
     }

@@ -9,14 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.studentpanel_1.R;
 
+import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.Community.Chapters;
 
 import java.util.ArrayList;
 
-import static com.example.studentpanel_1.Community.MainCommScreen.getChapters;
-import static com.example.studentpanel_1.Community.MainCommScreen.getSubjects;
+import static org.wazir.build.elemenophee.Student.Community.MainCommScreen.getChapters;
+import static org.wazir.build.elemenophee.Student.Community.MainCommScreen.getSubjects;
 
 public class MainAdapterComm extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 

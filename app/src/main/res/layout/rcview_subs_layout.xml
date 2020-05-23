@@ -11,6 +11,7 @@
     android:animateLayoutChanges="true"
     android:elevation="3sp"
     android:hapticFeedbackEnabled="true"
+    android:background="@drawable/subtraction"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +22,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/subtraction"
+
         >
 
         <TextView
@@ -90,6 +91,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/constraintLayout"
-        android:background="@drawable/rcbg"/>
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

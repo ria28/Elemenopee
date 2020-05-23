@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.SingleHorizontal;
+import org.wazir.build.elemenophee.Student.StudentActivity.ClassRoomActivity;
 import org.wazir.build.elemenophee.Student.StudentActivity.LectureActivity;
 import org.wazir.build.elemenophee.Student.Videos.VideoActivity;
 
@@ -73,7 +74,7 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
                         }
                         if(pos==1)
                         {
-                            Intent intent = new Intent(mContext, VideoActivity.class);
+                            Intent intent = new Intent(mContext, ClassRoomActivity.class);
                             mContext.startActivity(intent);
                         }
 
