@@ -53,4 +53,9 @@ dependencies {
 
     implementation "androidx.work:work-runtime:2.3.4"
 
+    // ExoPlayer
+    implementation 'com.google.android.exoplayer:exoplayer:2.8.4' // 2.9.0 has min sdk 26
+
+    implementation 'androidx.cardview:cardview:1.0.0'
+
 }
