@@ -13,9 +13,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
+
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    TextView text;
 
     TextInputLayout log_email, log_pass, sig_email, sig_pass, sig_phone, sig_otp;
     ImageView login_user, signup_user;
