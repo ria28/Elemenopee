@@ -19,15 +19,16 @@
         <activity
             android:name=".IntLogSigScreens.OnboardingActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
-
-        <activity android:name=".Teacher.UploadActivity"></activity>
-        <activity android:name=".Teacher.mainDashBoardTeacher">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".Teacher.UploadActivity" />
+
+        <activity android:name=".Teacher.mainDashBoardTeacher"/>
+
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />

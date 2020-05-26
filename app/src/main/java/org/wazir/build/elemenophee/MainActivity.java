@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
 
     TextInputLayout log_email, log_pass, sig_email, sig_pass, sig_phone, sig_otp;
     ImageView login_user, signup_user;
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
