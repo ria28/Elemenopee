@@ -1,5 +1,6 @@
 package org.wazir.build.elemenophee;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -9,20 +10,30 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthResult;
-
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
+
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    TextView text;
+    TextView stateVer;
+    String mVerificationId;
+    boolean FLAG;
 
     TextInputLayout log_email, log_pass, sig_email, sig_pass, sig_phone, sig_otp;
     ImageView login_user, signup_user;
+    CardView verifyOtp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +48,11 @@ public class MainActivity extends AppCompatActivity {
         sig_otp = findViewById(R.id.id_su_otp);
         login_user = findViewById(R.id.imageView);
         signup_user = findViewById(R.id.imageView1);
+        verifyOtp = findViewById(R.id.verify_otp);
+        stateVer = findViewById(R.id.state_verification);
 
         mAuth = FirebaseAuth.getInstance();
+        FLAG = false;
 
         login_user.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +63,20 @@ public class MainActivity extends AppCompatActivity {
         signup_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signUpUser();
+                navigate(2);
+//                signUpUser();
+            }
+        });
+        verifyOtp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (stateVer.getText().equals("Verify Phone Number")) {
+                    sendOtp("+91 " + sig_phone.getEditText().getText().toString().trim());
+                    stateVer.setText("VERIFY");
+                } else {
+                    signinUser(sig_otp.getEditText().getText().toString());
+                    stateVer.setText("Verify Phone Number");
+                }
             }
         });
     }
@@ -78,24 +105,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void signUpUser() {
-        final String email = sig_email.getEditText().getText().toString(), pass = sig_pass.getEditText().getText().toString();
-        mAuth.createUserWithEmailAndPassword(email, pass)
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        if (email.equals("") || pass.equals("")) {
-                            Toast.makeText(MainActivity.this, "Please Enter Valid Data", Toast.LENGTH_LONG).show();
-                        } else {
-                            navigate(2);
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(MainActivity.this, "Failed to Create Account", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        if (FLAG) {
+            final String email = sig_email.getEditText().getText().toString(), pass = sig_pass.getEditText().getText().toString();
+            if (!email.equals("") && !pass.equals(""))
+                mAuth.createUserWithEmailAndPassword(email, pass)
+                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult authResult) {
+                                if (email.equals("") || pass.equals("")) {
+                                    Toast.makeText(MainActivity.this, "Please Enter Valid Data", Toast.LENGTH_LONG).show();
+                                } else {
+                                    navigate(2);
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(MainActivity.this, "Failed to Create Account", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+        } else {
+            Toast.makeText(this, "Phone Number Not Verified", Toast.LENGTH_LONG).show();
+        }
     }
 
     void navigate(int routine) {
@@ -104,7 +136,8 @@ public class MainActivity extends AppCompatActivity {
                 // TODO: 5/21/2020 navigate user to its screen Teacher Or Student
                 break;
             case (2):
-                // TODO: 5/21/2020 begin User SignUp for Student or Teacher
+                startActivity(new Intent(MainActivity.this, SignUpUserActivity.class));
+                finish();
                 break;
         }
     }
@@ -113,5 +146,54 @@ public class MainActivity extends AppCompatActivity {
         switch (task) {
 
         }
+    }
+
+    void sendOtp(String phoneNumber) {
+        for (int i = 0; i < 1; i++) {
+            System.out.println(i);
+        }
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                phoneNumber,        // Phone number to verify
+                60,                 // Timeout duration
+                TimeUnit.SECONDS,   // Unit of timeout
+                this,               // Activity (for callback binding)
+                mCallbacks);        // OnVerificationStateChangedCallbacks
+    }
+
+    PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        @Override
+        public void onVerificationCompleted(PhoneAuthCredential credential) {
+            signinUser(credential);
+        }
+
+        @Override
+        public void onVerificationFailed(FirebaseException e) {
+            if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                Toast.makeText(MainActivity.this, "Invalid Phone Number", Toast.LENGTH_LONG).show();
+            } else if (e instanceof FirebaseTooManyRequestsException) {
+                Toast.makeText(MainActivity.this, "Wait Before Trying again", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken token) {
+            mVerificationId = verificationId;
+            Toast.makeText(MainActivity.this, "Code sent " + verificationId, Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    void signinUser(PhoneAuthCredential credential) {
+        mAuth.signInWithCredential(credential)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        FLAG = true;
+                    }
+                });
+    }
+
+    void signinUser(String code) {
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, code);
+        signinUser(credential);
     }
 }
