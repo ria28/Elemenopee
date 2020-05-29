@@ -1,10 +1,13 @@
 package org.wazir.build.elemenophee;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,21 +15,31 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.wazir.build.elemenophee.Student.StudentMainAct;
+import org.wazir.build.elemenophee.Teacher.TeacherMainActivity;
 
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseAuth mAuth;
+    FirebaseFirestore db;
     TextView stateVer;
     String mVerificationId;
     boolean FLAG;
@@ -52,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         stateVer = findViewById(R.id.state_verification);
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         FLAG = false;
 
         login_user.setOnClickListener(new View.OnClickListener() {
@@ -63,8 +77,7 @@ public class MainActivity extends AppCompatActivity {
         signup_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigate(2);
-//                signUpUser();
+                signUpUser();
             }
         });
         verifyOtp.setOnClickListener(new View.OnClickListener() {
@@ -112,11 +125,8 @@ public class MainActivity extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                             @Override
                             public void onSuccess(AuthResult authResult) {
-                                if (email.equals("") || pass.equals("")) {
-                                    Toast.makeText(MainActivity.this, "Please Enter Valid Data", Toast.LENGTH_LONG).show();
-                                } else {
-                                    navigate(2);
-                                }
+                                navigate(2);
+
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -133,25 +143,40 @@ public class MainActivity extends AppCompatActivity {
     void navigate(int routine) {
         switch (routine) {
             case (1):
-                // TODO: 5/21/2020 navigate user to its screen Teacher Or Student
+                db.collection("TEACHERS")
+                        .document(mAuth.getCurrentUser().getEmail())
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+                db.collection("STUDENTS")
+                        .document(mAuth.getCurrentUser().getEmail())
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                startActivity(new Intent(MainActivity.this, StudentMainAct.class));
+                                finish();
+                            }
+                        });
                 break;
             case (2):
-                startActivity(new Intent(MainActivity.this, SignUpUserActivity.class));
+                Intent intent = new Intent(MainActivity.this, SignUpUserActivity.class);
+                intent.putExtra("PHONE", sig_phone.getEditText().getText().toString());
+                startActivity(intent);
                 finish();
                 break;
         }
     }
 
-    void updateUi(int task) {
-        switch (task) {
 
-        }
-    }
 
     void sendOtp(String phoneNumber) {
-        for (int i = 0; i < 1; i++) {
-            System.out.println(i);
-        }
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,        // Phone number to verify
                 60,                 // Timeout duration
@@ -178,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken token) {
             mVerificationId = verificationId;
-            Toast.makeText(MainActivity.this, "Code sent " + verificationId, Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "OTP Sent", Toast.LENGTH_SHORT).show();
         }
     };
 

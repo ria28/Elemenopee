@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "180900965338-6ihkg2td2eu07rj2v5pi1f7bsvnff3ko.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.wazir.build.elemenophee",
+            "certificate_hash": "c62ec548c03630d6895fd5b2345ba7a95f8c737c"
+          }
+        },
+        {
           "client_id": "180900965338-ogdehcb9k95ta1fc9vaigua3e56ngmm4.apps.googleusercontent.com",
           "client_type": 3
         }

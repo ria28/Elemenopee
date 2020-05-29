@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@mipmap/background12"
-    app:layoutDescription="@xml/motion_scene"
-    android:animateLayoutChanges="true">
+    app:layoutDescription="@xml/motion_scene">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
@@ -354,9 +354,9 @@
         android:id="@+id/google_login_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:elevation="7sp"
         app:cardBackgroundColor="@color/color1"
         app:cardCornerRadius="30sp"
-        android:elevation="7sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/id_nav_to_signup"
         app:layout_constraintStart_toStartOf="@+id/id_nav_to_signup"
@@ -386,13 +386,13 @@
         android:id="@+id/verify_otp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8sp"
         android:layout_marginBottom="435dp"
         android:elevation="8sp"
         app:cardBackgroundColor="@color/color1"
         app:cardCornerRadius="10sp"
-        android:layout_marginTop="8sp"
-        app:layout_constraintTop_toBottomOf="@id/cardView2"
-        app:layout_constraintStart_toStartOf="@id/cardView2">
+        app:layout_constraintStart_toStartOf="@id/cardView2"
+        app:layout_constraintTop_toBottomOf="@id/cardView2">
 
         <TextView
             android:id="@+id/state_verification"
@@ -404,7 +404,6 @@
             android:textColor="@color/white" />
 
     </androidx.cardview.widget.CardView>
-
 
 
 

@@ -18,7 +18,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Utils.PermissionUtil;
 
-public class mainDashBoardTeacher extends AppCompatActivity implements PermissionUtil.PermissionsCallBack {
+public class TeacherMainActivity extends AppCompatActivity implements PermissionUtil.PermissionsCallBack {
 
     ConstraintLayout upload_card;
     ConstraintLayout live_lecture_card;
@@ -36,8 +36,8 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
             public void onClick(View v) {
 
 
-                final AlertDialog.Builder alt = new AlertDialog.Builder(mainDashBoardTeacher.this);
-                final LayoutInflater inflater = LayoutInflater.from(mainDashBoardTeacher.this);
+                final AlertDialog.Builder alt = new AlertDialog.Builder(TeacherMainActivity.this);
+                final LayoutInflater inflater = LayoutInflater.from(TeacherMainActivity.this);
                 View view = inflater.inflate(R.layout.choose_upload_alert_dialog, null);
                 alt.setView(view);
                 final AlertDialog alertDialog = alt.create();
@@ -48,7 +48,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                 VIDEO.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(mainDashBoardTeacher.this, UploadActivity.class);
+                        Intent intent = new Intent(TeacherMainActivity.this, UploadActivity.class);
                         intent.putExtra("FILE_TYPE","VIDEO");
                         startActivity(intent);
                         alertDialog.dismiss();
@@ -57,7 +57,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                 PDF.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(mainDashBoardTeacher.this, UploadActivity.class);
+                        Intent intent = new Intent(TeacherMainActivity.this, UploadActivity.class);
                         intent.putExtra("FILE_TYPE","PDF");
                         startActivity(intent);
                         alertDialog.dismiss();

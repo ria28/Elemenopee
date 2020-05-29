@@ -48,27 +48,26 @@ public class ChooseAdapter extends RecyclerView.Adapter<ChooseAdapter.ChooseView
             holder.touchEve.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
             holder.displayText.setTextColor(Color.parseColor("#1A2659"));
         }
-        holder.touchEve
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (objects.get(position).isState()) {
-                            holder.touchEve.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
-                            holder.displayText.setTextColor(Color.parseColor("#1A2659"));
-                            handler.selection(objects.get(position), false);
-                            ChooseMoObj temp = objects.get(position);
-                            temp.setState(false);
-                            objects.set(position, temp);
-                        } else {
-                            holder.touchEve.setCardBackgroundColor(Color.parseColor("#7FFF00"));
-                            holder.displayText.setTextColor(Color.parseColor("#FFFFFF"));
-                            handler.selection(objects.get(position), true);
-                            ChooseMoObj temp = objects.get(position);
-                            temp.setState(false);
-                            objects.set(position, temp);
-                        }
-                    }
-                });
+        holder.touchEve.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (objects.get(position).isState()) {
+                    holder.touchEve.setCardBackgroundColor(Color.parseColor("#FFFFFF"));
+                    holder.displayText.setTextColor(Color.parseColor("#1A2659"));
+                    handler.selection(objects.get(position), false);
+                    ChooseMoObj temp = objects.get(position);
+                    temp.setState(false);
+                    objects.set(position, temp);
+                } else {
+                    holder.touchEve.setCardBackgroundColor(Color.parseColor("#7FFF00"));
+                    holder.displayText.setTextColor(Color.parseColor("#FFFFFF"));
+                    handler.selection(objects.get(position), true);
+                    ChooseMoObj temp = objects.get(position);
+                    temp.setState(true);
+                    objects.set(position, temp);
+                }
+            }
+        });
     }
 
     @Override
