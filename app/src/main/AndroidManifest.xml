@@ -15,24 +15,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".Teacher.videoPlayingActivity"
+            android:configChanges="orientation|screenSize|layoutDirection"></activity>
         <activity
             android:name=".IntLogSigScreens.OnboardingActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
+        <activity android:name=".Teacher.UploadActivity" />
+        <activity android:name=".Teacher.mainDashBoardTeacher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".Teacher.UploadActivity" />
-
-        <activity android:name=".Teacher.mainDashBoardTeacher"/>
-
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"></activity>
     </application>
 
 </manifest>

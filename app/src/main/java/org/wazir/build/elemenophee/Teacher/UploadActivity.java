@@ -42,10 +42,7 @@ import org.wazir.build.elemenophee.Utils.UploadUtil;
 
 public class UploadActivity extends AppCompatActivity {
 
-    ImageView thumbnail;
-    Button uploadBtn;
-    Spinner classD, subjectD;
-    TextView header;
+    Button uploadBtn,AddExisting,createNew;
 
 
     private static final int PICK_FILE = 101;
@@ -74,14 +71,13 @@ public class UploadActivity extends AppCompatActivity {
 
         init();
 
-        header.setText("Select " + fileType);
 
-        thumbnail.setOnClickListener(new View.OnClickListener() {
+        AddExisting.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("IntentReset")
             @Override
             public void onClick(View v) {
 
-                if (fileType.equals("VIDEO")) {
+
                     Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
                     getIntent.setType("video/*");
 
@@ -93,19 +89,8 @@ public class UploadActivity extends AppCompatActivity {
                     chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
 
                     startActivityForResult(chooserIntent, PICK_FILE);
-                } else if (fileType.equals("PDF")) {
-                    Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                    getIntent.setType("application/pdf");
 
 
-                    Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    pickIntent.setType("application/pdf");
-
-                    Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
-                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
-
-                    startActivityForResult(chooserIntent, PICK_FILE);
-                }
 
             }
         });
@@ -137,31 +122,24 @@ public class UploadActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK && requestCode == PICK_FILE) {
 
             selectedFilePath = data.getData();
-            Glide.with(UploadActivity.this)
-                    .load(selectedFilePath)
-                    .into(thumbnail);
+//            Glide.with(UploadActivity.this)
+//                    .load(selectedFilePath)
+//                    .into(thumbnail);
 
         }
     }
 
 
     void init() {
-        thumbnail = findViewById(R.id.Upload_thumbnail);
-        uploadBtn = findViewById(R.id.uploadBtn);
-        header = findViewById(R.id.header_Upload_activity);
-
-        classD = findViewById(R.id.classSpinner);
-        subjectD = findViewById(R.id.subjectSpinner);
-
+        uploadBtn = findViewById(R.id.videoUploadBtn);
+        AddExisting = findViewById(R.id.addExisting);
+        createNew = findViewById(R.id.createNew);
         classSpinnerAdapter = new ArrayAdapter<>(UploadActivity.this,
                 android.R.layout.simple_spinner_dropdown_item, new String[]{"Class 6", "Class 7", "Class 8"});
 
         subjectSpinnerAdapter = new ArrayAdapter<>(UploadActivity.this,
                 android.R.layout.simple_spinner_dropdown_item, new String[]{"English", "Maths", "Science"});
 
-
-        classD.setAdapter(classSpinnerAdapter);
-        subjectD.setAdapter(subjectSpinnerAdapter);
 
     }
 
