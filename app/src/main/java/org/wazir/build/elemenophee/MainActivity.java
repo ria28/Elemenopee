@@ -32,6 +32,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.w3c.dom.Document;
 import org.wazir.build.elemenophee.Student.StudentMainAct;
 import org.wazir.build.elemenophee.Teacher.TeacherMainActivity;
 
@@ -67,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         FLAG = false;
-
         login_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,24 +146,31 @@ public class MainActivity extends AppCompatActivity {
                 db.collection("TEACHERS")
                         .document(mAuth.getCurrentUser().getEmail())
                         .get()
-                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
-                                startActivity(intent);
-                                finish();
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
                             }
                         });
                 db.collection("STUDENTS")
                         .document(mAuth.getCurrentUser().getEmail())
                         .get()
-                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                startActivity(new Intent(MainActivity.this, StudentMainAct.class));
-                                finish();
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                DocumentSnapshot documentSnapshot = task.getResult();
+                                if (documentSnapshot.exists()) {
+                                    startActivity(new Intent(MainActivity.this, StudentMainAct.class));
+                                    finish();
+                                }
                             }
                         });
+
                 break;
             case (2):
                 Intent intent = new Intent(MainActivity.this, SignUpUserActivity.class);
@@ -173,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
-
 
 
     void sendOtp(String phoneNumber) {
@@ -189,6 +195,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onVerificationCompleted(PhoneAuthCredential credential) {
             signinUser(credential);
+            sig_otp.setVisibility(View.GONE);
+            verifyOtp.setVisibility(View.GONE);
         }
 
         @Override
@@ -218,6 +226,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void signinUser(String code) {
+        if (code.equals("")) {
+            return;
+        }
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, code);
         signinUser(credential);
     }
