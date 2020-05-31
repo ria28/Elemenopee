@@ -9,11 +9,12 @@
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/exo_videoPlayer"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="0dp"
         android:background="@android:color/background_dark"
         app:controller_layout_id="@layout/custom_controller"
         app:fastforward_increment="10000"
         app:hide_on_touch="true"
+        app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -27,9 +28,33 @@
         android:id="@+id/exo_progressBar"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="150dp"
+        app:layout_constraintBottom_toBottomOf="@+id/exo_videoPlayer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.4" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/playActivityTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/guideline5">
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/playActivityViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/playActivityTabLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

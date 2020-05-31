@@ -2,6 +2,7 @@ package org.wazir.build.elemenophee.Teacher;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
@@ -34,8 +35,13 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.material.tabs.TabLayout;
 
 import org.wazir.build.elemenophee.R;
+import org.wazir.build.elemenophee.Teacher.Fragments.notesFrag;
+import org.wazir.build.elemenophee.Teacher.Fragments.videoFrag;
+
+import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 
 public class videoPlayingActivity extends AppCompatActivity {
 
@@ -45,6 +51,9 @@ public class videoPlayingActivity extends AppCompatActivity {
     SimpleExoPlayer simpleExoPlayer;
     boolean fScreen = false;
 
+    ViewPager viewPager;
+    TabLayout tabLayout;
+
 
 
     @Override
@@ -52,6 +61,17 @@ public class videoPlayingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_playing);
 
+       initVideoPlayer();
+
+       viewPager = findViewById(R.id.playActivityViewPager);
+       tabLayout = findViewById(R.id.playActivityTabLayout);
+
+        setUpViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager);
+
+    }
+
+    void initVideoPlayer(){
         playerview = findViewById(R.id.exo_videoPlayer);
         progressBar = findViewById(R.id.exo_progressBar);
         fullScreen =findViewById(R.id.bt_fullscreen);
@@ -172,7 +192,8 @@ public class videoPlayingActivity extends AppCompatActivity {
                     );
                     //set portrait orientation
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                    playerview.getLayoutParams().height = 300;
+                    playerview.getLayoutParams().height = 0;
+                    playerview.getLayoutParams().width = 0;
 
                     //set fScreen false
 
@@ -191,9 +212,18 @@ public class videoPlayingActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
+
+
+    private void setUpViewPager(ViewPager Pager){
+        playActivity_ViewPagerAdapter adapter = new playActivity_ViewPagerAdapter(getSupportFragmentManager(),BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        adapter.addFragment(new videoFrag(),"Videos");
+        adapter.addFragment(new notesFrag(),"Notes");
+        Pager.setAdapter(adapter);
+    }
+
+
+
 
     @Override
     protected void onPause() {
