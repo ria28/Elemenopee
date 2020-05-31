@@ -30,6 +30,7 @@
         <activity android:name=".Student.Community.MainCommScreen" />
         <activity android:name=".Student.StudentActivity.ProfileActivity" />
         <activity android:name=".Student.StudentActivity.LectureActivity" />
+        <activity android:name=".Student.StudentActivity.ClassRoomActivity" />
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />

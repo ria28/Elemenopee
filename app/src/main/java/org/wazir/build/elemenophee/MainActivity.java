@@ -12,8 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -44,10 +46,12 @@ public class MainActivity extends AppCompatActivity {
     TextView stateVer;
     String mVerificationId;
     boolean FLAG;
+    AlertDialog alertDialog;
 
     TextInputLayout log_email, log_pass, sig_email, sig_pass, sig_phone, sig_otp;
     ImageView login_user, signup_user;
     CardView verifyOtp;
+    ProgressBar bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         signup_user = findViewById(R.id.imageView1);
         verifyOtp = findViewById(R.id.verify_otp);
         stateVer = findViewById(R.id.state_verification);
+        bar = findViewById(R.id.progressBar4);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -95,11 +100,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void loginUser() {
+        updateUi(true);
         final String email, pass;
         email = log_email.getEditText().getText().toString();
         pass = log_pass.getEditText().getText().toString();
         if (email.equals("") || pass.equals("")) {
             Toast.makeText(MainActivity.this, "Please Enter Valid Data", Toast.LENGTH_SHORT).show();
+            updateUi(false);
         } else {
             mAuth.signInWithEmailAndPassword(email, pass)
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -112,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Toast.makeText(MainActivity.this, "Failed To Login User", Toast.LENGTH_SHORT).show();
+                            updateUi(false);
                         }
                     });
         }
@@ -119,22 +127,8 @@ public class MainActivity extends AppCompatActivity {
 
     void signUpUser() {
         if (FLAG) {
-            final String email = sig_email.getEditText().getText().toString(), pass = sig_pass.getEditText().getText().toString();
-            if (!email.equals("") && !pass.equals(""))
-                mAuth.createUserWithEmailAndPassword(email, pass)
-                        .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                            @Override
-                            public void onSuccess(AuthResult authResult) {
-                                navigate(2);
-
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(MainActivity.this, "Failed to Create Account", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+            updateUi(true);
+            checkPhoneValid(sig_phone.getEditText().getText().toString());
         } else {
             Toast.makeText(this, "Phone Number Not Verified", Toast.LENGTH_LONG).show();
         }
@@ -181,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     void sendOtp(String phoneNumber) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,        // Phone number to verify
@@ -189,6 +182,52 @@ public class MainActivity extends AppCompatActivity {
                 TimeUnit.SECONDS,   // Unit of timeout
                 this,               // Activity (for callback binding)
                 mCallbacks);        // OnVerificationStateChangedCallbacks
+    }
+
+    void checkPhoneValid(final String phone) {
+        db.collection("TEACHERS")
+                .document(phone)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        DocumentSnapshot document = task.getResult();
+                        if (!document.exists()) {
+                            db.collection("STUDENTS").document(phone).get()
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            DocumentSnapshot documentSnapshot = task.getResult();
+                                            if (!documentSnapshot.exists()) {
+                                                final String email = sig_email.getEditText().getText().toString(), pass = sig_pass.getEditText().getText().toString();
+                                                if (!email.equals("") && !pass.equals(""))
+                                                    mAuth.createUserWithEmailAndPassword(email, pass)
+                                                            .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                                                                @Override
+                                                                public void onSuccess(AuthResult authResult) {
+                                                                    navigate(2);
+                                                                    updateUi(false);
+                                                                }
+                                                            })
+                                                            .addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    Toast.makeText(MainActivity.this, "Failed to Create Account", Toast.LENGTH_SHORT).show();
+                                                                    updateUi(false);
+                                                                }
+                                                            });
+                                            } else {
+                                                Toast.makeText(MainActivity.this, "User Already Exists", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                        } else {
+                            Toast.makeText(MainActivity.this, "User Already Present", Toast.LENGTH_SHORT).show();
+                            updateUi(false);
+                        }
+                    }
+                });
+
     }
 
     PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -231,5 +270,22 @@ public class MainActivity extends AppCompatActivity {
         }
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, code);
         signinUser(credential);
+    }
+
+    void updateUi(boolean task) {
+        if (task) {
+            raiseDialog();
+        } else {
+            alertDialog.dismiss();
+        }
+    }
+
+    public void raiseDialog() {
+        final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+        final View view1 = getLayoutInflater().inflate(R.layout.layout_alert_progress, null);
+        alert.setView(view1);
+        alertDialog = alert.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
     }
 }
