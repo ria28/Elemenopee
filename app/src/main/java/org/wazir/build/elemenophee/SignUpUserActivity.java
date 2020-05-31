@@ -98,7 +98,7 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
         user.put("TEA_SUBS", subjects);
         user.put("CONTACT", phoneNumber);
         db.collection("TEACHERS")
-                .document(mAuth.getCurrentUser().getEmail())
+                .document(phoneNumber)
                 .set(user)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

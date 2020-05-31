@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StudentActivity.LectureActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".Student.StudentActivity.LectureActivity">
 
     <fragment
+        android:id="@+id/lecture"
+        android:name="org.wazir.build.elemenophee.Student.Subject.FragMainStu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.example.studentpanel_1.Subject.FragMainStu"
-        tools:layout="@layout/fragment_frag_main_stu"
-        android:id="@+id/lecture"
-        />
+        tools:layout="@layout/fragment_frag_main_stu" />
 
 </LinearLayout>
