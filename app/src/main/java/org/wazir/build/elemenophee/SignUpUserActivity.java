@@ -40,7 +40,6 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
     TextInputLayout stuSchool, stuBio, stuTarget;
     ImageView signupTeacher, signupStudent;
     ProgressBar bar;
-
     String phoneNumber;
 
     @Override
@@ -90,12 +89,24 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
         ts = teachSchool.getEditText().getText().toString();
         tb = teachBio.getEditText().getText().toString();
         te = teachExperience.getEditText().getText().toString();
+
+
+        ArrayList<String> subject_string = new ArrayList<>();
+        for (ChooseMoObj obj : subjects) {
+            subject_string.add(obj.getText());
+        }
+
+        ArrayList<Integer> classes_string = new ArrayList<>();
+        for (ChooseMoObj obj : classes) {
+            classes_string.add(obj.getClas());
+        }
+
         Map<String, Object> user = new HashMap<>();
         user.put("TEA_SCHOOL", ts);
         user.put("TEA_BIO", tb);
         user.put("TEA_EXP", te);
-        user.put("TEA_CLASSES", classes);
-        user.put("TEA_SUBS", subjects);
+        user.put("TEA_CLASSES", classes_string);
+        user.put("TEA_SUBS", subject_string);
         user.put("CONTACT", phoneNumber);
         db.collection("TEACHERS")
                 .document(phoneNumber)
@@ -117,14 +128,20 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
 
     void signUpStudent() {
         String ss, sb, se;
-        ss = teachSchool.getEditText().getText().toString();
-        sb = teachBio.getEditText().getText().toString();
-        se = teachExperience.getEditText().getText().toString();
+        ss = stuSchool.getEditText().getText().toString();
+        sb = stuBio.getEditText().getText().toString();
+        se = stuTarget.getEditText().getText().toString();
+
+        ArrayList<Integer> classes_string = new ArrayList<>();
+        for (ChooseMoObj obj : classes) {
+            classes_string.add(obj.getClas());
+        }
+
         Map<String, Object> user = new HashMap<>();
         user.put("STU_SCHOOL", ss);
         user.put("STU_BIO", sb);
-        user.put("STU_EXP", se);
-        user.put("STU_CLASSES", classes);
+        user.put("STU_TARGET", se);
+        user.put("STU_CLASSES", classes_string);
         user.put("CONTACT", phoneNumber);
 
         db.collection("STUDENTS")
@@ -166,14 +183,14 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
 
     ArrayList<ChooseMoObj> getClas() {
         ArrayList<ChooseMoObj> objs = new ArrayList<>();
-        objs.add(new ChooseMoObj("5"));
-        objs.add(new ChooseMoObj("6"));
-        objs.add(new ChooseMoObj("7"));
-        objs.add(new ChooseMoObj("8"));
-        objs.add(new ChooseMoObj("9"));
-        objs.add(new ChooseMoObj("10"));
-        objs.add(new ChooseMoObj("11"));
-        objs.add(new ChooseMoObj("12"));
+        objs.add(new ChooseMoObj(5));
+        objs.add(new ChooseMoObj(6));
+        objs.add(new ChooseMoObj(7));
+        objs.add(new ChooseMoObj(8));
+        objs.add(new ChooseMoObj(9));
+        objs.add(new ChooseMoObj(10));
+        objs.add(new ChooseMoObj(11));
+        objs.add(new ChooseMoObj(12));
         return objs;
     }
 
@@ -190,18 +207,16 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
         objs.add(new ChooseMoObj("Accounts"));
         objs.add(new ChooseMoObj("B. St."));
         objs.add(new ChooseMoObj("Economics"));
-
         return objs;
     }
 
     void navigate(int direction) {
         if (direction == TO_TEACHER) {
             startActivity(new Intent(SignUpUserActivity.this, TeacherMainActivity.class));
-            finish();
         } else {
             startActivity(new Intent(SignUpUserActivity.this, StudentMainAct.class));
-            finish();
         }
+        finish();
     }
 
     void updateUi(boolean state) {

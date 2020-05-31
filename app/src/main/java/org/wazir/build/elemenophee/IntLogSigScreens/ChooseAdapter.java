@@ -40,7 +40,12 @@ public class ChooseAdapter extends RecyclerView.Adapter<ChooseAdapter.ChooseView
 
     @Override
     public void onBindViewHolder(@NonNull final ChooseViewHolder holder, final int position) {
-        holder.displayText.setText(objects.get(position).getText());
+        if (objects.get(position).getText().equals("")) {
+            holder.displayText.setText(Integer.toString(objects.get(position).getClas()));
+        } else {
+            holder.displayText.setText(objects.get(position).getText());
+        }
+
         if (objects.get(position).isState()) {
             holder.touchEve.setCardBackgroundColor(Color.parseColor("#7FFF00"));
             holder.displayText.setTextColor(Color.parseColor("#FFFFFF"));
