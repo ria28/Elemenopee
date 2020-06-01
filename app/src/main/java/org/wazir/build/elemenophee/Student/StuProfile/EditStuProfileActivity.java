@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -27,8 +28,9 @@ import java.util.Map;
 public class EditStuProfileActivity extends AppCompatActivity {
 
     public static final String KEY_NAME = "name";
-    public static final String KEY_SCHOOL = "school";
-    public static final String KEY_BIO = "bio";
+    public static final String STU_SCHOOL = "school";
+    public static final String STU_BIO = "bio";
+    String phone;
 
     private EditText editTextName;
     private EditText editTextSchool;
@@ -37,13 +39,14 @@ public class EditStuProfileActivity extends AppCompatActivity {
     Boolean clicked =false;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DocumentReference detailRef = db.document("STUDENT/details");
+    private DocumentReference detailRef = db.document("STUDENTS/"+phone);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        phone = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         editTextName=findViewById(R.id.name_edit);
         editTextSchool=findViewById(R.id.school_edit);
         editTextBio=findViewById(R.id.editText_bio);
@@ -63,8 +66,8 @@ public class EditStuProfileActivity extends AppCompatActivity {
                 }
                 if (documentSnapshot.exists()) {
                     String name = documentSnapshot.getString(KEY_NAME);
-                    String school = documentSnapshot.getString(KEY_SCHOOL);
-                    String bio= documentSnapshot.getString(KEY_BIO);
+                    String school = documentSnapshot.getString(STU_SCHOOL);
+                    String bio= documentSnapshot.getString(STU_BIO);
 
                     save.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -93,11 +96,11 @@ public class EditStuProfileActivity extends AppCompatActivity {
 
         Map<String, Object> student = new HashMap<>();
         student.put(KEY_NAME, name);
-        student.put(KEY_SCHOOL, school);
-        student.put(KEY_BIO,bio);
+        student.put(STU_SCHOOL, school);
+        student.put(STU_BIO,bio);
 
 
-        db.collection("STUDENT").document("details").set(student)
+       detailRef.set(student)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
