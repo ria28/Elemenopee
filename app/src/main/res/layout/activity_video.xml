@@ -4,11 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Videos.VideoActivity"
-    android:background="@drawable/background_screen">
+    android:layout_height="match_parent">
     
-    <com.example.studentpanel_1.Videos.VideoPlayerRecyclerView
+    <org.wazir.build.elemenophee.Student.Videos.VideoPlayerRecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/recycler_view"

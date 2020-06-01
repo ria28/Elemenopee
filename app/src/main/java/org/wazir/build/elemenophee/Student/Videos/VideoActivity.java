@@ -47,8 +47,8 @@ public class VideoActivity  extends AppCompatActivity {
 
     private RequestManager initGlide(){
         RequestOptions options = new RequestOptions()
-                .placeholder(R.drawable.background_screen)
-                .error(R.drawable.background_screen);
+                .placeholder(R.drawable.ic_background_img)
+                .error(R.drawable.ic_background_img);
 
         return Glide.with(this)
                 .setDefaultRequestOptions(options);

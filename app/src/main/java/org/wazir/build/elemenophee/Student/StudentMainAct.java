@@ -31,6 +31,12 @@ public class StudentMainAct extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
     private ArrayList<Object> getObject() {
         objects.add(getVerticalData().get(0));
         objects.add(getHorizontalData().get(0));
