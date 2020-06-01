@@ -58,4 +58,7 @@ dependencies {
 
     implementation 'androidx.cardview:cardview:1.0.0'
 
+    // lottey
+    implementation "com.airbnb.android:lottie:2.8.0"
+
 }
