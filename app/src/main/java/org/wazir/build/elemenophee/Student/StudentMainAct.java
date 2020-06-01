@@ -1,6 +1,10 @@
 package org.wazir.build.elemenophee.Student;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
@@ -9,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import org.wazir.build.elemenophee.MainActivity;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.Adapters.MainAdapter;
 
@@ -60,4 +65,17 @@ public class StudentMainAct extends AppCompatActivity {
         return singleHorizontals;
     }
 
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        if (item.getItemId() == R.id.id_logout) {
+//            SharedPreferences prefs = this.getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
+//            SharedPreferences.Editor editor = prefs.edit();
+//
+//            editor.clear();
+//            editor.apply();
+//            startActivity(new Intent(this, MainActivity.class));
+//            finish();
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 }

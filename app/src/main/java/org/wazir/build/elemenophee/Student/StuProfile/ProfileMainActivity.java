@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -18,15 +19,17 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.StudentMainAct;
 
-import static org.wazir.build.elemenophee.Student.StuProfile.EditStuProfileActivity.KEY_BIO;
 import static org.wazir.build.elemenophee.Student.StuProfile.EditStuProfileActivity.KEY_NAME;
-import static org.wazir.build.elemenophee.Student.StuProfile.EditStuProfileActivity.KEY_SCHOOL;
+import static org.wazir.build.elemenophee.Student.StuProfile.EditStuProfileActivity.STU_BIO;
+import static org.wazir.build.elemenophee.Student.StuProfile.EditStuProfileActivity.STU_SCHOOL;
 
 
 public class ProfileMainActivity extends AppCompatActivity {
 
+    String phone;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DocumentReference detailRef = db.document("STUDENT/details");
+    private DocumentReference detailRef = db.document("STUDENTS/"+phone);
+
 
     TextView name_tv;
     TextView school_tv;
@@ -43,7 +46,7 @@ public class ProfileMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_main);
-
+        phone = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         name_tv= findViewById(R.id.name_tv);
         school_tv= findViewById(R.id.school_tv);
         bio_tv= findViewById(R.id.tv_bio);
@@ -79,8 +82,8 @@ public class ProfileMainActivity extends AppCompatActivity {
                 }
                 if (documentSnapshot.exists()) {
                     String name = documentSnapshot.getString(KEY_NAME);
-                    String school = documentSnapshot.getString(KEY_SCHOOL);
-                    String bio= documentSnapshot.getString(KEY_BIO);
+                    String school = documentSnapshot.getString(STU_SCHOOL);
+                    String bio= documentSnapshot.getString(STU_BIO);
 
                     name_tv.setText(name);
                     school_tv.setText(school);
