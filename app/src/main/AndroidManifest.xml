@@ -33,9 +33,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".Student.Community.MainCommScreen" />
-        <activity android:name=".Student.StudentActivity.ProfileActivity" />
         <activity android:name=".Student.StudentActivity.LectureActivity" />
         <activity android:name=".Student.StudentActivity.ClassRoomActivity" />
+        <activity android:name=".Student.Videos.VideoActivity"/>
+        <activity android:name=".Student.StuProfile.ProfileMainActivity"/>
+        <activity android:name=".Student.StuProfile.EditStuProfileActivity"/>
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />

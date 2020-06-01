@@ -11,6 +11,12 @@ public class ChooseMoObj {
         this.clas = -1;
     }
 
+    public ChooseMoObj(int clas) {
+        this.text = "";
+        this.clas = clas;
+        this.state = false;
+    }
+
     public int getClas() {
         return clas;
     }

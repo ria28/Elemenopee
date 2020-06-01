@@ -52,4 +52,7 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-firestore:21.4.3'
 
+    // lottey
+    implementation "com.airbnb.android:lottie:2.8.0"
+
 }

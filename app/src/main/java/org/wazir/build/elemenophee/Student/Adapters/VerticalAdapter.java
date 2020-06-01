@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.Community.MainCommScreen;
 import org.wazir.build.elemenophee.Student.SingleVertical;
-import org.wazir.build.elemenophee.Student.StudentActivity.ProfileActivity;
+import org.wazir.build.elemenophee.Student.StuProfile.ProfileMainActivity;
 
 import java.util.ArrayList;
 
@@ -69,7 +69,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<VerticalAdapter.MyView
                         }
                         if(pos==1)
                         {
-                            Intent intent = new Intent(mContext, ProfileActivity.class);
+                            Intent intent = new Intent(mContext, ProfileMainActivity.class);
                             mContext.startActivity(intent);
                         }
 

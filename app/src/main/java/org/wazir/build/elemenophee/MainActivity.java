@@ -137,8 +137,9 @@ public class MainActivity extends AppCompatActivity {
     void navigate(int routine) {
         switch (routine) {
             case (1):
+                String number = mAuth.getCurrentUser().getDisplayName();
                 db.collection("TEACHERS")
-                        .document(mAuth.getCurrentUser().getEmail())
+                        .document(number)
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
@@ -152,12 +153,13 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                 db.collection("STUDENTS")
-                        .document(mAuth.getCurrentUser().getEmail())
+                        .document(number)
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 DocumentSnapshot documentSnapshot = task.getResult();
+
                                 if (documentSnapshot.exists()) {
                                     startActivity(new Intent(MainActivity.this, StudentMainAct.class));
                                     finish();
@@ -167,10 +169,23 @@ public class MainActivity extends AppCompatActivity {
 
                 break;
             case (2):
-                Intent intent = new Intent(MainActivity.this, SignUpUserActivity.class);
-                intent.putExtra("PHONE", sig_phone.getEditText().getText().toString());
-                startActivity(intent);
-                finish();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                        .setDisplayName(sig_phone.getEditText().getText().toString())
+                        .build();
+                user.updateProfile(profileUpdates)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Intent intent = new Intent(MainActivity.this, SignUpUserActivity.class);
+                                    intent.putExtra("PHONE", sig_phone.getEditText().getText().toString());
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }
+                        });
+
                 break;
         }
     }

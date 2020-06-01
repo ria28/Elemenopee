@@ -46,6 +46,7 @@ public class SubsAdapter extends RecyclerView.Adapter<SubsAdapter.SubsViewHolder
             public void onClick(View view) {
 //                interact.showTeachers(subs.get(position).getSubId());
                 Intent intent = new Intent(ctx, VideoActivity.class);
+                ctx.startActivity(intent);
             }
         });
     }
