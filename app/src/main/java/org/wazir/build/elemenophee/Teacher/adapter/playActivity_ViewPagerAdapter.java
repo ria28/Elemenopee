@@ -1,4 +1,4 @@
-package org.wazir.build.elemenophee.Teacher;
+package org.wazir.build.elemenophee.Teacher.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

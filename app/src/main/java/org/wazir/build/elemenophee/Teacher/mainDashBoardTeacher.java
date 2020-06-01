@@ -42,7 +42,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         view_upload_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mainDashBoardTeacher.this,videoPlayingActivity.class));
+                startActivity(new Intent(mainDashBoardTeacher.this,viewUploadActivity.class));
             }
         });
 

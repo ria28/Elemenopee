@@ -1,9 +1,5 @@
 package org.wazir.build.elemenophee.Teacher;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
-
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
@@ -13,6 +9,11 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -36,10 +37,13 @@ import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Teacher.Fragments.notesFrag;
 import org.wazir.build.elemenophee.Teacher.Fragments.videoFrag;
+import org.wazir.build.elemenophee.Teacher.adapter.playActivity_ViewPagerAdapter;
 
 import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 
@@ -49,11 +53,15 @@ public class videoPlayingActivity extends AppCompatActivity {
     ProgressBar progressBar;
     ImageView fullScreen;
     SimpleExoPlayer simpleExoPlayer;
+    ConstraintLayout layout;
     boolean fScreen = false;
+    MediaSource mediaSource;
 
     ViewPager viewPager;
     TabLayout tabLayout;
 
+    public static String notes_link;
+    CollectionReference ref;
 
 
     @Override
@@ -61,25 +69,34 @@ public class videoPlayingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_playing);
 
-       initVideoPlayer();
+        notes_link = getIntent().getStringExtra("NOTES_LINK");
+        ref = FirebaseFirestore.getInstance().collection("TEACHERS/8750348232/CLASS/CLASS_6/SUBJECT/SCIENCE/CHAPTER/CHAPTER1/VIDEOS");
 
-       viewPager = findViewById(R.id.playActivityViewPager);
-       tabLayout = findViewById(R.id.playActivityTabLayout);
+        initVideoPlayer();
+
+        viewPager = findViewById(R.id.playActivityViewPager);
+        tabLayout = findViewById(R.id.playActivityTabLayout);
+        layout = findViewById(R.id.videoContainingLayout);
+
 
         setUpViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
 
     }
 
+    public static void changeTriggered(){
+
+    }
+
+
     void initVideoPlayer(){
         playerview = findViewById(R.id.exo_videoPlayer);
         progressBar = findViewById(R.id.exo_progressBar);
         fullScreen =findViewById(R.id.bt_fullscreen);
 
+
         //fullScreen Mode
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        Uri videoURL = Uri.parse("https://i.imgur.com/7bMqysJ.mp4");
 
         //Initiazile LoadController
         LoadControl loadControl = new DefaultLoadControl();
@@ -99,15 +116,17 @@ public class videoPlayingActivity extends AppCompatActivity {
 
         //initialse data source factory
 
-        DefaultHttpDataSourceFactory factory = new DefaultHttpDataSourceFactory("exxoplayer_video");
+        DefaultHttpDataSourceFactory factory = new DefaultHttpDataSourceFactory("elemonphee");
 
         //initialise extractors factory
         ExtractorsFactory exoPlayerFactory = new DefaultExtractorsFactory();
 
         //initialise media source
-        MediaSource mediaSource = new ExtractorMediaSource(
-                videoURL, factory ,exoPlayerFactory ,null ,null
+
+        mediaSource = new ExtractorMediaSource(
+                Uri.parse(notes_link), factory, exoPlayerFactory, null, null
         );
+
 
         //set player
         playerview.setPlayer(simpleExoPlayer);
@@ -192,18 +211,25 @@ public class videoPlayingActivity extends AppCompatActivity {
                     );
                     //set portrait orientation
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                    playerview.getLayoutParams().height = 0;
-                    playerview.getLayoutParams().width = 0;
+                    tabLayout.setVisibility(View.VISIBLE);
+                    viewPager.setVisibility(View.VISIBLE);
+                    playerview.getLayoutParams().height = (int) getResources().getDimension(R.dimen.videoContainerPortraitHeight);
+                    playerview.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+
 
                     //set fScreen false
 
                     fScreen = false;
-                }else{
+                } else {
                     //when fScreen is false set Full screen exit image
                     fullScreen.setImageDrawable(getDrawable(R.drawable.ic_fullscreen_exit));
                     //set landscape orientation
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                     playerview.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
+                    playerview.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
+
+                    tabLayout.setVisibility(View.GONE);
+                    viewPager.setVisibility(View.GONE);
 
                     //set fScreen true
 
@@ -215,14 +241,12 @@ public class videoPlayingActivity extends AppCompatActivity {
     }
 
 
-    private void setUpViewPager(ViewPager Pager){
-        playActivity_ViewPagerAdapter adapter = new playActivity_ViewPagerAdapter(getSupportFragmentManager(),BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        adapter.addFragment(new videoFrag(),"Videos");
-        adapter.addFragment(new notesFrag(),"Notes");
+    private void setUpViewPager(ViewPager Pager) {
+        playActivity_ViewPagerAdapter adapter = new playActivity_ViewPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        adapter.addFragment(new videoFrag(ref), "Videos");
+        adapter.addFragment(new notesFrag(), "Notes");
         Pager.setAdapter(adapter);
     }
-
-
 
 
     @Override
@@ -241,5 +265,11 @@ public class videoPlayingActivity extends AppCompatActivity {
         simpleExoPlayer.setPlayWhenReady(true);
         //get the PlayBack state
         simpleExoPlayer.getPlaybackState();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        simpleExoPlayer.release();
     }
 }
