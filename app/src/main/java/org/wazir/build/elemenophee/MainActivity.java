@@ -1,9 +1,7 @@
 package org.wazir.build.elemenophee;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -15,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -34,7 +31,6 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.w3c.dom.Document;
 import org.wazir.build.elemenophee.Student.StudentMainAct;
 import org.wazir.build.elemenophee.Teacher.TeacherMainActivity;
 
@@ -207,7 +203,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         DocumentSnapshot document = task.getResult();
                         if (!document.exists()) {
-                            db.collection("STUDENTS").document(phone).get()
+                            db.collection("STUDENTS")
+                                    .document(phone).get()
                                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -220,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
                                                                 @Override
                                                                 public void onSuccess(AuthResult authResult) {
                                                                     navigate(2);
+                                                                    setUpPhoneNumber(sig_phone.getEditText().getText().toString());
                                                                     updateUi(false);
                                                                 }
                                                             })
@@ -301,5 +299,14 @@ public class MainActivity extends AppCompatActivity {
         alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.show();
+    }
+
+    private void setUpPhoneNumber(String numberPhone) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(numberPhone)
+                .build();
+        user.updateProfile(profileUpdates);
     }
 }
