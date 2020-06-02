@@ -159,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 DocumentSnapshot documentSnapshot = task.getResult();
-
                                 if (documentSnapshot.exists()) {
                                     startActivity(new Intent(MainActivity.this, StudentMainAct.class));
                                     finish();

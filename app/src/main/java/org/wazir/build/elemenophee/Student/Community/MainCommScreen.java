@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.Community.CommAdapter.MainAdapterComm;
 
@@ -22,9 +23,7 @@ public class MainCommScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_comm_screen);
-
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-
         RecyclerView recyclerView = findViewById(R.id.recycler_View_comm);
         recyclerView.setLayoutManager(new LinearLayoutManager(MainCommScreen.this));
         recyclerView.setAdapter(new MainAdapterComm(MainCommScreen.this, getObject()));

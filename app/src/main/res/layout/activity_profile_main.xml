@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ic_profile_bg">
+    >
 
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -13,7 +13,7 @@
         android:layout_height="75dp"
         android:layout_marginTop="56dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/profilee"
+
         app:civ_border_color="#fff"
         app:civ_border_width="3sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,7 +41,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
-        android:background="@drawable/rounded_corner"
         android:fontFamily="sans-serif-light"
         android:text="   BIO   "
         android:textColor="@color/color5"

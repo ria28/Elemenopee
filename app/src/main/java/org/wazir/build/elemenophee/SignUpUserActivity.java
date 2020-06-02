@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,6 +42,7 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
     ImageView signupTeacher, signupStudent;
     ProgressBar bar;
     String phoneNumber;
+    AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,14 +221,6 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
         finish();
     }
 
-    void updateUi(boolean state) {
-        if (state) {
-            bar.setVisibility(View.VISIBLE);
-        } else {
-            bar.setVisibility(View.INVISIBLE);
-        }
-    }
-
     @Override
     public void selection(ChooseMoObj param, boolean action) {
         if (action) {
@@ -242,5 +236,22 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
                 subjects.remove(param);
             }
         }
+    }
+
+    void updateUi(boolean task) {
+        if (task) {
+            raiseDialog();
+        } else {
+            alertDialog.dismiss();
+        }
+    }
+
+    public void raiseDialog() {
+        final AlertDialog.Builder alert = new AlertDialog.Builder(SignUpUserActivity.this);
+        final View view1 = getLayoutInflater().inflate(R.layout.layout_alert_progress, null);
+        alert.setView(view1);
+        alertDialog = alert.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
     }
 }

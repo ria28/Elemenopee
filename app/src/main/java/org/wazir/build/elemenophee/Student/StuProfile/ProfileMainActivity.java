@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.StudentMainAct;
 
+
 import static org.wazir.build.elemenophee.Student.StuProfile.EditStuProfileActivity.KEY_NAME;
 import static org.wazir.build.elemenophee.Student.StuProfile.EditStuProfileActivity.STU_BIO;
 import static org.wazir.build.elemenophee.Student.StuProfile.EditStuProfileActivity.STU_SCHOOL;
@@ -28,7 +29,7 @@ public class ProfileMainActivity extends AppCompatActivity {
 
     String phone;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DocumentReference detailRef = db.document("STUDENTS/"+phone);
+    private DocumentReference detailRef = db.document("STUDENTS/" + phone);
 
 
     TextView name_tv;
@@ -47,29 +48,30 @@ public class ProfileMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_main);
         phone = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-        name_tv= findViewById(R.id.name_tv);
-        school_tv= findViewById(R.id.school_tv);
-        bio_tv= findViewById(R.id.tv_bio);
+        name_tv = findViewById(R.id.name_tv);
+        school_tv = findViewById(R.id.school_tv);
+        bio_tv = findViewById(R.id.tv_bio);
         Button edit = findViewById(R.id.edit);
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent =  new Intent(ProfileMainActivity.this, EditStuProfileActivity.class);
+                Intent intent = new Intent(ProfileMainActivity.this, EditStuProfileActivity.class);
                 startActivity(intent);
             }
         });
 
         Intent intent = getIntent();
-        String name= intent.getStringExtra("NAME");
+        String name = intent.getStringExtra("NAME");
         String school = intent.getStringExtra("SCHOOL");
-        String bio= intent.getStringExtra("BIO");
+        String bio = intent.getStringExtra("BIO");
 
         name_tv.setText(name);
         school_tv.setText(school);
         bio_tv.setText(bio);
 
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -83,7 +85,7 @@ public class ProfileMainActivity extends AppCompatActivity {
                 if (documentSnapshot.exists()) {
                     String name = documentSnapshot.getString(KEY_NAME);
                     String school = documentSnapshot.getString(STU_SCHOOL);
-                    String bio= documentSnapshot.getString(STU_BIO);
+                    String bio = documentSnapshot.getString(STU_BIO);
 
                     name_tv.setText(name);
                     school_tv.setText(school);
