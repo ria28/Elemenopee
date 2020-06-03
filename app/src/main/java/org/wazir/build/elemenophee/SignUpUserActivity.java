@@ -23,7 +23,7 @@ import org.wazir.build.elemenophee.IntLogSigScreens.ChooseAdapter;
 import org.wazir.build.elemenophee.IntLogSigScreens.ChooseMoObj;
 import org.wazir.build.elemenophee.Interfaces.ChooseEveHandler;
 import org.wazir.build.elemenophee.Student.StudentMainAct;
-import org.wazir.build.elemenophee.Teacher.TeacherMainActivity;
+import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -212,7 +212,7 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
 
     void navigate(int direction) {
         if (direction == TO_TEACHER) {
-            startActivity(new Intent(SignUpUserActivity.this, TeacherMainActivity.class));
+            startActivity(new Intent(SignUpUserActivity.this, mainDashBoardTeacher.class));
         } else {
             startActivity(new Intent(SignUpUserActivity.this, StudentMainAct.class));
         }

@@ -20,7 +20,6 @@
         <activity
             android:name=".IntLogSigScreens.OnboardingActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
-
         </activity>
         <activity android:name=".Teacher.UploadActivity" />
         <activity android:name=".Teacher.videoPlayingActivity"

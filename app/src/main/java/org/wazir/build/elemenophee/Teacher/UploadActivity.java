@@ -7,12 +7,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,8 +79,8 @@ public class UploadActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(UploadActivity.this);
 
-                alert.setTitle("Title");
-                alert.setMessage("Message");
+                alert.setTitle("Add New Chapter");
+                alert.setMessage("Enter the Name of new Chapter");
 
 // Set an EditText view to get user input
                 final EditText input = new EditText(UploadActivity.this);
@@ -109,12 +111,14 @@ public class UploadActivity extends AppCompatActivity {
         });
 
         videoSelectBtn.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("IntentReset")
             @Override
             public void onClick(View v) {
                 Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 getIntent.setType("video/*");
 
 
+                @SuppressLint("IntentReset")
                 Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 pickIntent.setType("video/*");
 
@@ -190,37 +194,37 @@ public class UploadActivity extends AppCompatActivity {
                         selectSubjectVideo.getSelectedItem().toString() +
                         "/CHAPTER"
                 );
+        final ArrayList<String> dataList = new ArrayList<>();
 
 
         getChapters.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                ArrayList<String> dataList = new ArrayList<>();
+                showChapterAdpater adapter = new showChapterAdpater(dataList);
+
+                AlertDialog.Builder alt = new AlertDialog.Builder(UploadActivity.this);
+                LayoutInflater inflater = LayoutInflater.from(UploadActivity.this);
+                View view = inflater.inflate(R.layout.show_chapter_dialog, null);
+
+                RecyclerView recyclerView = view.findViewById(R.id.show_chapter_recycler);
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+                ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.hasFixedSize();
+                recyclerView.setAdapter(adapter);
+
+
+                alt.setView(view);
+                AlertDialog alertDialog = alt.create();
+
+                alertDialog.show();
                 if (!queryDocumentSnapshots.isEmpty() && queryDocumentSnapshots != null) {
-
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-
                         dataList.add(doc.getId());
-
+                        Log.d("TAG", "onSuccess: " + doc.getId());
+                        adapter.notifyDataSetChanged();
                     }
-                    AlertDialog.Builder alt = new AlertDialog.Builder(UploadActivity.this);
-                    LayoutInflater inflater = LayoutInflater.from(UploadActivity.this);
-                    View view = inflater.inflate(R.layout.show_chapter_dialog, null);
 
-                    showChapterAdpater adapter = new showChapterAdpater(dataList);
-
-                    RecyclerView recyclerView = view.findViewById(R.id.show_chapter_recycler);
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(UploadActivity.this);
-                    ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);
-                    recyclerView.setLayoutManager(layoutManager);
-                    recyclerView.hasFixedSize();
-                    recyclerView.setAdapter(adapter);
-
-
-                    alt.setView(view);
-                    AlertDialog alertDialog = alt.create();
-
-                    alertDialog.show();
                 } else
                     Toast.makeText(getApplicationContext(), "NO CHAPTER FOUND", Toast.LENGTH_SHORT).show();
 
@@ -235,23 +239,24 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     public class showChapterAdpater extends RecyclerView.Adapter<showChapterAdpater.ViewHolder> {
-        List<String> data;
+        ArrayList<String> data;
 
-        public showChapterAdpater(List<String> dataList) {
-            data = dataList;
+        public showChapterAdpater(ArrayList<String> dataList) {
+            Log.d("TAG", "showChapterAdpater: " + dataList.size());
+            data = (ArrayList<String>) dataList.clone();
         }
 
 
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.show_chapter_dialog, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.show_chapter_dialog_item, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-            holder.title.setText(data.get(position));
+            holder.setTitle(data.get(position));
             holder.layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -262,17 +267,21 @@ public class UploadActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return data != null ? data.size() : 0;
+            return data.size();
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public TextView title;
-            ConstraintLayout layout;
+            public ConstraintLayout layout;
 
             public ViewHolder(View itemView) {
                 super(itemView);
                 title = itemView.findViewById(R.id.view_chapter_item_name);
                 layout = itemView.findViewById(R.id.view_chapter_item_layout);
+            }
+
+            public void setTitle(String text) {
+                title.setText(text);
             }
         }
 
