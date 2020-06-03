@@ -18,10 +18,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Utils.PermissionUtil;
 
-public class TeacherMainActivity extends AppCompatActivity implements PermissionUtil.PermissionsCallBack {
+public class mainDashBoardTeacher extends AppCompatActivity implements PermissionUtil.PermissionsCallBack {
 
     ConstraintLayout upload_card;
     ConstraintLayout live_lecture_card;
+    ConstraintLayout view_upload_card;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,36 +35,14 @@ public class TeacherMainActivity extends AppCompatActivity implements Permission
         upload_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivity(new Intent(mainDashBoardTeacher.this,UploadActivity.class));
+            }
+        });
 
-
-                final AlertDialog.Builder alt = new AlertDialog.Builder(TeacherMainActivity.this);
-                final LayoutInflater inflater = LayoutInflater.from(TeacherMainActivity.this);
-                View view = inflater.inflate(R.layout.choose_upload_alert_dialog, null);
-                alt.setView(view);
-                final AlertDialog alertDialog = alt.create();
-
-                TextView VIDEO = view.findViewById(R.id.VIDEOselector);
-                TextView PDF = view.findViewById(R.id.PDFselector);
-
-                VIDEO.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(TeacherMainActivity.this, UploadActivity.class);
-                        intent.putExtra("FILE_TYPE","VIDEO");
-                        startActivity(intent);
-                        alertDialog.dismiss();
-                    }
-                });
-                PDF.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(TeacherMainActivity.this, UploadActivity.class);
-                        intent.putExtra("FILE_TYPE","PDF");
-                        startActivity(intent);
-                        alertDialog.dismiss();
-                    }
-                });
-                alertDialog.show();
+        view_upload_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mainDashBoardTeacher.this,viewUploadActivity.class));
             }
         });
 
@@ -104,5 +83,6 @@ public class TeacherMainActivity extends AppCompatActivity implements Permission
     void init() {
         upload_card = findViewById(R.id.upload_card);
         live_lecture_card = findViewById(R.id.live_lecture_card);
+        view_upload_card = findViewById(R.id.view_upload_card);
     }
 }

@@ -2,9 +2,7 @@ package org.wazir.build.elemenophee.Utils;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.SystemClock;
@@ -16,22 +14,27 @@ import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import org.wazir.build.elemenophee.MainActivity;
 import org.wazir.build.elemenophee.R;
+import org.wazir.build.elemenophee.Teacher.notesModel;
 
 public class UploadUtil extends Worker {
 
     private StorageReference ref;
     Uri selectedFilePath;
     int uploadProgress = 0;
-    private UploadTask uploadTask;
+    String[] fileData;
+    CollectionReference collectionReference;
 
 
     public UploadUtil(@NonNull Context context, @NonNull WorkerParameters workerParams) {
@@ -45,24 +48,53 @@ public class UploadUtil extends Worker {
         Data data = getInputData();
 //        UploadModel model = (UploadModel) data.getClass(UploadActivity.UPLOAD_UTIL);
         selectedFilePath = Uri.parse(data.getString("fileURI"));
+        fileData = data.getStringArray("FILE_INFO");
         upload();
         return Result.success();
     }
 
     private void upload() {
 
+        collectionReference = FirebaseFirestore.getInstance()
+                .collection("TEACHERS/8750348232/CLASS/"+
+                        fileData[0]+ "/"+ "SUBJECT/" +
+                        fileData[1]+ "/"+ "CHAPTER/" +
+                        fileData[2]+ "/"+ "VIDEOS"
+                );
+
+
         ref = FirebaseStorage.getInstance("gs://elemenophee-a0ac5.appspot.com/").getReference();
 
-        StorageReference reference = ref.child("random");
+        final StorageReference reference = ref.child("VIDEOS/"+fileData[3]);
 
-        displayNotification("task", "taskdes");
+        displayNotification(fileData[3],"0%");
 
-        uploadTask = reference.putFile(selectedFilePath);
-
-        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        reference.putFile(selectedFilePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+                reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        collectionReference.document(fileData[3])
+                                .set(new notesModel(fileData[3], uri + ""))
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+                                        } else
+                                            Toast.makeText(getApplicationContext(), task.getException() + "", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

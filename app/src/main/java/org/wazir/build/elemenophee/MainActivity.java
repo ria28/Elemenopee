@@ -32,7 +32,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.wazir.build.elemenophee.Student.StudentMainAct;
-import org.wazir.build.elemenophee.Teacher.TeacherMainActivity;
+import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 
 import java.util.concurrent.TimeUnit;
 
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
-                                    Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
+                                    Intent intent = new Intent(MainActivity.this, mainDashBoardTeacher.class);
                                     startActivity(intent);
                                     finish();
                                 }
