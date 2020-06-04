@@ -34,6 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.wazir.build.elemenophee.Student.StudentMainAct;
 import org.wazir.build.elemenophee.Teacher.TeacherMainActivity;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
     void loginUser() {
         updateUi(true);
+
         final String email, pass;
         email = log_email.getEditText().getText().toString();
         pass = log_pass.getEditText().getText().toString();
@@ -105,17 +107,16 @@ public class MainActivity extends AppCompatActivity {
             updateUi(false);
         } else {
             mAuth.signInWithEmailAndPassword(email, pass)
-                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
-                        public void onSuccess(AuthResult authResult) {
-                            navigate(1);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(MainActivity.this, "Failed To Login User", Toast.LENGTH_SHORT).show();
-                            updateUi(false);
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                navigate(1);
+
+                            } else {
+                                Toast.makeText(MainActivity.this, "Failed To Login User", Toast.LENGTH_SHORT).show();
+                                updateUi(false);
+                            }
                         }
                     });
         }
@@ -142,7 +143,14 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
+                                    ArrayList<String> classes;
+                                    ArrayList<String> subjects;
+                                    subjects = (ArrayList<String>) document.get("TEA_SUBS");
+                                    classes = (ArrayList<String>) document.get("TEA_CLASSES");
+
                                     Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
+                                    intent.putExtra("CLASS", classes);
+                                    intent.putExtra("SUBS", subjects);
                                     startActivity(intent);
                                     finish();
                                 }
@@ -156,7 +164,10 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 DocumentSnapshot documentSnapshot = task.getResult();
                                 if (documentSnapshot.exists()) {
-                                    startActivity(new Intent(MainActivity.this, StudentMainAct.class));
+                                    ArrayList<String> clas = (ArrayList<String>) documentSnapshot.get("STU_CLASSES");
+                                    Intent intent = new Intent(MainActivity.this, StudentMainAct.class);
+                                    intent.putExtra("CLASSES", clas);
+                                    startActivity(intent);
                                     finish();
                                 }
                             }

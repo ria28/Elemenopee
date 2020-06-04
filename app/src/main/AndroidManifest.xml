@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SignUpUserActivity"></activity>
+        <activity android:name=".SignUpUserActivity" />
         <activity
             android:name=".IntLogSigScreens.OnboardingActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
