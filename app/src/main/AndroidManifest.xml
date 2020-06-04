@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Teacher.UploadActivity" />
-        <activity android:name=".Teacher.TeacherMainActivity" />
+        <activity android:name=".Teacher.mainDashBoardTeacher" />
         <activity android:name=".Student.Community.MainCommScreen" />
         <activity android:name=".Student.StudentActivity.LectureActivity" />
         <activity android:name=".Student.StudentActivity.ClassRoomActivity" />

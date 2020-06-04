@@ -32,7 +32,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.wazir.build.elemenophee.Student.StudentMainAct;
-import org.wazir.build.elemenophee.Teacher.TeacherMainActivity;
+import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
+
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -148,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                                     subjects = (ArrayList<String>) document.get("TEA_SUBS");
                                     classes = (ArrayList<String>) document.get("TEA_CLASSES");
 
-                                    Intent intent = new Intent(MainActivity.this, TeacherMainActivity.class);
+                                    Intent intent = new Intent(MainActivity.this, mainDashBoardTeacher.class);
                                     intent.putExtra("CLASS", classes);
                                     intent.putExtra("SUBS", subjects);
                                     startActivity(intent);
