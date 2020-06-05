@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -112,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 navigate(1);
-                                updateUi(false);
+
                             } else {
                                 Toast.makeText(MainActivity.this, "Failed To Login User", Toast.LENGTH_SHORT).show();
                                 updateUi(false);
@@ -141,17 +140,20 @@ public class MainActivity extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                DocumentSnapshot document = task.getResult();
-                                if (document.exists()) {
-                                    ArrayList<String> classes;
-                                    ArrayList<String> subjects;
-                                    subjects = (ArrayList<String>) document.get("TEA_SUBS");
-                                    classes = (ArrayList<String>) document.get("TEA_CLASSES");
-                                    Intent intent = new Intent(MainActivity.this, mainDashBoardTeacher.class);
-                                    intent.putExtra("CLASS", classes);
-                                    intent.putExtra("SUBS", subjects);
-                                    startActivity(intent);
-                                    finish();
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        updateUi(false);
+                                        ArrayList<String> classes;
+                                        ArrayList<String> subjects;
+                                        subjects = (ArrayList<String>) document.get("TEA_SUBS");
+                                        classes = (ArrayList<String>) document.get("TEA_CLASSES");
+                                        Intent intent = new Intent(MainActivity.this, mainDashBoardTeacher.class);
+                                        intent.putExtra("CLASS", classes);
+                                        intent.putExtra("SUBS", subjects);
+                                        startActivity(intent);
+                                        finish();
+                                    }
                                 }
                             }
                         });
@@ -163,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 DocumentSnapshot documentSnapshot = task.getResult();
                                 if (documentSnapshot.exists()) {
+                                    updateUi(false);
                                     ArrayList<String> clas = (ArrayList<String>) documentSnapshot.get("STU_CLASSES");
                                     Intent intent = new Intent(MainActivity.this, StudentMainAct.class);
                                     intent.putExtra("CLASSES", clas);
