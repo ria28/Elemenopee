@@ -222,7 +222,7 @@
                 android:id="@+id/pdfUploadBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
                 android:background="#004FFF"
                 android:padding="10dp"
@@ -232,7 +232,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/createNewPDF" />
+                app:layout_constraintTop_toBottomOf="@+id/PDFSelectBtn" />
 
             <LinearLayout
                 android:id="@+id/linearLayout3"
@@ -261,6 +261,20 @@
                     android:layout_marginRight="20dp"
                     android:layout_weight="5" />
             </LinearLayout>
+
+            <Button
+                android:id="@+id/PDFSelectBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="#004FFF"
+                android:text="SELECT PDF"
+                android:padding="10dp"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/createNewPDF" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

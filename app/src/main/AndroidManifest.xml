@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -20,16 +21,16 @@
         <activity
             android:name=".IntLogSigScreens.OnboardingActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
-        </activity>
-        <activity android:name=".Teacher.UploadActivity" />
-        <activity android:name=".Teacher.videoPlayingActivity"
-            android:configChanges="orientation|screenSize"/>
-        <activity android:name=".Teacher.mainDashBoardTeacher" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".Teacher.UploadActivity" />
+        <activity android:name=".Teacher.videoPlayingActivity"
+            android:configChanges="orientation|screenSize"/>
+        <activity android:name=".Teacher.mainDashBoardTeacher" >
         </activity>
         <activity android:name=".Student.Community.MainCommScreen" />
         <activity android:name=".Student.StudentActivity.LectureActivity" />
@@ -45,6 +46,15 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="ibas.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
     </application>
 
 </manifest>
