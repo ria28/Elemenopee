@@ -16,6 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".SplashScreen"></activity>
         <activity android:name=".SignUpUserActivity" />
         <activity
             android:name=".IntLogSigScreens.OnboardingActivity"
@@ -27,16 +28,17 @@
             </intent-filter>
         </activity>
         <activity android:name=".Teacher.UploadActivity" />
-        <activity android:name=".Teacher.videoPlayingActivity"
-            android:configChanges="orientation|screenSize"/>
-        <activity android:name=".Teacher.mainDashBoardTeacher" >
-        </activity>
+        <activity android:name=".Teacher.viewUploadActivity" />
+        <activity
+            android:name=".Teacher.videoPlayingActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity android:name=".Teacher.mainDashBoardTeacher"></activity>
         <activity android:name=".Student.Community.MainCommScreen" />
         <activity android:name=".Student.StudentActivity.LectureActivity" />
         <activity android:name=".Student.StudentActivity.ClassRoomActivity" />
-        <activity android:name=".Student.Videos.VideoActivity"/>
-        <activity android:name=".Student.StuProfile.ProfileMainActivity"/>
-        <activity android:name=".Student.StuProfile.EditStuProfileActivity"/>
+        <activity android:name=".Student.Videos.VideoActivity" />
+        <activity android:name=".Student.StuProfile.ProfileMainActivity" />
+        <activity android:name=".Student.StuProfile.EditStuProfileActivity" />
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
@@ -45,6 +47,7 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="ibas.provider"
