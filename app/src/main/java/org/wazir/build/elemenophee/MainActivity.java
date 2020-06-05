@@ -157,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         });
+
                 db.collection("STUDENTS")
                         .document(number)
                         .get()
