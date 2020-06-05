@@ -1,65 +1,42 @@
 package org.wazir.build.elemenophee.Teacher.adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.os.Build;
+import android.os.Environment;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.firebase.firestore.CollectionReference;
-
 import org.wazir.build.elemenophee.R;
-import org.wazir.build.elemenophee.Teacher.notesModel;
-import org.wazir.build.elemenophee.Teacher.videoPlayingActivity;
+import org.wazir.build.elemenophee.Teacher.model.contentModel;
+import org.wazir.build.elemenophee.Utils.downloadAndStoreNotes;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 
-public class notesRecyclerAdapter extends FirestoreRecyclerAdapter<notesModel, notesRecyclerAdapter.ViewHolder> {
+public class notesRecyclerAdapter extends RecyclerView.Adapter<notesRecyclerAdapter.ViewHolder> {
+
 
     Context context;
-    CollectionReference ref;
-    boolean isVideoPlaying = false;
+    ArrayList<contentModel> pdfList;
 
-    public notesRecyclerAdapter(@NonNull FirestoreRecyclerOptions<notesModel> options, Context context, CollectionReference ref, boolean isVideoPlaying) {
-        super(options);
+
+    public notesRecyclerAdapter(Context context, ArrayList<contentModel> pdfList) {
         this.context = context;
-        this.ref = ref;
-        this.isVideoPlaying = isVideoPlaying;
+        this.pdfList = pdfList;
     }
 
-
-    @Override
-    protected void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i, @NonNull final notesModel notesModel) {
-        viewHolder.title.setText(notesModel.getFileTitle());
-        Glide.with(context)
-                .load(notesModel.getFileUrl())
-                .into(viewHolder.image);
-
-        if (!isVideoPlaying) {
-            viewHolder.layout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, videoPlayingActivity.class);
-                    intent.putExtra("NOTES_LINK", notesModel.getFileUrl());
-                    context.startActivity(intent);
-
-
-                }
-            });
-        }else if (isVideoPlaying){
-            videoPlayingActivity.notes_link = notesModel.getFileUrl();
-            videoPlayingActivity.changeTriggered();
-        }
-    }
 
     @NonNull
     @Override
@@ -69,18 +46,58 @@ public class notesRecyclerAdapter extends FirestoreRecyclerAdapter<notesModel, n
     }
 
 
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+        SimpleDateFormat sfd = new SimpleDateFormat("dd-MM-yyyy \nHH:mm");
+
+
+        holder.title.setText(pdfList.get(position).getFileTitle());
+        holder.timeStamp.setText(sfd.format(pdfList.get(position).getTimeStamp().toDate()));
+        holder.image.setImageResource(R.drawable.classroom);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                File notesDirectory = new File(Environment.getExternalStorageDirectory().toString() + "/Elemenophee/Notes");
+                File outputFile = new File(notesDirectory, URLUtil.guessFileName(pdfList.get(position).getFileUrl(), null
+                        , MimeTypeMap.getFileExtensionFromUrl(pdfList.get(position).getFileUrl())));
+                if (!notesDirectory.exists()) {
+                    notesDirectory.mkdirs();
+                }
+
+                Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    vibrator.vibrate(25);
+                }
+
+                downloadAndStoreNotes downloadAndStore = downloadAndStoreNotes.getInstance(context);
+
+                downloadAndStore.openPDF(outputFile, pdfList.get(position).getFileUrl()
+                        , pdfList.get(position).getFileTitle());
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return pdfList.size();
+    }
+
+
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView title;
+        public TextView title, timeStamp;
         public ImageView image;
-        ConstraintLayout layout;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
+            timeStamp = itemView.findViewById(R.id.viewUploaditemTimeStamp);
             title = itemView.findViewById(R.id.viewUploaditemTitle);
             image = itemView.findViewById(R.id.viewUploaditemImage);
-            layout = itemView.findViewById(R.id.viewUploadItemLayout);
         }
-    }
 
+    }
 
 }
