@@ -1,41 +1,60 @@
 package org.wazir.build.elemenophee.Teacher;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
+import org.wazir.build.elemenophee.Teacher.adapter.videoRecyclerAdapter;
+import org.wazir.build.elemenophee.Teacher.model.contentModel;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 
-public class viewUploadActivity extends AppCompatActivity {
+public class viewUploadActivity extends AppCompatActivity implements videoRecyclerAdapter.onLayoutClick {
 
     RecyclerView recyclerView;
-    notesRecyclerAdapter adapter;
+    videoRecyclerAdapter videoAdapter;
+    notesRecyclerAdapter notesAdapter;
     CollectionReference reference;
 
-    Spinner viewClass,viewSubject,viewChapter;
+    Spinner viewClass, viewSubject, viewChapter, viewContentType;
     ArrayList<String> Class = new ArrayList<>();
     ArrayList<String> Subject = new ArrayList<>();
     ArrayList<String> Chapter = new ArrayList<>();
+    ArrayList<String> Content = new ArrayList<>();
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+    ArrayList<contentModel> videoList = new ArrayList<>();
+    ArrayList<contentModel> pdfList = new ArrayList<>();
 
 
+    ArrayAdapter<String> chapterSpinnerViewAdapter;
+    ArrayAdapter<String> subjectSpinnerViewAdapter;
+    ArrayAdapter<String> classSpinnerViewAdapter;
+    ArrayAdapter<String> contentSpinnerViewAdapter;
 
 
     @Override
@@ -47,93 +66,210 @@ public class viewUploadActivity extends AppCompatActivity {
         viewClass = findViewById(R.id.viewUploadClassSpinner);
         viewSubject = findViewById(R.id.viewUploadSubjectSpinner);
         viewChapter = findViewById(R.id.viewUploadChapterSpinner);
+        viewContentType = findViewById(R.id.viewUploadContentTypeSpinner);
 
-        Class.add("SELECT");
-        Subject.add("SELECT");
+        Class.add("Class 6");
+        Class.add("Class 7");
+        Class.add("Class 8");
+        Class.add("Class 9");
+        Subject.add("English");
+        Subject.add("Maths");
+        Subject.add("Social Science");
         Chapter.add("SELECT");
+        Content.add("VIDEOS");
+        Content.add("NOTES");
 
-        ArrayAdapter<String> classSpinnerViewAdapter = new ArrayAdapter<String>(viewUploadActivity.this,
+        classSpinnerViewAdapter = new ArrayAdapter<String>(viewUploadActivity.this,
                 android.R.layout.simple_spinner_dropdown_item, Class);
-        ArrayAdapter<String> subjectSpinnerViewAdapter = new ArrayAdapter<String>(viewUploadActivity.this,
+        subjectSpinnerViewAdapter = new ArrayAdapter<String>(viewUploadActivity.this,
                 android.R.layout.simple_spinner_dropdown_item, Subject);
-        ArrayAdapter<String> chapterSpinnerViewAdapter = new ArrayAdapter<String>(viewUploadActivity.this,
+        chapterSpinnerViewAdapter = new ArrayAdapter<String>(viewUploadActivity.this,
                 android.R.layout.simple_spinner_dropdown_item, Chapter);
+        contentSpinnerViewAdapter = new ArrayAdapter<String>(viewUploadActivity.this,
+                android.R.layout.simple_spinner_dropdown_item, Content);
 
-        reference = FirebaseFirestore.getInstance().collection("/TEACHERS/8750348232/CLASS/Class 6/SUBJECT/English/CHAPTER/oops/VIDEOS");
 
         viewClass.setAdapter(classSpinnerViewAdapter);
         viewSubject.setAdapter(subjectSpinnerViewAdapter);
         viewChapter.setAdapter(chapterSpinnerViewAdapter);
+        viewContentType.setAdapter(contentSpinnerViewAdapter);
 
 
-//        viewClass.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                CollectionReference subjectRef = FirebaseFirestore.getInstance()
-//                        .collection("/TEACHERS/8750348232/CLASS/"
-//                        + viewClass.getSelectedItem()+"/SUBJECT");
-//                subjectRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                        Subject.clear();
-//                        for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
-//                            Subject.add(doc.getId());
-//                        }
-//                    }
-//                });
-//            }
-//        });
-
-        Query query = reference;
-        setUpRecyclerView(query);
-
-
-    }
-
-    private void setUpRecyclerView(Query q) {
-
-        FirestoreRecyclerOptions<notesModel> options = new FirestoreRecyclerOptions.Builder<notesModel>()
-                .setQuery(q, notesModel.class).build();
-
-        adapter = new notesRecyclerAdapter(options, viewUploadActivity.this,reference,false);
+        videoAdapter = new videoRecyclerAdapter(viewUploadActivity.this, false, videoList, this, -1);
+        notesAdapter = new notesRecyclerAdapter(viewUploadActivity.this, pdfList);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.hasFixedSize();
-        recyclerView.setAdapter(adapter);
-    }
 
-    void getUploadInfo(){
-        CollectionReference classRef = FirebaseFirestore.getInstance().collection("/TEACHERS/8750348232/CLASS");
-        classRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+
+        viewClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for(QueryDocumentSnapshot doc : queryDocumentSnapshots){
-                    Class.add(doc.getId());
-                }
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                loadChapterSpinner();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
-        CollectionReference SubjectRef = FirebaseFirestore.getInstance().collection("/TEACHERS/8750348232/CLASS");
-        CollectionReference ChapterRef = FirebaseFirestore.getInstance().collection("/TEACHERS/8750348232/CLASS");
+
+        viewSubject.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                loadChapterSpinner();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        viewChapter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                loadChapterContent(viewContentType.getSelectedItem().toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        viewContentType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                loadChapterContent(viewContentType.getSelectedItem().toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        setUpRecyclerView();
+
 
     }
 
+    private void loadChapterContent(final String contentType) {
+        if (viewChapter.getSelectedItem().toString() != "SELECT" && viewChapter.getSelectedItem().toString() != "No Chapters") {
+
+            reference = FirebaseFirestore.getInstance().collection("/CLASSES/" +
+                    viewClass.getSelectedItem().toString() +
+                    "/SUBJECT/" +
+                    viewSubject.getSelectedItem().toString() +
+                    "/CONTENT"
+            );
+            reference
+                    .whereEqualTo("TEACHER_ID", user.getEmail())
+                    .whereEqualTo("CHAPTER", viewChapter.getSelectedItem().toString())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                videoList.clear();
+                                pdfList.clear();
+                                if (!task.getResult().isEmpty()) {
+                                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                                        if (doc.get("VIDEOS") != null) {
+                                            for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("VIDEOS")) {
+                                                videoList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
+                                                        , (Timestamp) obj.get("timeStamp")));
+                                            }
+                                            videoAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                                        if (doc.get("NOTES") != null) {
+                                            for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("NOTES")) {
+                                                pdfList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
+                                                        , (Timestamp) obj.get("timeStamp")));
+                                            }
+                                            notesAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "No Data found Related to this Chapter", Toast.LENGTH_SHORT).show();
+                                    videoAdapter.notifyDataSetChanged();
+                                    notesAdapter.notifyDataSetChanged();
+                                }
+
+                                if (contentType.equalsIgnoreCase("VIDEOS"))
+                                    recyclerView.setAdapter(videoAdapter);
+                                else
+                                    recyclerView.setAdapter(notesAdapter);
+                            } else
+                                Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } else {
+            pdfList.clear();
+            videoList.clear();
+            videoAdapter.notifyDataSetChanged();
+            notesAdapter.notifyDataSetChanged();
+        }
+
+    }
+
+    private void loadChapterSpinner() {
+
+        reference = FirebaseFirestore.getInstance().collection("/CLASSES/" +
+                viewClass.getSelectedItem().toString() +
+                "/SUBJECT/" +
+                viewSubject.getSelectedItem().toString() +
+                "/CONTENT"
+        );
+
+        reference
+                .whereEqualTo("TEACHER_ID", user.getEmail())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Chapter.clear();
+                            if (!task.getResult().isEmpty()) {
+                                for (QueryDocumentSnapshot doc : task.getResult()) {
+                                    Chapter.add(doc.get("CHAPTER").toString());
+                                    chapterSpinnerViewAdapter.notifyDataSetChanged();
+                                }
+                                loadChapterContent(viewContentType.getSelectedItem().toString());
+                            } else {
+                                Chapter.add("No Chapters");
+                                chapterSpinnerViewAdapter.notifyDataSetChanged();
+                            }
+                        } else
+                            Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void setUpRecyclerView() {
+
+        if (viewContentType.getSelectedItem().toString().equalsIgnoreCase("VIDEOS"))
+            recyclerView.setAdapter(videoAdapter);
+        else
+            recyclerView.setAdapter(notesAdapter);
+
+
+    }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        adapter.startListening();
-        getUploadInfo();
+    public void onClicked(int i, boolean isVideoPlaying) {
+        Intent intent = new Intent(viewUploadActivity.this, videoPlayingActivity.class);
+        intent.putExtra("VIDEO_LINK", videoList.get(i).getFileUrl());
+        intent.putExtra("VIDEO_LIST", videoList);
+        intent.putExtra("PDF_LIST", pdfList);
+        startActivity(intent);
     }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        adapter.stopListening();
-    }
-
-
 }
 
 

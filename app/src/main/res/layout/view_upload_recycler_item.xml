@@ -3,10 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="4dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginRight="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/viewUploadItemLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -26,12 +28,25 @@
             android:id="@+id/viewUploaditemTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
             android:text="TextView"
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/viewUploaditemImage"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/viewUploaditemTimeStamp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/viewUploaditemImage"
+            app:layout_constraintTop_toBottomOf="@+id/viewUploaditemTitle" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

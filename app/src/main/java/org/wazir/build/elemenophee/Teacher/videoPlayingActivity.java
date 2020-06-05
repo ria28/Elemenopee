@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -37,13 +38,14 @@ import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Teacher.Fragments.notesFrag;
 import org.wazir.build.elemenophee.Teacher.Fragments.videoFrag;
 import org.wazir.build.elemenophee.Teacher.adapter.playActivity_ViewPagerAdapter;
+import org.wazir.build.elemenophee.Teacher.model.contentModel;
+
+import java.util.ArrayList;
 
 import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 
@@ -60,8 +62,11 @@ public class videoPlayingActivity extends AppCompatActivity {
     ViewPager viewPager;
     TabLayout tabLayout;
 
-    public static String notes_link;
-    CollectionReference ref;
+    int playingVideoPosition = -1;
+
+    public String notes_link;
+    public static ArrayList<contentModel> videoList;
+    public static ArrayList<contentModel> pdfList;
 
 
     @Override
@@ -69,8 +74,13 @@ public class videoPlayingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_playing);
 
-        notes_link = getIntent().getStringExtra("NOTES_LINK");
-        ref = FirebaseFirestore.getInstance().collection("TEACHERS/8750348232/CLASS/CLASS_6/SUBJECT/SCIENCE/CHAPTER/CHAPTER1/VIDEOS");
+        notes_link = getIntent().getStringExtra("VIDEO_LINK");
+        videoList = getIntent().getParcelableArrayListExtra("VIDEO_LIST");
+        pdfList = getIntent().getParcelableArrayListExtra("PDF_LIST");
+        playingVideoPosition = getIntent().getIntExtra("PLAYING_VIDEO_POSITION",0);
+
+        Log.d("TAG", "onCreate: "+ videoList.size());
+        Log.d("TAG", "onCreate: " + pdfList.size());
 
         initVideoPlayer();
 
@@ -83,11 +93,6 @@ public class videoPlayingActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
     }
-
-    public static void changeTriggered(){
-
-    }
-
 
     void initVideoPlayer(){
         playerview = findViewById(R.id.exo_videoPlayer);
@@ -243,7 +248,7 @@ public class videoPlayingActivity extends AppCompatActivity {
 
     private void setUpViewPager(ViewPager Pager) {
         playActivity_ViewPagerAdapter adapter = new playActivity_ViewPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        adapter.addFragment(new videoFrag(ref), "Videos");
+        adapter.addFragment(new videoFrag(playingVideoPosition), "Videos");
         adapter.addFragment(new notesFrag(), "Notes");
         Pager.setAdapter(adapter);
     }

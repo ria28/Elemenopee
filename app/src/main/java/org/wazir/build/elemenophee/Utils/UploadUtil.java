@@ -18,7 +18,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -26,7 +28,11 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import org.wazir.build.elemenophee.R;
-import org.wazir.build.elemenophee.Teacher.notesModel;
+import org.wazir.build.elemenophee.Teacher.model.contentModel;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UploadUtil extends Worker {
 
@@ -35,6 +41,7 @@ public class UploadUtil extends Worker {
     int uploadProgress = 0;
     String[] fileData;
     CollectionReference collectionReference;
+    String userEmail;
 
 
     public UploadUtil(@NonNull Context context, @NonNull WorkerParameters workerParams) {
@@ -46,26 +53,90 @@ public class UploadUtil extends Worker {
     public Result doWork() {
 
         Data data = getInputData();
-//        UploadModel model = (UploadModel) data.getClass(UploadActivity.UPLOAD_UTIL);
         selectedFilePath = Uri.parse(data.getString("fileURI"));
+        userEmail = data.getString("USER_EMAIL");
         fileData = data.getStringArray("FILE_INFO");
-        upload();
+
+        if (!data.getBoolean("ADD_TO_EXISTING", false))
+            uploadToNewChapter();
+        else
+            uploadToExistingChapter();
+
         return Result.success();
     }
 
-    private void upload() {
+    private void uploadToExistingChapter() {
 
         collectionReference = FirebaseFirestore.getInstance()
-                .collection("TEACHERS/8750348232/CLASS/"+
-                        fileData[0]+ "/"+ "SUBJECT/" +
-                        fileData[1]+ "/"+ "CHAPTER/" +
-                        fileData[2]+ "/"+ "VIDEOS"
+                .collection("/CLASSES/" +
+                        fileData[0] + "/SUBJECT/" +
+                        fileData[1] + "/" +
+                        "CONTENT"
                 );
 
 
         ref = FirebaseStorage.getInstance("gs://elemenophee-a0ac5.appspot.com/").getReference();
 
-        final StorageReference reference = ref.child("VIDEOS/"+fileData[3]);
+        final StorageReference reference = ref.child(fileData[4]+"/" + fileData[3]);
+
+        displayNotification(fileData[3], "0%");
+
+        reference.putFile(selectedFilePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(final Uri uri) {
+
+                        collectionReference.document(fileData[5])
+                                .update(fileData[4], FieldValue.arrayUnion(new contentModel(fileData[3], uri.toString(), Timestamp.now())))
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+                                        } else
+                                            Toast.makeText(getApplicationContext(), task.getException() + "", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                uploadProgress = (int) progress;
+            }
+        });
+
+    }
+
+    private void uploadToNewChapter() {
+
+        collectionReference = FirebaseFirestore.getInstance()
+                .collection("/CLASSES/" +
+                        fileData[0] + "/SUBJECT/" +
+                        fileData[1] + "/" +
+                        "CONTENT"
+                );
+
+
+        ref = FirebaseStorage.getInstance("gs://elemenophee-a0ac5.appspot.com/").getReference();
+
+        final StorageReference reference = ref.child(fileData[4]+"/" + fileData[3]);
 
         displayNotification(fileData[3],"0%");
 
@@ -74,9 +145,17 @@ public class UploadUtil extends Worker {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
-                    public void onSuccess(Uri uri) {
-                        collectionReference.document(fileData[3])
-                                .set(new notesModel(fileData[3], uri + ""))
+                    public void onSuccess(final Uri uri) {
+
+                        ArrayList<contentModel> nM = new ArrayList<>();
+                        nM.add(new contentModel(fileData[3], uri.toString(), Timestamp.now()));
+                        Map<String, Object> chapter = new HashMap<>();
+                        chapter.put("CHAPTER", fileData[2]);
+                        chapter.put("TEACHER_ID",userEmail);
+                        chapter.put(fileData[4], nM);
+
+                        collectionReference.document(userEmail + Timestamp.now().toDate())
+                                .set(chapter)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
@@ -118,13 +197,13 @@ public class UploadUtil extends Worker {
                 (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("simplifiedcoding", "simplifiedcoding", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel("elemenophee", "elemenopheeUPLOAD", NotificationManager.IMPORTANCE_DEFAULT);
             manager.createNotificationChannel(channel);
         }
 
 
 
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "simplifiedcoding")
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "elemenophee")
                 .setContentTitle(task)
                 .setContentText(desc)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -140,9 +219,10 @@ public class UploadUtil extends Worker {
             public void run() {
                 SystemClock.sleep(500);
                 while (uploadProgress != 100) {
-                    builder.setProgress(100, uploadProgress, false);
+                    builder.setProgress(100, uploadProgress, false)
+                    .setContentText(uploadProgress + "%    uploaded..");
                     manager.notify(1, builder.build());
-                    SystemClock.sleep(500);
+                    SystemClock.sleep(200);
                 }
                 builder.setContentText("Uploaded")
                         .setProgress(0, 0, false)
