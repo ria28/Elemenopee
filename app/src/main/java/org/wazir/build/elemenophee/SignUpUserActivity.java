@@ -214,9 +214,14 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
 
     void navigate(int direction) {
         if (direction == TO_TEACHER) {
-            startActivity(new Intent(SignUpUserActivity.this, mainDashBoardTeacher.class));
+            Intent intent = new Intent(SignUpUserActivity.this, mainDashBoardTeacher.class);
+            intent.putExtra("CLASS_sig_up", classes);
+            intent.putExtra("SUBS_sig_up", subjects);
+            startActivity(intent);
         } else {
-            startActivity(new Intent(SignUpUserActivity.this, StudentMainAct.class));
+            Intent intent = new Intent(SignUpUserActivity.this, StudentMainAct.class);
+            intent.putExtra("CLASS_sign_up", classes);
+            startActivity(intent);
         }
         finish();
     }

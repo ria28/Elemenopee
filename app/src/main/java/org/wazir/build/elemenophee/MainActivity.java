@@ -34,6 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.wazir.build.elemenophee.Student.StudentMainAct;
 import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     TextView stateVer;
     String mVerificationId;
     boolean FLAG;
-    AlertDialog alertDialog;
+    LoadingPopup loader;
 
     TextInputLayout log_email, log_pass, sig_email, sig_pass, sig_phone, sig_otp;
     ImageView login_user, signup_user;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        loader = new LoadingPopup(this);
         FLAG = false;
         login_user.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,17 +107,16 @@ public class MainActivity extends AppCompatActivity {
             updateUi(false);
         } else {
             mAuth.signInWithEmailAndPassword(email, pass)
-                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
-                        public void onSuccess(AuthResult authResult) {
-                            navigate(1);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(MainActivity.this, "Failed To Login User", Toast.LENGTH_SHORT).show();
-                            updateUi(false);
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                navigate(1);
+                                updateUi(false);
+                            } else {
+                                Toast.makeText(MainActivity.this, "Failed To Login User", Toast.LENGTH_SHORT).show();
+                                updateUi(false);
+                            }
                         }
                     });
         }
@@ -142,7 +143,13 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 DocumentSnapshot document = task.getResult();
                                 if (document.exists()) {
+                                    ArrayList<String> classes;
+                                    ArrayList<String> subjects;
+                                    subjects = (ArrayList<String>) document.get("TEA_SUBS");
+                                    classes = (ArrayList<String>) document.get("TEA_CLASSES");
                                     Intent intent = new Intent(MainActivity.this, mainDashBoardTeacher.class);
+                                    intent.putExtra("CLASS", classes);
+                                    intent.putExtra("SUBS", subjects);
                                     startActivity(intent);
                                     finish();
                                 }
@@ -156,7 +163,10 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 DocumentSnapshot documentSnapshot = task.getResult();
                                 if (documentSnapshot.exists()) {
-                                    startActivity(new Intent(MainActivity.this, StudentMainAct.class));
+                                    ArrayList<String> clas = (ArrayList<String>) documentSnapshot.get("STU_CLASSES");
+                                    Intent intent = new Intent(MainActivity.this, StudentMainAct.class);
+                                    intent.putExtra("CLASSES", clas);
+                                    startActivity(intent);
                                     finish();
                                 }
                             }
@@ -286,19 +296,10 @@ public class MainActivity extends AppCompatActivity {
 
     void updateUi(boolean task) {
         if (task) {
-            raiseDialog();
+            loader.dialogRaise();
         } else {
-            alertDialog.dismiss();
+            loader.dialogDismiss();
         }
-    }
-
-    public void raiseDialog() {
-        final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-        final View view1 = getLayoutInflater().inflate(R.layout.layout_alert_progress, null);
-        alert.setView(view1);
-        alertDialog = alert.create();
-        alertDialog.setCanceledOnTouchOutside(false);
-        alertDialog.show();
     }
 
     private void setUpPhoneNumber(String numberPhone) {

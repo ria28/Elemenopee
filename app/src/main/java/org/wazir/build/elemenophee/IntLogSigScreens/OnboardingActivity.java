@@ -82,7 +82,7 @@ public class OnboardingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent mainActivity = new Intent(getBaseContext(), MainActivity.class);
                 startActivity(mainActivity);
-//                savePrefsData();
+                savePrefsData();
                 finish();
                 Toast.makeText(OnboardingActivity.this, "Get Started Tapped", Toast.LENGTH_SHORT).show();
             }
