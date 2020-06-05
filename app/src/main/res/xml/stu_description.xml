@@ -16,6 +16,7 @@
         <Constraint
             android:id="@id/main_layout_stu"
             android:layout_width="match_parent"
+            android:layout_marginStart="8dp"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
@@ -36,9 +37,9 @@
     <ConstraintSet android:id="@+id/set_end">
         <Constraint
             android:id="@id/main_layout_stu"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="40dp"
             android:layout_width="wrap_content"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="40dp"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintStart_toEndOf="parent"

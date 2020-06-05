@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
@@ -27,6 +26,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -208,50 +208,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void checkPhoneValid(final String phone) {
-        db.collection("TEACHERS")
-                .document(phone)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        DocumentSnapshot document = task.getResult();
-                        if (!document.exists()) {
-                            db.collection("STUDENTS")
-                                    .document(phone).get()
-                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            DocumentSnapshot documentSnapshot = task.getResult();
-                                            if (!documentSnapshot.exists()) {
-                                                final String email = sig_email.getEditText().getText().toString(), pass = sig_pass.getEditText().getText().toString();
-                                                if (!email.equals("") && !pass.equals(""))
-                                                    mAuth.createUserWithEmailAndPassword(email, pass)
-                                                            .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                                                                @Override
-                                                                public void onSuccess(AuthResult authResult) {
-                                                                    navigate(2);
-                                                                    setUpPhoneNumber(sig_phone.getEditText().getText().toString());
-                                                                    updateUi(false);
-                                                                }
-                                                            })
-                                                            .addOnFailureListener(new OnFailureListener() {
-                                                                @Override
-                                                                public void onFailure(@NonNull Exception e) {
-                                                                    Toast.makeText(MainActivity.this, "Failed to Create Account", Toast.LENGTH_SHORT).show();
-                                                                    updateUi(false);
-                                                                }
-                                                            });
-                                            } else {
-                                                Toast.makeText(MainActivity.this, "User Already Exists", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
-                        } else {
-                            Toast.makeText(MainActivity.this, "User Already Present", Toast.LENGTH_SHORT).show();
-                            updateUi(false);
+        DocumentReference teacDoc = db.collection("TEACHERS").document(phone);
+        final DocumentReference stuDoc = db.collection("STUDENTS").document(phone);
+
+        teacDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (!task.getResult().exists()) {
+                    stuDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (!task.getResult().exists()) {
+                                final String email = sig_email.getEditText().getText().toString();
+                                final String pass = sig_pass.getEditText().getText().toString();
+
+                                if (!email.equals("") && !pass.equals(""))
+                                    mAuth.createUserWithEmailAndPassword(email, pass)
+                                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                                    if (task.isSuccessful()) {
+                                                        navigate(2);
+                                                        setUpPhoneNumber(sig_phone.getEditText().getText().toString());
+                                                    } else {
+                                                        Toast.makeText(MainActivity.this, "Failed to Create Account", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                    updateUi(false);
+                                                }
+                                            });
+                            } else {
+                                Toast.makeText(MainActivity.this, "User Already Exists", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    Toast.makeText(MainActivity.this, "User Already Present", Toast.LENGTH_SHORT).show();
+                    updateUi(false);
+                }
+            }
+        });
 
     }
 

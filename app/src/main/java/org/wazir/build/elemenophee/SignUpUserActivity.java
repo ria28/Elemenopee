@@ -1,6 +1,8 @@
 package org.wazir.build.elemenophee;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -14,8 +16,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,12 +27,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.wazir.build.elemenophee.IntLogSigScreens.ChooseAdapter;
 import org.wazir.build.elemenophee.IntLogSigScreens.ChooseMoObj;
 import org.wazir.build.elemenophee.Interfaces.ChooseEveHandler;
+import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.Student.StudentMainAct;
 import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHandler {
     ArrayList<ChooseMoObj> classes;
@@ -139,27 +146,23 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
             classes_string.add(obj.getClas());
         }
 
-        Map<String, Object> user = new HashMap<>();
-        user.put("STU_SCHOOL", ss);
-        user.put("STU_BIO", sb);
-        user.put("STU_TARGET", se);
-        user.put("STU_CLASSES", classes_string);
-        user.put("CONTACT", phoneNumber);
+        StudentObj obj = new StudentObj();
+        obj.setBio(sb);
+        obj.setClasses(classes_string);
+        obj.setSchool(ss);
+        obj.setTarget(se);
+        obj.setContact(phoneNumber);
 
-        db.collection("STUDENTS")
-                .document(phoneNumber)
-                .set(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+        db.collection("STUDENTS").document(phoneNumber).set(obj)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        navigate(TO_STUDENT);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(SignUpUserActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-                        updateUi(false);
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            navigate(TO_STUDENT);
+                        } else {
+                            Toast.makeText(SignUpUserActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                            updateUi(false);
+                        }
                     }
                 });
     }
@@ -168,8 +171,10 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
         LinearLayoutManager manager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         ChooseAdapter adapter = new ChooseAdapter(this, getClas());
         ChooseAdapter adapter1 = new ChooseAdapter(this, getSubs());
+
         adapter1.setHandler(this);
         adapter.setHandler(this);
+
         teaRcvClas = findViewById(R.id.recyclerView123);
         teaRcvClas.setAdapter(adapter);
         teaRcvClas.setLayoutManager(manager);

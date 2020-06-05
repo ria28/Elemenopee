@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import org.wazir.build.elemenophee.MainActivity;
 import org.wazir.build.elemenophee.R;
+import org.wazir.build.elemenophee.SplashScreen;
 import org.wazir.build.elemenophee.Student.Adapters.MainAdapter;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class StudentMainAct extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mAuth.signOut();
-                startActivity(new Intent(StudentMainAct.this, MainActivity.class));
+                startActivity(new Intent(StudentMainAct.this, SplashScreen.class));
                 finish();
             }
         });

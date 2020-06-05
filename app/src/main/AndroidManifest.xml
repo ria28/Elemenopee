@@ -16,23 +16,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SplashScreen"/>
-        <activity android:name=".SignUpUserActivity" />
-        <activity
-            android:name=".IntLogSigScreens.OnboardingActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+        <activity android:name=".SplashScreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".SignUpUserActivity" />
+        <activity
+            android:name=".IntLogSigScreens.OnboardingActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+
         <activity android:name=".Teacher.UploadActivity" />
         <activity android:name=".Teacher.viewUploadActivity" />
         <activity
             android:name=".Teacher.videoPlayingActivity"
             android:configChanges="orientation|screenSize" />
-        <activity android:name=".Teacher.mainDashBoardTeacher"/>
+        <activity android:name=".Teacher.mainDashBoardTeacher" />
         <activity android:name=".Student.Community.MainCommScreen" />
         <activity android:name=".Student.StudentActivity.LectureActivity" />
         <activity android:name=".Student.StudentActivity.ClassRoomActivity" />
