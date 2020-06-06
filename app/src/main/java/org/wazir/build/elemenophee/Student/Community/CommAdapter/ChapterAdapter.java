@@ -1,22 +1,44 @@
 package org.wazir.build.elemenophee.Student.Community.CommAdapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.Community.Chapters;
+import org.wazir.build.elemenophee.Student.Community.ViewNotesActivity;
+import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
+import org.wazir.build.elemenophee.Teacher.model.contentModel;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHolder> {
 
     private ArrayList<Chapters> data;
     private Context mContext;
+    String title;
+
+
+    public ChapterAdapter() {
+
+    }
 
     public ChapterAdapter(Context mContext, ArrayList<Chapters> data) {
         this.mContext = mContext;
@@ -32,10 +54,19 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
 
-        holder.description.setText(data.get(position).getDescription());
-        holder.title.setText(data.get(position).getTitle());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, ViewNotesActivity.class);
+                title = data.get(position).getTitle();
+                intent.putExtra("CHAPTER_TITLE", title);
+                mContext.startActivity(intent);
+            }
+        });
+
+        holder.title.setText(title);
 
     }
 
@@ -51,29 +82,6 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHo
             super(itemView);
             title = itemView.findViewById(R.id.title_comm);
             description = itemView.findViewById(R.id.description_comm);
-//            image =  itemView.findViewById(R.id.image_view);
-
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    int pos = getAdapterPosition();
-//                    if (pos != RecyclerView.NO_POSITION)
-//                    {
-//                        Chapters clickedDataItem = data.get(pos);
-//                        if(pos==0)
-//                        {
-//
-//                        }
-//                        if(pos==1)
-//                        {
-//
-//                        }
-//
-//                    }
-//
-//                }
-//            });
-
 
         }
     }
