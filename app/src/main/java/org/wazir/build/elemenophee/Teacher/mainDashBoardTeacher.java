@@ -72,7 +72,6 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         Toast.makeText(this, "Permissions Denied!", Toast.LENGTH_SHORT).show();
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -85,7 +84,6 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
             }
         }
     }
-
 
     void init() {
         upload_card = findViewById(R.id.upload_card);

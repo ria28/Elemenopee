@@ -1,8 +1,6 @@
 package org.wazir.build.elemenophee;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -28,14 +26,11 @@ import org.wazir.build.elemenophee.IntLogSigScreens.ChooseAdapter;
 import org.wazir.build.elemenophee.IntLogSigScreens.ChooseMoObj;
 import org.wazir.build.elemenophee.Interfaces.ChooseEveHandler;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
+import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.Student.StudentMainAct;
 import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHandler {
     ArrayList<ChooseMoObj> classes;
@@ -44,8 +39,8 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
     RecyclerView teaRcvClas, teaRcvSub, stuRcvClas;
     FirebaseFirestore db;
     FirebaseAuth mAuth;
-    TextInputLayout teachSchool, teachBio, teachExperience;
-    TextInputLayout stuSchool, stuBio, stuTarget;
+    TextInputLayout teachSchool, teachBio, teachExperience, teachName;
+    TextInputLayout stuSchool, stuBio, stuTarget, stuName;
     ImageView signupTeacher, signupStudent;
     ProgressBar bar;
     String phoneNumber;
@@ -66,6 +61,8 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
         signupTeacher = findViewById(R.id.imageView4);
         signupStudent = findViewById(R.id.imageView5);
         bar = findViewById(R.id.progressBar2);
+        teachName = findViewById(R.id.get_name);
+        stuName = findViewById(R.id.stu_name);
 
         classes = new ArrayList<>();
         subjects = new ArrayList<>();
@@ -94,11 +91,11 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
     }
 
     void signUpTeacher() {
-        String ts, tb, te;
+        String ts, tb, te, tn;
         ts = teachSchool.getEditText().getText().toString();
         tb = teachBio.getEditText().getText().toString();
         te = teachExperience.getEditText().getText().toString();
-
+        tn = teachName.getEditText().getText().toString();
 
         ArrayList<String> subject_string = new ArrayList<>();
         for (ChooseMoObj obj : subjects) {
@@ -110,20 +107,23 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
             classes_string.add(obj.getClas());
         }
 
-        Map<String, Object> user = new HashMap<>();
-        user.put("TEA_SCHOOL", ts);
-        user.put("TEA_BIO", tb);
-        user.put("TEA_EXP", te);
-        user.put("TEA_CLASSES", classes_string);
-        user.put("TEA_SUBS", subject_string);
-        user.put("CONTACT", phoneNumber);
+        TeacherObj teacherObj = new TeacherObj();
+        teacherObj.setSchool(ts);
+        teacherObj.setName(tn);
+        teacherObj.setBio(tb);
+        teacherObj.setExperience(te);
+        teacherObj.setClasses(classes_string);
+        teacherObj.setPhone(phoneNumber);
+        teacherObj.setSubs(subject_string);
+
         db.collection("TEACHERS")
                 .document(phoneNumber)
-                .set(user)
+                .set(teacherObj)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         navigate(TO_TEACHER);
+                        updateUi(false);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -136,10 +136,11 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
     }
 
     void signUpStudent() {
-        String ss, sb, se;
+        String ss, sb, se, sn;
         ss = stuSchool.getEditText().getText().toString();
         sb = stuBio.getEditText().getText().toString();
         se = stuTarget.getEditText().getText().toString();
+        sn = stuName.getEditText().getText().toString();
 
         ArrayList<Integer> classes_string = new ArrayList<>();
         for (ChooseMoObj obj : classes) {
@@ -152,6 +153,7 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
         obj.setSchool(ss);
         obj.setTarget(se);
         obj.setContact(phoneNumber);
+        obj.setName(sn);
 
         db.collection("STUDENTS").document(phoneNumber).set(obj)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -161,8 +163,8 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
                             navigate(TO_STUDENT);
                         } else {
                             Toast.makeText(SignUpUserActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-                            updateUi(false);
                         }
+                        updateUi(false);
                     }
                 });
     }
@@ -220,12 +222,9 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
     void navigate(int direction) {
         if (direction == TO_TEACHER) {
             Intent intent = new Intent(SignUpUserActivity.this, mainDashBoardTeacher.class);
-            intent.putExtra("CLASS_sig_up", classes);
-            intent.putExtra("SUBS_sig_up", subjects);
             startActivity(intent);
         } else {
             Intent intent = new Intent(SignUpUserActivity.this, StudentMainAct.class);
-            intent.putExtra("CLASS_sign_up", classes);
             startActivity(intent);
         }
         finish();

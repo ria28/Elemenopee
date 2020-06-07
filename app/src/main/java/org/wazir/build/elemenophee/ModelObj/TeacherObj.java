@@ -3,19 +3,27 @@ package org.wazir.build.elemenophee.ModelObj;
 import java.util.ArrayList;
 
 public class TeacherObj {
-    String school, bio, experience;
+    String school, bio, experience, name,phone;
     ArrayList<String> subs;
     ArrayList<Integer> classes;
 
     public TeacherObj() {
     }
 
-    public TeacherObj(String school, String bio, String experience, ArrayList<String> subs, ArrayList<Integer> classes) {
-        this.school = school;
-        this.bio = bio;
-        this.experience = experience;
-        this.subs = subs;
-        this.classes = classes;
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getSchool() {
