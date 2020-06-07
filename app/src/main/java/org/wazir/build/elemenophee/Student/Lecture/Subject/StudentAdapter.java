@@ -44,22 +44,11 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ClassObj
         holder.title.setText(objects.get(position).getTitle());
         holder.rcView.setLayoutManager(new GridLayoutManager(context,2));
         holder.rcView.setHasFixedSize(true);
-//        if (teachCount != null) {
-//            holder.teachersCount.setText(String.format("%s : Members", Integer.toString(teachCount[position])));
-//        }
+
         if (objects.get(position).getExtSub() != null) {
             holder.extraSub.setText(objects.get(position).getExtSub());
         }
-//        holder.extraSub.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (holder.extraSub.getVisibility() == View.GONE) {
-//                    holder.extraSub.setVisibility(View.VISIBLE);
-//                } else {
-//                    holder.extraSub.setVisibility(View.GONE);
-//                }
-//            }
-//        });
+
         SubsAdapter adapter = new SubsAdapter(objects.get(position).getSubs(), context);
 //        adapter.setInteract(interact);
         holder.rcView.setAdapter(adapter);
@@ -83,11 +72,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ClassObj
         return objects.size();
     }
 
-//    public void setTeachCount(int[] teachCount) {
-//        this.teachCount = teachCount;
-//        notifyDataSetChanged();
-//    }
-
     static class ClassObjectHolder extends RecyclerView.ViewHolder {
         RecyclerView rcView;
         TextView title, extraSub, teachersCount;
@@ -100,7 +84,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ClassObj
             extraSub = itemView.findViewById(R.id.textView52);
             clickEvent = itemView.findViewById(R.id.constraintLayout);
             mainLayout = itemView.findViewById(R.id.main_layout);
-//            teachersCount = itemView.findViewById(R.id.textView51);
         }
     }
 }

@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import org.wazir.build.elemenophee.R;
-import org.wazir.build.elemenophee.Student.Videos.VideoActivity;
 
 import java.util.ArrayList;
 
@@ -45,7 +44,7 @@ public class SubsAdapter extends RecyclerView.Adapter<SubsAdapter.SubsViewHolder
             @Override
             public void onClick(View view) {
 //                interact.showTeachers(subs.get(position).getSubId());
-                Intent intent = new Intent(ctx, ViewVideosActivity.class);
+                Intent intent = new Intent(ctx, ViewVideosChapActivity.class);
                 intent.putExtra("SUBJECT_NAME",subs.get(position).getSubTitle());
                 ctx.startActivity(intent);
             }
