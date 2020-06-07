@@ -1,4 +1,4 @@
-package org.wazir.build.elemenophee.Student.Subject;
+package org.wazir.build.elemenophee.Student.Lecture.Subject;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -1,6 +1,7 @@
 package org.wazir.build.elemenophee.Student.Community.CommAdapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,26 +13,29 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.Community.Chapters;
+import org.wazir.build.elemenophee.Student.Community.MainCommScreen;
 
 import java.util.ArrayList;
+
 
 import static org.wazir.build.elemenophee.Student.Community.MainCommScreen.getChapters;
 import static org.wazir.build.elemenophee.Student.Community.MainCommScreen.getSubjects;
 
-public class MainAdapterComm extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class MainAdapterComm extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private Context context;
+    private  Context context;
     private ArrayList<Object> items;
     private int size;
     private final int SUBJECT = 1;
     private final int CHAPTER = 2;
+    //    private MainCommScreen mOnSubjListener;
+    private SubjectAdapter.OnSubjListener listener;
 
 
-
-
-    public MainAdapterComm(Context context, ArrayList<Object> items) {
+    public MainAdapterComm(Context context, ArrayList<Object> items, SubjectAdapter.OnSubjListener list) {
         this.context = context;
         this.items = items;
+        this.listener = list;
 //        setHasStableIds(true);
     }
 
@@ -44,10 +48,7 @@ public class MainAdapterComm extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (viewType == SUBJECT) {
             view = inflater.inflate(R.layout.subject, parent, false);
             return new SubjectViewHolder(view);
-        }
-
-
-        else {
+        } else {
             view = inflater.inflate(R.layout.chapter, parent, false);
             return new ChapterViewHolder(view);
         }
@@ -65,15 +66,15 @@ public class MainAdapterComm extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private void subjectView(@NonNull SubjectViewHolder holder) {
 
-        SubjectAdapter adapter1 = new SubjectAdapter(context,getSubjects());
-        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false));
+        SubjectAdapter adapter1 = new SubjectAdapter(context, getSubjects(), listener);
+        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         holder.recyclerView.setAdapter(adapter1);
     }
 
 
     private void chapterView(@NonNull ChapterViewHolder holder) {
-        ChapterAdapter adapter = new ChapterAdapter(context,getChapters());
-        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false));
+        ChapterAdapter adapter = new ChapterAdapter(context, getChapters());
+        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         holder.recyclerView.setAdapter(adapter);
     }
 
@@ -85,13 +86,12 @@ public class MainAdapterComm extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemViewType(int position) {
 
-        if (items.get(position) instanceof Chapters){
+        if (items.get(position) instanceof Chapters) {
             return CHAPTER;
         } else {
             return SUBJECT;
         }
     }
-
 
     public static class SubjectViewHolder extends RecyclerView.ViewHolder {
 
@@ -100,6 +100,7 @@ public class MainAdapterComm extends RecyclerView.Adapter<RecyclerView.ViewHolde
         SubjectViewHolder(View itemView) {
             super(itemView);
             recyclerView = itemView.findViewById(R.id.inner_recyclerView_comm);
+
         }
     }
 

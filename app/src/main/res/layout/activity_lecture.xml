@@ -9,7 +9,7 @@
 
     <fragment
         android:id="@+id/lecture"
-        android:name="org.wazir.build.elemenophee.Student.Subject.FragMainStu"
+        android:name="org.wazir.build.elemenophee.Student.Lecture.Subject.FragMainStu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_frag_main_stu" />

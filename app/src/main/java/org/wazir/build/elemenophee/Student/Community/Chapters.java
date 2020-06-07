@@ -9,6 +9,10 @@ public class Chapters {
 
     }
 
+    public Chapters(String title){
+        this.title=title;
+    }
+
     public Chapters(String title, String description){
         this.title=title;
         this.description=description;

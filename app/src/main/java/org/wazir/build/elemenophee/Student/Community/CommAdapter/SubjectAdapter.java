@@ -1,6 +1,7 @@
 package org.wazir.build.elemenophee.Student.Community.CommAdapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,17 +18,19 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.MyViewHo
 
     private ArrayList<SubComm> data;
     private Context mContext;
+    private OnSubjListener mOnSubjListener;
 
-    public SubjectAdapter(Context mContext, ArrayList<SubComm> data) {
+    public SubjectAdapter(Context mContext, ArrayList<SubComm> data,  OnSubjListener onSubjListener) {
         this.data = data;
         this.mContext = mContext;
+        this.mOnSubjListener=onSubjListener;
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.layout_subject_single_row, parent, false);
-        return new MyViewHolder(view);
+        return new MyViewHolder(view,mOnSubjListener);
     }
 
     @Override
@@ -40,35 +43,26 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.MyViewHo
         return data.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView image;
+        OnSubjListener onSubjListener;
 //        TextView title, description;
 
-        public MyViewHolder(View itemView) {
+        public MyViewHolder(View itemView,OnSubjListener onSubjListener) {
             super(itemView);
             image = itemView.findViewById(R.id.image_comm);
-//
+            this.onSubjListener=onSubjListener;
 
-//            itemView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    int pos = getAdapterPosition();
-//                    if (pos != RecyclerView.NO_POSITION)
-//                    {
-//                        SubComm clickedDataItem = data.get(pos);
-//                        if(pos==0)
-//                        {
-//
-//                        }
-//                        if(pos==1)
-//                        {
-//
-//                        }
-//
-//                    }
-//
-//                }
-//            });
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view) {
+            mOnSubjListener.onSubjClick(getAdapterPosition());
+        }
+    }
+
+    public  interface OnSubjListener{
+       void onSubjClick(int position);
     }
 }

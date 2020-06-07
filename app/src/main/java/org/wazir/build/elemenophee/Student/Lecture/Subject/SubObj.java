@@ -1,4 +1,4 @@
-package org.wazir.build.elemenophee.Student.Subject;
+package org.wazir.build.elemenophee.Student.Lecture.Subject;
 
 public class SubObj {private String subId;
     private String subTitle;
