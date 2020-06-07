@@ -17,12 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".Student.Lecture.Subject.ViewVideosActivity"></activity>
+        <activity android:name=".Student.Lecture.Subject.ViewVideosActivity" />
         <activity android:name=".Student.Community.ViewNotesActivity" />
-        <activity android:name=".SignUpUserActivity" />
-        <activity
-            android:name=".IntLogSigScreens.OnboardingActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
         <activity android:name=".SplashScreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

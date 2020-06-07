@@ -4,6 +4,7 @@
     <Transition
         app:constraintSetEnd="@id/end"
         app:constraintSetStart="@+id/start">
+
         <OnSwipe app:dragDirection="dragRight" />
 
     </Transition>
@@ -11,6 +12,7 @@
     <ConstraintSet android:id="@+id/start">
         <Constraint
             android:id="@id/teach_main"
+            android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
