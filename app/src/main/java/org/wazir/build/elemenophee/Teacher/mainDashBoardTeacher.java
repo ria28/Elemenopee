@@ -11,9 +11,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import org.wazir.build.elemenophee.R;
+import org.wazir.build.elemenophee.SplashScreen;
 import org.wazir.build.elemenophee.Utils.PermissionUtil;
 
 public class mainDashBoardTeacher extends AppCompatActivity implements PermissionUtil.PermissionsCallBack {
@@ -21,6 +25,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     ConstraintLayout upload_card;
     ConstraintLayout live_lecture_card;
     ConstraintLayout view_upload_card;
+    CardView logoutUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,18 +36,24 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         upload_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mainDashBoardTeacher.this,UploadActivity.class));
+                startActivity(new Intent(mainDashBoardTeacher.this, UploadActivity.class));
             }
         });
 
         view_upload_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mainDashBoardTeacher.this,viewUploadActivity.class));
+                startActivity(new Intent(mainDashBoardTeacher.this, viewUploadActivity.class));
             }
         });
-
-
+        logoutUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(mainDashBoardTeacher.this, SplashScreen.class));
+                finish();
+            }
+        });
     }
 
     @Override
@@ -80,5 +91,6 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         upload_card = findViewById(R.id.upload_card);
         live_lecture_card = findViewById(R.id.live_lecture_card);
         view_upload_card = findViewById(R.id.view_upload_card);
+        logoutUser = findViewById(R.id.cardView7);
     }
 }
