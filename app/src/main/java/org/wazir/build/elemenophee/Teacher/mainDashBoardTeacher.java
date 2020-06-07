@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -14,8 +15,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
 import org.wazir.build.elemenophee.Utils.PermissionUtil;
@@ -26,6 +32,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     ConstraintLayout live_lecture_card;
     ConstraintLayout view_upload_card;
     CardView logoutUser;
+    TextView name, designation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +40,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         setContentView(R.layout.activity_main_dash_board_teacher);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         init();
+        getTeacherInfo();
         upload_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,5 +98,26 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         live_lecture_card = findViewById(R.id.live_lecture_card);
         view_upload_card = findViewById(R.id.view_upload_card);
         logoutUser = findViewById(R.id.cardView7);
+        name = findViewById(R.id.textView22);
+        designation = findViewById(R.id.textView23);
+    }
+
+    void getTeacherInfo() {
+        String number = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        FirebaseFirestore.getInstance()
+                .collection("TEACHERS")
+                .document(number)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful() && task.getResult().exists()) {
+                            TeacherObj obj = task.getResult().toObject(TeacherObj.class);
+                            // TODO: 6/7/2020 Here just Take the Classes and Subjects
+                            name.setText(obj.getName());
+                            designation.setText("TEACHER");
+                        }
+                    }
+                });
     }
 }
