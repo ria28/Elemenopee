@@ -16,7 +16,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".Student.Lecture.Subject.ViewVideosActivity" />
         <activity android:name=".Student.Community.ViewNotesActivity" />
         <activity android:name=".SplashScreen" >
@@ -26,14 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Teacher.UploadActivity" />
         <activity android:name=".SignUpUserActivity" />
         <activity
             android:name=".IntLogSigScreens.OnboardingActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-
-       
         <activity android:name=".Teacher.viewUploadActivity" />
-
         <activity
             android:name=".Teacher.videoPlayingActivity"
             android:configChanges="orientation|screenSize" />
