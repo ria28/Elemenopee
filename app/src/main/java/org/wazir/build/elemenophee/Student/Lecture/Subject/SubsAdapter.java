@@ -1,4 +1,4 @@
-package org.wazir.build.elemenophee.Student.Subject;
+package org.wazir.build.elemenophee.Student.Lecture.Subject;
 
 import android.content.Context;
 import android.content.Intent;
@@ -45,7 +45,8 @@ public class SubsAdapter extends RecyclerView.Adapter<SubsAdapter.SubsViewHolder
             @Override
             public void onClick(View view) {
 //                interact.showTeachers(subs.get(position).getSubId());
-                Intent intent = new Intent(ctx, VideoActivity.class);
+                Intent intent = new Intent(ctx, ViewVideosActivity.class);
+                intent.putExtra("SUBJECT_NAME",subs.get(position).getSubTitle());
                 ctx.startActivity(intent);
             }
         });
