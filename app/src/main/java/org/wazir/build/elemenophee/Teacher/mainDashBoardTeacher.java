@@ -5,17 +5,25 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
+import org.wazir.build.elemenophee.SplashScreen;
 import org.wazir.build.elemenophee.Utils.PermissionUtil;
 
 public class mainDashBoardTeacher extends AppCompatActivity implements PermissionUtil.PermissionsCallBack {
@@ -23,30 +31,37 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     ConstraintLayout upload_card;
     ConstraintLayout live_lecture_card;
     ConstraintLayout view_upload_card;
+    CardView logoutUser;
+    TextView name, designation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_dash_board_teacher);
-
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         init();
-
-
+        getTeacherInfo();
         upload_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mainDashBoardTeacher.this,UploadActivity.class));
+                startActivity(new Intent(mainDashBoardTeacher.this, UploadActivity.class));
             }
         });
 
         view_upload_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mainDashBoardTeacher.this,viewUploadActivity.class));
+                startActivity(new Intent(mainDashBoardTeacher.this, viewUploadActivity.class));
             }
         });
-
-
+        logoutUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(mainDashBoardTeacher.this, SplashScreen.class));
+                finish();
+            }
+        });
     }
 
     @Override
@@ -65,7 +80,6 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         Toast.makeText(this, "Permissions Denied!", Toast.LENGTH_SHORT).show();
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -79,10 +93,31 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         }
     }
 
-
     void init() {
         upload_card = findViewById(R.id.upload_card);
         live_lecture_card = findViewById(R.id.live_lecture_card);
         view_upload_card = findViewById(R.id.view_upload_card);
+        logoutUser = findViewById(R.id.cardView7);
+        name = findViewById(R.id.textView22);
+        designation = findViewById(R.id.textView23);
+    }
+
+    void getTeacherInfo() {
+        String number = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        FirebaseFirestore.getInstance()
+                .collection("TEACHERS")
+                .document(number)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful() && task.getResult().exists()) {
+                            TeacherObj obj = task.getResult().toObject(TeacherObj.class);
+                            // TODO: 6/7/2020 Here just Take the Classes and Subjects
+                            name.setText(obj.getName());
+                            designation.setText("TEACHER");
+                        }
+                    }
+                });
     }
 }

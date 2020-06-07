@@ -16,10 +16,15 @@
         <Constraint
             android:id="@id/main_layout_stu"
             android:layout_width="match_parent"
+            android:layout_marginStart="8dp"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toTopOf="parent" />
+            motion:layout_constraintTop_toTopOf="parent">
+            <CustomAttribute
+                motion:attributeName="cardElevation"
+                motion:customDimension="0dp" />
+        </Constraint>
         <Constraint
             android:id="@id/side_bar"
             android:layout_width="wrap_content"
@@ -32,13 +37,17 @@
     <ConstraintSet android:id="@+id/set_end">
         <Constraint
             android:id="@id/main_layout_stu"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="40dp"
             android:layout_width="wrap_content"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="40dp"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintStart_toEndOf="parent"
-            motion:layout_constraintTop_toTopOf="parent" />
+            motion:layout_constraintTop_toTopOf="parent">
+            <CustomAttribute
+                motion:attributeName="cardElevation"
+                motion:customDimension="11dp" />
+        </Constraint>
         <Constraint
             android:id="@id/side_bar"
             android:layout_width="0sp"
@@ -46,6 +55,8 @@
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toStartOf="@id/main_layout_stu"
             motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toTopOf="parent" />
+            motion:layout_constraintHorizontal_bias="0.0"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintVertical_bias="0.0" />
     </ConstraintSet>
 </MotionScene>

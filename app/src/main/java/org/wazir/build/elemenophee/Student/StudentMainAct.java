@@ -1,27 +1,36 @@
 package org.wazir.build.elemenophee.Student;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.wazir.build.elemenophee.MainActivity;
+import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.R;
+import org.wazir.build.elemenophee.SplashScreen;
 import org.wazir.build.elemenophee.Student.Adapters.MainAdapter;
 
 import java.util.ArrayList;
 
 public class StudentMainAct extends AppCompatActivity {
     private ArrayList<Object> objects = new ArrayList<>();
-//    TextView textView = findViewById(R.id.heading);
+    //    TextView textView = findViewById(R.id.heading);
+    CardView cardLogout;
+    TextView name, designation;
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +38,19 @@ public class StudentMainAct extends AppCompatActivity {
         setContentView(R.layout.activity_main_stu);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
+        cardLogout = findViewById(R.id.cardView7);
+        name = findViewById(R.id.textView22);
+        designation = findViewById(R.id.textView23);
+        getStudentData();
+        cardLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.signOut();
+                startActivity(new Intent(StudentMainAct.this, SplashScreen.class));
+                finish();
+            }
+        });
+        mAuth = FirebaseAuth.getInstance();
         RecyclerView recyclerView = findViewById(R.id.recycler_View);
         MainAdapter adapter = new MainAdapter(this, getObject());
         recyclerView.setAdapter(adapter);
@@ -63,6 +85,23 @@ public class StudentMainAct extends AppCompatActivity {
         singleHorizontals.add(new SingleHorizontal(R.drawable.lectures, "Lectures ", "last viewed lecture"));
         singleHorizontals.add(new SingleHorizontal(R.drawable.classroom, "Class Room", "Scheduled Lectures"));
         return singleHorizontals;
+    }
+
+    void getStudentData() {
+        String number = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        FirebaseFirestore.getInstance().collection("STUDENTS").document(number)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful() && task.getResult().exists()) {
+                            StudentObj obj = task.getResult().toObject(StudentObj.class);
+                            // TODO: 6/7/2020 Do what ever you want With the Student DATA here
+                            name.setText(obj.getName());
+                            designation.setText("STUDENT");
+                        }
+                    }
+                });
     }
 
 //    @Override
