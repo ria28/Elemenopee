@@ -26,6 +26,8 @@ import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
 import org.wazir.build.elemenophee.Utils.PermissionUtil;
 
+import java.util.ArrayList;
+
 public class mainDashBoardTeacher extends AppCompatActivity implements PermissionUtil.PermissionsCallBack {
 
     ConstraintLayout upload_card;
@@ -33,6 +35,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     ConstraintLayout view_upload_card;
     CardView logoutUser;
     TextView name, designation;
+    ArrayList<String> classes, subjects;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,10 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         upload_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mainDashBoardTeacher.this, UploadActivity.class));
+                Intent intent = new Intent(mainDashBoardTeacher.this, UploadActivity.class);
+                intent.putExtra("CLASSES", classes);
+                intent.putExtra("SUBS", subjects);
+                startActivity(intent);
             }
         });
 
@@ -116,6 +122,12 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                             // TODO: 6/7/2020 Here just Take the Classes and Subjects
                             name.setText(obj.getName());
                             designation.setText("TEACHER");
+
+                            classes = new ArrayList<>();
+                            for (int i : obj.getClasses()) {
+                                classes.add("Class " + Integer.toString(i));
+                            }
+                            subjects = obj.getSubs();
                         }
                     }
                 });

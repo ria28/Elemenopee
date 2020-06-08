@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -81,6 +80,8 @@ public class UploadActivity extends AppCompatActivity {
 
     private ProgressDialog progress;
 
+    ArrayList<String> classes, subs;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,16 +89,16 @@ public class UploadActivity extends AppCompatActivity {
         setContentView(R.layout.activity_upload);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         init();
-
         progress = new ProgressDialog(this);
         progress.setMessage("Retreiving data..");
         progress.setIndeterminate(true);
 
-
-        selectClassVideo.setAdapter(classSpinnerAdapter);
-        selectSubjectVideo.setAdapter(subjectSpinnerAdapter);
-        selectClassPDF.setAdapter(classSpinnerAdapter);
-        selectSubjectPDF.setAdapter(subjectSpinnerAdapter);
+        if (classes != null && subs != null) {
+            selectClassVideo.setAdapter(classSpinnerAdapter);
+            selectSubjectVideo.setAdapter(subjectSpinnerAdapter);
+            selectClassPDF.setAdapter(classSpinnerAdapter);
+            selectSubjectPDF.setAdapter(subjectSpinnerAdapter);
+        }
 
 
         createNewVideo.setOnClickListener(new View.OnClickListener() {
@@ -182,6 +183,7 @@ public class UploadActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 uploadFile("NOTES", selectedPDFPath);
+
             }
         });
 
@@ -206,7 +208,6 @@ public class UploadActivity extends AppCompatActivity {
                                     SELECTED_TEACHER_ID_VIDEO
                             })
                             .build();
-
                     OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(UploadUtil.class)
                             .setInputData(data)
                             .build();
@@ -324,12 +325,14 @@ public class UploadActivity extends AppCompatActivity {
         selectClassPDF = findViewById(R.id.selectClassPDFSpinner);
         selectSubjectPDF = findViewById(R.id.selectSubjectPDFSpinner);
 
+        Intent intent = getIntent();
+        classes = new ArrayList<>();
+        subs = new ArrayList<>();
+        classes = intent.getStringArrayListExtra("CLASSES");
+        subs = intent.getStringArrayListExtra("SUBS");
 
-        classSpinnerAdapter = new ArrayAdapter<>(UploadActivity.this,
-                android.R.layout.simple_spinner_dropdown_item, new String[]{"Class 6", "Class 7", "Class 8"});
-
-        subjectSpinnerAdapter = new ArrayAdapter<>(UploadActivity.this,
-                android.R.layout.simple_spinner_dropdown_item, new String[]{"English", "Maths", "Science"});
+        classSpinnerAdapter = new ArrayAdapter<>(UploadActivity.this, android.R.layout.simple_spinner_dropdown_item, classes);
+        subjectSpinnerAdapter = new ArrayAdapter<>(UploadActivity.this, android.R.layout.simple_spinner_dropdown_item, subs);
 
 
     }
@@ -372,7 +375,6 @@ public class UploadActivity extends AppCompatActivity {
 
             alt.setView(view);
             alertDialog = alt.create();
-
             alertDialog.show();
 
         }
@@ -531,6 +533,4 @@ public class UploadActivity extends AppCompatActivity {
             DOCUMENT_PATH = chapter_ID;
         }
     }
-
-
 }
