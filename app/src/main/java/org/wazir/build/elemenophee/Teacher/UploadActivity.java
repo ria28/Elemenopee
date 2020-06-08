@@ -22,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,7 +49,7 @@ import java.util.ArrayList;
 public class UploadActivity extends AppCompatActivity {
 
     private static final int PICK_VIDEO = 404;
-    Button uploadVideoBtn, AddExistingVideo, createNewVideo, videoSelectBtn;
+    CardView uploadVideoBtn, AddExistingVideo, createNewVideo, videoSelectBtn;
     TextInputEditText videoTitle;
     Spinner selectClassVideo, selectSubjectVideo;
     Uri selectedVideoPath = null;
@@ -59,7 +60,7 @@ public class UploadActivity extends AppCompatActivity {
 
 
     private static final int PICK_PDF = 403;
-    Button uploadPDFBtn, AddExistingPDF, createNewPDF, PDFSelectBtn;
+    CardView uploadPDFBtn, AddExistingPDF, createNewPDF, PDFSelectBtn;
     TextInputEditText PDFTitle;
     Spinner selectClassPDF, selectSubjectPDF;
     Uri selectedPDFPath = null;
@@ -521,7 +522,7 @@ public class UploadActivity extends AppCompatActivity {
 
     }
 
-    public class addExistingModel {
+    public static class addExistingModel {
         String Chapter;
         String DOCUMENT_PATH;
 

@@ -25,12 +25,12 @@
                 android:id="@+id/textView9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/poiret_one"
                 android:text="Upload Video"
                 android:textColor="#FFFFFF"
                 android:textSize="24sp"
-                android:fontFamily="@font/poiret_one"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -39,10 +39,11 @@
                 android:id="@+id/textInputLayout2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="8dp"
                 android:hint="Enter Title"
+                android:theme="@style/darkCustomAppearance"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
@@ -53,66 +54,96 @@
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <androidx.cardview.widget.CardView
                 android:id="@+id/addExistingVideo"
-                android:layout_width="wrap_content"
+                android:layout_width="0sp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:background="#004FFF"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:fadingEdgeLength="5dp"
                 android:padding="10dp"
-                android:text="Add to Existing Chapter"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="7dp"
+                app:cardElevation="7dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                app:layout_constraintStart_toStartOf="@+id/textInputLayout2"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
 
-            <Button
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:text="Add To Existing Chapters"
+                    android:textColor="@color/color5" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
                 android:id="@+id/createNewVideo"
-                android:layout_width="wrap_content"
+                android:layout_width="0sp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:background="#004FFF"
-                android:padding="10dp"
-                android:text="Create new Chapter"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/addExistingVideo"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
+                android:layout_marginStart="8dp"
+                android:fadingEdgeLength="5dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="7dp"
+                app:cardElevation="7dp"
+                app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toTopOf="@+id/addExistingVideo">
 
-            <Button
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:text="Create New Chapter"
+                    android:textColor="@color/color5" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
                 android:id="@+id/videoSelectBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="#004FFF"
-                android:padding="10dp"
-                android:text="Select Video"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
+                android:layout_marginTop="8dp"
+                android:fadingEdgeLength="5dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="7dp"
+                app:cardElevation="7dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/createNewVideo" />
+                app:layout_constraintTop_toBottomOf="@+id/addExistingVideo">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Choose Video"
+                    android:textColor="@color/color5" />
+            </androidx.cardview.widget.CardView>
 
 
-            <Button
+            <androidx.cardview.widget.CardView
                 android:id="@+id/videoUploadBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
-                android:background="#004FFF"
-                android:padding="10dp"
-                android:text="Upload Video"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
+                android:fadingEdgeLength="5dp"
+                app:cardBackgroundColor="@color/color1"
+                app:cardCornerRadius="7dp"
+                app:cardElevation="7dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/videoSelectBtn" />
+                app:layout_constraintTop_toBottomOf="@+id/videoSelectBtn">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Upload Video"
+                    android:textColor="@color/white" />
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:id="@+id/linearLayout2"
@@ -142,6 +173,13 @@
                     android:layout_weight="5" />
             </LinearLayout>
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
@@ -159,14 +197,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
             <TextView
                 android:id="@+id/textView10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:fontFamily="@font/poiret_one"
                 android:text="Upload PDF"
                 android:textSize="24sp"
-                android:textStyle="bold"
+                android:textColor="@color/color5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -175,10 +221,11 @@
                 android:id="@+id/textInputLayout3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="8dp"
                 android:hint="Enter Title"
+                android:theme="@style/darkCustomAppearance"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
@@ -189,51 +236,73 @@
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <androidx.cardview.widget.CardView
                 android:id="@+id/addExistingPDF"
-                android:layout_width="wrap_content"
+                android:layout_width="0sp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:background="#004FFF"
-                android:padding="10dp"
-                android:text="Add to Existing Chapter"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout3" />
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="7dp"
+                app:cardElevation="7dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline11"
+                app:layout_constraintStart_toStartOf="@+id/textInputLayout3"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout3">
 
-            <Button
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:text="Add To Existing Chapter"
+                    android:textColor="@color/color5" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
                 android:id="@+id/createNewPDF"
-                android:layout_width="wrap_content"
+                android:layout_width="0sp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:background="#004FFF"
-                android:padding="10dp"
-                android:text="Create new Chapter"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/addExistingPDF"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout3" />
+                android:layout_marginStart="8dp"
+                android:fadingEdgeLength="5dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="7dp"
+                app:cardElevation="7dp"
+                app:layout_constraintEnd_toEndOf="@+id/textInputLayout3"
+                app:layout_constraintStart_toStartOf="@+id/guideline11"
+                app:layout_constraintTop_toTopOf="@+id/addExistingPDF">
 
-            <Button
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:text="Create New Chapter"
+                    android:textColor="@color/color5" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
                 android:id="@+id/pdfUploadBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="20dp"
-                android:background="#004FFF"
-                android:padding="10dp"
-                android:text="Upload PDF"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
+                android:fadingEdgeLength="5dp"
+                app:cardBackgroundColor="@color/color1"
+                app:cardCornerRadius="7dp"
+                app:cardElevation="7dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/PDFSelectBtn" />
+                app:layout_constraintTop_toBottomOf="@+id/PDFSelectBtn">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:text="Upload PDF"
+                    android:textColor="@color/white" />
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:id="@+id/linearLayout3"
@@ -263,19 +332,27 @@
                     android:layout_weight="5" />
             </LinearLayout>
 
-            <Button
+            <androidx.cardview.widget.CardView
                 android:id="@+id/PDFSelectBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="8dp"
                 android:background="#004FFF"
-                android:text="SELECT PDF"
-                android:padding="10dp"
-                android:textSize="12sp"
-                android:textColor="@color/white"
+                android:fadingEdgeLength="5dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="7dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/createNewPDF" />
+                app:layout_constraintTop_toBottomOf="@+id/addExistingPDF">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Choose PDF"
+                    android:textColor="@color/color5" />
+            </androidx.cardview.widget.CardView>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
