@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Student.StudentActivity.LectureActivity">
+    tools:context=".Student.Lecture.Subject.LectureActivity">
 
     <fragment
         android:id="@+id/lecture"

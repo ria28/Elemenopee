@@ -1,6 +1,5 @@
 package org.wazir.build.elemenophee.Student.Community;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
@@ -12,29 +11,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.wazir.build.elemenophee.R;
-import org.wazir.build.elemenophee.Student.Community.CommAdapter.ChapterAdapter;
+import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.Chapters;
+import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.SubComm;
+import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.ChapterAdapter;
 import org.wazir.build.elemenophee.Student.Community.CommAdapter.MainAdapterComm;
-import org.wazir.build.elemenophee.Student.Community.CommAdapter.SubjectAdapter;
-import org.wazir.build.elemenophee.Student.StudentActivity.ClassRoomActivity;
-import org.wazir.build.elemenophee.Teacher.model.contentModel;
+import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.SubjectAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.security.auth.Subject;
 
 public class MainCommScreen extends AppCompatActivity implements SubjectAdapter.OnSubjListener {
 
@@ -74,9 +64,9 @@ public class MainCommScreen extends AppCompatActivity implements SubjectAdapter.
     public static ArrayList<SubComm> getSubjects() {
         list1 = new ArrayList<>();
 
-        list1.add(new SubComm(R.drawable.maths, "Maths"));
-        list1.add(new SubComm(R.drawable.sci, "Science"));
-        list1.add(new SubComm(R.drawable.sst, "Sst"));
+//        list1.add(new SubComm(R.drawable.maths, "Maths"));
+//        list1.add(new SubComm(R.drawable.sci, "Science"));
+//        list1.add(new SubComm(R.drawable.sst, "Sst"));
 //        list1.add(new SubComm(R.drawable.maths));
 //        list1.add(new SubComm(R.drawable.sci));
 //        list1.add(new SubComm(R.drawable.sst));
@@ -124,7 +114,7 @@ public class MainCommScreen extends AppCompatActivity implements SubjectAdapter.
     public static ArrayList<Chapters> getChapters() {
         ArrayList<Chapters> list2 = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            list2.add(new Chapters(Chapter.get(i)));
+//            list2.add(new Chapters(Chapter.get(i)));
         }
         return list2;
 

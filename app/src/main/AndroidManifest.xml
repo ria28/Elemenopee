@@ -8,7 +8,12 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-feature android:name="android.hardware.camera"
+        android:required="false" />
+
+
     <application
+        android:hardwareAccelerated="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -16,10 +21,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Student.Lecture.Subject.ViewVideoListActivity"></activity>
+        <activity android:name=".Student.StudentProfile.StudentProfileActivity"></activity>
+        <activity android:name=".Student.StuCommPanel.Stu_main_comm_screen" />
+        <activity android:name=".Student.Lecture.Subject.ViewVideoListActivity" />
         <activity android:name=".Student.Lecture.Subject.ViewVideosChapActivity" />
         <activity android:name=".Student.Community.ViewNotesActivity" />
-        <activity android:name=".SplashScreen" >
+        <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,7 +44,7 @@
             android:configChanges="orientation|screenSize" />
         <activity android:name=".Teacher.mainDashBoardTeacher" />
         <activity android:name=".Student.Community.MainCommScreen" />
-        <activity android:name=".Student.StudentActivity.LectureActivity" />
+        <activity android:name=".Student.Lecture.Subject.LectureActivity" />
         <activity android:name=".Student.StudentActivity.ClassRoomActivity" />
         <activity android:name=".Student.Videos.VideoActivity" />
         <activity android:name=".Student.StuProfile.ProfileMainActivity" />
@@ -45,7 +52,7 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-        <activity android:name=".Student.StudentMainAct" />
+        <activity android:name=".Student.StudentMainPanel.StudentMainAct" />
 
         <meta-data
             android:name="preloaded_fonts"
@@ -60,6 +67,18 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.android.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_path" />
+        </provider>
+
+
     </application>
+
 
 </manifest>

@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,6 +18,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.wazir.build.elemenophee.R;
+import org.wazir.build.elemenophee.Student.Lecture.Subject.Adapter.VideoChapterAdapter;
+import org.wazir.build.elemenophee.Student.Lecture.Subject.Object.ChapterVideoObject;
 
 import java.util.ArrayList;
 
@@ -46,7 +47,7 @@ public class ViewVideosChapActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mAdapter = new VideoChapterAdapter(context,Chapter);
+        mAdapter = new VideoChapterAdapter(context,Chapter,SubName);
         recyclerView.setAdapter(mAdapter);
 
 
@@ -54,7 +55,7 @@ public class ViewVideosChapActivity extends AppCompatActivity {
 
     private void loadChapter() {
 
-        reference.document("English").collection("CONTENT")
+        reference.document(SubName).collection("CONTENT")   //"English"-------------------
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
