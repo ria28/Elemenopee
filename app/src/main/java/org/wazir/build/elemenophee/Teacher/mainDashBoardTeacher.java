@@ -36,6 +36,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     CardView logoutUser;
     TextView name, designation;
     ArrayList<String> classes, subjects;
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,10 +107,16 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         logoutUser = findViewById(R.id.cardView7);
         name = findViewById(R.id.textView22);
         designation = findViewById(R.id.textView23);
+        mAuth = FirebaseAuth.getInstance();
     }
 
     void getTeacherInfo() {
-        String number = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+
+        if (mAuth.getCurrentUser() == null) {
+            finish();
+            return;
+        }
+        String number = mAuth.getCurrentUser().getPhoneNumber().substring(3);
         FirebaseFirestore.getInstance()
                 .collection("TEACHERS")
                 .document(number)

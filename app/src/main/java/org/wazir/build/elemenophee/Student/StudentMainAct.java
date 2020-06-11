@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -41,6 +42,7 @@ public class StudentMainAct extends AppCompatActivity {
         cardLogout = findViewById(R.id.cardView7);
         name = findViewById(R.id.textView22);
         designation = findViewById(R.id.textView23);
+        mAuth = FirebaseAuth.getInstance();
         getStudentData();
         cardLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,7 +52,7 @@ public class StudentMainAct extends AppCompatActivity {
                 finish();
             }
         });
-        mAuth = FirebaseAuth.getInstance();
+
         RecyclerView recyclerView = findViewById(R.id.recycler_View);
         MainAdapter adapter = new MainAdapter(this, getObject());
         recyclerView.setAdapter(adapter);
@@ -88,7 +90,11 @@ public class StudentMainAct extends AppCompatActivity {
     }
 
     void getStudentData() {
-        String number = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        FirebaseUser curUser = mAuth.getCurrentUser();
+        if (curUser == null) {
+            return;
+        }
+        String number = mAuth.getCurrentUser().getPhoneNumber().substring(3);
         FirebaseFirestore.getInstance().collection("STUDENTS").document(number)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -103,18 +109,4 @@ public class StudentMainAct extends AppCompatActivity {
                     }
                 });
     }
-
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        if (item.getItemId() == R.id.id_logout) {
-//            SharedPreferences prefs = this.getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
-//            SharedPreferences.Editor editor = prefs.edit();
-//
-//            editor.clear();
-//            editor.apply();
-//            startActivity(new Intent(this, MainActivity.class));
-//            finish();
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 }

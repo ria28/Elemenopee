@@ -149,11 +149,11 @@
         android:id="@+id/textView13"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:fontFamily="sans-serif-light"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/nunito_extralight"
         android:text="Select Your Role"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline7"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline6"
         app:layout_constraintStart_toStartOf="@+id/guideline4" />
 
@@ -262,7 +262,7 @@
             android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-light"
             android:text="Choose Classes"
-            android:textColor="@color/color5"
+            android:textColor="@color/white"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@+id/cardView6"
             app:layout_constraintTop_toBottomOf="@+id/cardView6" />
@@ -274,7 +274,7 @@
             android:layout_marginTop="8dp"
             android:fontFamily="sans-serif-light"
             android:text="Choose Subjects"
-            android:textColor="@color/color5"
+            android:textColor="@color/white"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@+id/cardView6"
             app:layout_constraintTop_toBottomOf="@+id/recyclerView123" />
@@ -435,6 +435,7 @@
             android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-light"
             android:text="Choose Your Current Class"
+            android:textColor="@color/white"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@+id/cardView4"
             app:layout_constraintTop_toBottomOf="@+id/cardView4" />

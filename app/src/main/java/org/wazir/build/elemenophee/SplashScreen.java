@@ -36,8 +36,11 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        for (int i = 0; i < 1; i++) {
+            System.out.println(i);
+        }
         if (mAuth.getCurrentUser() != null) {
-            String number = mAuth.getCurrentUser().getDisplayName();
+            String number = mAuth.getCurrentUser().getPhoneNumber().substring(3);
             db.collection("STUDENTS").document(number).get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
