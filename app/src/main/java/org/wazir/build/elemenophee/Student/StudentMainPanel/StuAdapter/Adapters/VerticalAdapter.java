@@ -25,6 +25,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<VerticalAdapter.MyView
     public VerticalAdapter(Context mContext, ArrayList<SingleVertical> data) {
         this.data = data;
         this.mContext=mContext;
+        //gygiugiu
     }
 
     @NonNull
