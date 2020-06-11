@@ -31,8 +31,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-
-import org.wazir.build.elemenophee.Student.StudentMainAct;
+import org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct;
 import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 
 import java.util.concurrent.TimeUnit;
@@ -173,9 +172,9 @@ public class MainActivity extends AppCompatActivity {
         PhoneAuthCredential credential;
         if (cred == null && otp != null) {
             credential = PhoneAuthProvider.getCredential(verId, otp);
+        } else {
+            credential = cred;
         }
-        credential = cred;
-
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override

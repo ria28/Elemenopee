@@ -1,17 +1,16 @@
 package org.wazir.build.elemenophee.Student.StudentProfile;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -22,7 +21,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.StuProfile.EditStuProfileActivity;
-import org.wazir.build.elemenophee.Student.StuProfile.ProfileMainActivity;
 import org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct;
 
 import java.util.ArrayList;

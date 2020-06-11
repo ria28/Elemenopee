@@ -1,4 +1,4 @@
-package org.wazir.build.elemenophee.Student;
+package org.wazir.build.elemenophee.Student.StudentMainPanel;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,7 +22,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
-import org.wazir.build.elemenophee.Student.Adapters.MainAdapter;
+import org.wazir.build.elemenophee.Student.StudentMainPanel.Objects.SingleHorizontal;
+import org.wazir.build.elemenophee.Student.StudentMainPanel.Objects.SingleVertical;
+import org.wazir.build.elemenophee.Student.StudentMainPanel.StuAdapter.Adapters.MainAdapter;
 
 import java.util.ArrayList;
 

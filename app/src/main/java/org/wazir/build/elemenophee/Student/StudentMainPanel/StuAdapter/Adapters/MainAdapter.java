@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import static org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct.getHorizontalData;
 import static org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct.getVerticalData;
 
+
 public class MainAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
