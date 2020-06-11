@@ -31,7 +31,8 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct;
+
+import org.wazir.build.elemenophee.Student.StudentMainAct;
 import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 
 import java.util.concurrent.TimeUnit;
@@ -79,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
         loginUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (otpLi.getEditText().getText().toString().equals("")) {
+                    Toast.makeText(MainActivity.this, "Where is the OTP ??????", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 siWiOt(otpLi.getEditText().getText().toString(), null);
             }
         });
