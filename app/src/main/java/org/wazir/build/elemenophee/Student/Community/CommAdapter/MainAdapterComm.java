@@ -1,7 +1,6 @@
 package org.wazir.build.elemenophee.Student.Community.CommAdapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import org.wazir.build.elemenophee.R;
-import org.wazir.build.elemenophee.Student.Community.Chapters;
-import org.wazir.build.elemenophee.Student.Community.MainCommScreen;
+import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.Chapters;
+import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.ChapterAdapter;
+import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.SubjectAdapter;
 
 import java.util.ArrayList;
 

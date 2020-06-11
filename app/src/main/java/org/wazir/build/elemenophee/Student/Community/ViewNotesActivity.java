@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,12 +29,13 @@ import java.util.Map;
 public class ViewNotesActivity extends AppCompatActivity {
 
     String title;
+    String SubName;
+    String classs;
     RecyclerView recyclerView;
     ArrayList<contentModel> pdfList = new ArrayList<>();
     notesRecyclerAdapter notesAdapter;
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference reference = db.collection("CLASSES").document("Class 6").collection("SUBJECT");
+    private CollectionReference reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,8 @@ public class ViewNotesActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         title = intent.getStringExtra("CHAPTER_TITLE");
+        SubName = intent.getStringExtra("SUBJECT");
+        classs = intent.getStringExtra("CLASS");
 
         loadNotes();
         setUpRecyclerView();
@@ -62,6 +66,15 @@ public class ViewNotesActivity extends AppCompatActivity {
     }
 
     private void loadNotes() {
+
+        Log.d("Chap title", "loadNotes: " + title);
+//        for (int i = 0; i < 1; i++) {
+//            System.out.println(i);
+//        }
+
+        reference = FirebaseFirestore.getInstance().collection("/CLASSES/" + classs +
+                "/SUBJECT/" + SubName + "/CONTENT/"
+        );
         reference.whereEqualTo("CHAPTER", title)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

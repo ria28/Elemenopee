@@ -37,6 +37,7 @@ public class ViewVideoListActivity extends AppCompatActivity implements videoRec
     RecyclerView recyclerView;
     CollectionReference reference;
     String chapterTitle;
+    String SubName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,7 @@ public class ViewVideoListActivity extends AppCompatActivity implements videoRec
 
         Intent intent = getIntent();
         chapterTitle = intent.getStringExtra("CHAPTER_TITLE");
+        SubName = intent.getStringExtra("SUBJECT_NAME");
         videoAdapter = new videoRecyclerAdapter(ViewVideoListActivity.this, false, videoList, this, -1);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);
@@ -60,7 +62,7 @@ public class ViewVideoListActivity extends AppCompatActivity implements videoRec
     private void loadVideoList() {
 
         reference = FirebaseFirestore.getInstance().collection("CLASSES")
-                .document("Class 6").collection("SUBJECT").document("English")
+                .document("Class 6").collection("SUBJECT").document(SubName)
                 .collection("CONTENT");
 
         reference.whereEqualTo("CHAPTER", chapterTitle)
