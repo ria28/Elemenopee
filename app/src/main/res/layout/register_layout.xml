@@ -131,9 +131,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Verify"
-                app:layout_constraintBottom_toBottomOf="@+id/editTextTextPersonName3"
+                app:layout_constraintBottom_toBottomOf="@+id/editTextTextPersonName4"
                 app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName2"
-                app:layout_constraintTop_toTopOf="@+id/editTextTextPersonName3" />
+                app:layout_constraintTop_toTopOf="@+id/editTextTextPersonName4" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline13"
@@ -155,12 +155,12 @@
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/icon_verified"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="@id/progressBar3"
-                app:layout_constraintStart_toEndOf="@id/progressBar3"
-                app:layout_constraintTop_toTopOf="@id/progressBar3"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:layout_constraintBottom_toBottomOf="@+id/editTextTextPersonName3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/editTextTextPersonName3"
+                app:layout_constraintTop_toTopOf="@+id/editTextTextPersonName3"
                 app:lottie_autoPlay="false"
                 app:lottie_rawRes="@raw/verified_icon" />
         </androidx.constraintlayout.widget.ConstraintLayout>

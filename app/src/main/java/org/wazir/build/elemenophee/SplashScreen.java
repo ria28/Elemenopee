@@ -40,7 +40,7 @@ public class SplashScreen extends AppCompatActivity {
             System.out.println(i);
         }
         if (mAuth.getCurrentUser() != null) {
-            String number = mAuth.getCurrentUser().getPhoneNumber().substring(3);
+            String number = mAuth.getCurrentUser().getPhoneNumber();
             db.collection("STUDENTS").document(number).get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override

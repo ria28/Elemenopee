@@ -87,7 +87,7 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
 
         // setup RecyclerViews
         setupRcviews();
-        phoneNumber = getIntent().getStringExtra("PHONE");
+        phoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
     void signUpTeacher() {
