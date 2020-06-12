@@ -102,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private TextWatcher phNuChangeWatcher = new TextWatcher() {
-
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
@@ -119,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void afterTextChanged(Editable editable) {
-
         }
     };
 
@@ -134,14 +132,11 @@ public class MainActivity extends AppCompatActivity {
             if (s.toString().length() == 10) {
                 sendOtpSu(s.toString());
                 suPb.setVisibility(View.VISIBLE);
-            } else {
-                // TODO: 6/10/2020 Do Nothing Here
             }
         }
 
         @Override
         public void afterTextChanged(Editable editable) {
-
         }
     };
 
@@ -149,22 +144,22 @@ public class MainActivity extends AppCompatActivity {
     void sendOtp(String phoneNumber) {
         number = "+91" + phoneNumber;
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                "+91" + phoneNumber,        // Phone number to verify
-                60,                 // Timeout duration
-                TimeUnit.SECONDS,   // Unit of timeout
+                "+91" + phoneNumber,
+                60,
+                TimeUnit.SECONDS,
                 this,
-                mCallbacks// Activity (for callback binding)
+                mCallbacks
         );
     }
 
     void sendOtpSu(String phoneNumber) {
-        number = phoneNumber;
+        number = "+91" + phoneNumber;
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                "+91" + phoneNumber,        // Phone number to verify
-                60,                 // Timeout duration
-                TimeUnit.SECONDS,   // Unit of timeout
+                "+91" + phoneNumber,
+                60,
+                TimeUnit.SECONDS,
                 this,
-                mCallbacksSu// Activity (for callback binding)
+                mCallbacksSu
         );
     }
 
@@ -192,9 +187,9 @@ public class MainActivity extends AppCompatActivity {
         PhoneAuthCredential credential;
         if (cred == null && otp != null) {
             credential = PhoneAuthProvider.getCredential(verId, otp);
+        } else {
+            credential = cred;
         }
-        credential = cred;
-
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
