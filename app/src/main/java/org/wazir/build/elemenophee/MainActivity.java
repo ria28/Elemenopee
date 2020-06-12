@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     void sendOtp(String phoneNumber) {
-        number = phoneNumber;
+        number = "+91" + phoneNumber;
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 "+91" + phoneNumber,        // Phone number to verify
                 60,                 // Timeout duration
