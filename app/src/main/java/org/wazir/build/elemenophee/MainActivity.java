@@ -1,312 +1,347 @@
 package org.wazir.build.elemenophee;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieDrawable;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.wazir.build.elemenophee.Student.StudentMainAct;
+import org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct;
 import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
+    TextInputLayout phoneNoLi, otpLi;
+    EditText nameSu, emailSu, phoneNoSu, otpSu, stateSu;
+    CardView loginUser, signUpUser;
+    LottieAnimationView verIcon;
+    ProgressBar liPb, suPb;
+    String verId, number;
     FirebaseAuth mAuth;
     FirebaseFirestore db;
-    TextView stateVer;
-    String mVerificationId;
-    boolean FLAG;
-    LoadingPopup loader;
+    Button verifyBtnSu;
+    LoadingPopup loadingPopup;
 
-    TextInputLayout log_email, log_pass, sig_email, sig_pass, sig_phone, sig_otp;
-    ImageView login_user, signup_user;
-    CardView verifyOtp;
-    ProgressBar bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        log_email = findViewById(R.id.id_li_mail);
-        log_pass = findViewById(R.id.id_li_pass);
-        sig_email = findViewById(R.id.id_su_mail);
-        sig_pass = findViewById(R.id.id_su_pass);
-        sig_phone = findViewById(R.id.id_su_phone);
-        sig_otp = findViewById(R.id.id_su_otp);
-        login_user = findViewById(R.id.imageView);
-        signup_user = findViewById(R.id.imageView1);
-        verifyOtp = findViewById(R.id.verify_otp);
-        stateVer = findViewById(R.id.state_verification);
-        bar = findViewById(R.id.progressBar4);
+        init();
+    }
 
+    void init() {
+        phoneNoLi = findViewById(R.id.textInputLayout5);
+        loadingPopup = new LoadingPopup(this);
+        otpLi = findViewById(R.id.textInputLayout9);
+        loginUser = findViewById(R.id.cardView10);
+        nameSu = findViewById(R.id.editTextTextPersonName);
+        emailSu = findViewById(R.id.editTextTextPersonName2);
+        phoneNoSu = findViewById(R.id.editTextTextPersonName3);
+        otpSu = findViewById(R.id.editTextTextPersonName4);
+        stateSu = findViewById(R.id.editTextTextPersonName5);
+        signUpUser = findViewById(R.id.cardView12);
+        verIcon = findViewById(R.id.icon_verified);
+        verifyBtnSu = findViewById(R.id.button);
+        phoneNoLi.getEditText().addTextChangedListener(phNuChangeWatcher);
+        phoneNoSu.addTextChangedListener(pnSuTw);
+        liPb = findViewById(R.id.progressBar4);
+        suPb = findViewById(R.id.progressBar3);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        loader = new LoadingPopup(this);
-        FLAG = false;
-        login_user.setOnClickListener(new View.OnClickListener() {
+        loginUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loginUser();
+                if (otpLi.getEditText().getText().toString().equals("")) {
+                    Toast.makeText(MainActivity.this, "Where is the OTP ??????", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                siWiOt(otpLi.getEditText().getText().toString(), null);
             }
         });
-        signup_user.setOnClickListener(new View.OnClickListener() {
+        signUpUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signUpUser();
+                loadingPopup.dialogRaise();
             }
         });
-        verifyOtp.setOnClickListener(new View.OnClickListener() {
+        verifyBtnSu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (stateVer.getText().equals("Verify Phone Number")) {
-                    sendOtp("+91 " + sig_phone.getEditText().getText().toString().trim());
-                    stateVer.setText("VERIFY");
-                } else {
-                    signinUser(sig_otp.getEditText().getText().toString());
-                    stateVer.setText("Verify Phone Number");
-                }
+                siWiOtSu(otpSu.getText().toString(), null);
             }
         });
     }
 
-    void loginUser() {
-        updateUi(true);
-        final String email, pass;
-        email = log_email.getEditText().getText().toString();
-        pass = log_pass.getEditText().getText().toString();
-        if (email.equals("") || pass.equals("")) {
-            Toast.makeText(MainActivity.this, "Please Enter Valid Data", Toast.LENGTH_SHORT).show();
-            updateUi(false);
-        } else {
-            mAuth.signInWithEmailAndPassword(email, pass)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                navigate(1);
+    private TextWatcher phNuChangeWatcher = new TextWatcher() {
 
-                            } else {
-                                Toast.makeText(MainActivity.this, "Failed To Login User", Toast.LENGTH_SHORT).show();
-                                updateUi(false);
-                            }
-                        }
-                    });
-        }
-    }
-
-    void signUpUser() {
-        if (FLAG) {
-            updateUi(true);
-            checkPhoneValid(sig_phone.getEditText().getText().toString());
-        } else {
-            Toast.makeText(this, "Phone Number Not Verified", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    void navigate(int routine) {
-        switch (routine) {
-            case (1):
-                String number = mAuth.getCurrentUser().getDisplayName();
-                db.collection("TEACHERS")
-                        .document(number)
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    DocumentSnapshot document = task.getResult();
-                                    if (document.exists()) {
-                                        updateUi(false);
-                                        ArrayList<String> classes;
-                                        ArrayList<String> subjects;
-                                        subjects = (ArrayList<String>) document.get("TEA_SUBS");
-                                        classes = (ArrayList<String>) document.get("TEA_CLASSES");
-                                        Intent intent = new Intent(MainActivity.this, mainDashBoardTeacher.class);
-                                        intent.putExtra("CLASS", classes);
-                                        intent.putExtra("SUBS", subjects);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                }
-                            }
-                        });
-
-                db.collection("STUDENTS")
-                        .document(number)
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                DocumentSnapshot documentSnapshot = task.getResult();
-                                if (documentSnapshot.exists()) {
-                                    updateUi(false);
-                                    ArrayList<String> clas = (ArrayList<String>) documentSnapshot.get("STU_CLASSES");
-                                    Intent intent = new Intent(MainActivity.this, StudentMainAct.class);
-                                    intent.putExtra("CLASSES", clas);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            }
-                        });
-
-                break;
-            case (2):
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                        .setDisplayName(sig_phone.getEditText().getText().toString())
-                        .build();
-                user.updateProfile(profileUpdates)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Intent intent = new Intent(MainActivity.this, SignUpUserActivity.class);
-                                    intent.putExtra("PHONE", sig_phone.getEditText().getText().toString());
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            }
-                        });
-
-                break;
-        }
-    }
-
-    void sendOtp(String phoneNumber) {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phoneNumber,        // Phone number to verify
-                60,                 // Timeout duration
-                TimeUnit.SECONDS,   // Unit of timeout
-                this,               // Activity (for callback binding)
-                mCallbacks);        // OnVerificationStateChangedCallbacks
-    }
-
-    void checkPhoneValid(final String phone) {
-        DocumentReference teacDoc = db.collection("TEACHERS").document(phone);
-        final DocumentReference stuDoc = db.collection("STUDENTS").document(phone);
-
-        teacDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (!task.getResult().exists()) {
-                    stuDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (!task.getResult().exists()) {
-                                final String email = sig_email.getEditText().getText().toString();
-                                final String pass = sig_pass.getEditText().getText().toString();
-
-                                if (!email.equals("") && !pass.equals(""))
-                                    mAuth.createUserWithEmailAndPassword(email, pass)
-                                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                                    if (task.isSuccessful()) {
-                                                        navigate(2);
-                                                        setUpPhoneNumber(sig_phone.getEditText().getText().toString());
-                                                    } else {
-                                                        Toast.makeText(MainActivity.this, "Failed to Create Account", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                    updateUi(false);
-                                                }
-                                            });
-                            } else {
-                                Toast.makeText(MainActivity.this, "User Already Exists", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                } else {
-                    Toast.makeText(MainActivity.this, "User Already Present", Toast.LENGTH_SHORT).show();
-                    updateUi(false);
-                }
-            }
-        });
-
-    }
-
-    PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         @Override
-        public void onVerificationCompleted(PhoneAuthCredential credential) {
-            signinUser(credential);
-            sig_otp.setVisibility(View.GONE);
-            verifyOtp.setVisibility(View.GONE);
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
         }
 
         @Override
-        public void onVerificationFailed(FirebaseException e) {
-            if (e instanceof FirebaseAuthInvalidCredentialsException) {
-                Toast.makeText(MainActivity.this, "Invalid Phone Number", Toast.LENGTH_LONG).show();
-            } else if (e instanceof FirebaseTooManyRequestsException) {
-                Toast.makeText(MainActivity.this, "Wait Before Trying again", Toast.LENGTH_LONG).show();
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (s.toString().length() == 10) {
+                sendOtp(s.toString());
+                liPb.setVisibility(View.VISIBLE);
+            } else {
+                // TODO: 6/10/2020 Do Nothing Here
             }
         }
 
         @Override
-        public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken token) {
-            mVerificationId = verificationId;
-            Toast.makeText(MainActivity.this, "OTP Sent", Toast.LENGTH_SHORT).show();
+        public void afterTextChanged(Editable editable) {
+
         }
     };
 
-    void signinUser(PhoneAuthCredential credential) {
+    private TextWatcher pnSuTw = new TextWatcher() {
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (s.toString().length() == 10) {
+                sendOtpSu(s.toString());
+                suPb.setVisibility(View.VISIBLE);
+            } else {
+                // TODO: 6/10/2020 Do Nothing Here
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
+
+
+    void sendOtp(String phoneNumber) {
+        number = phoneNumber;
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                "+91" + phoneNumber,        // Phone number to verify
+                60,                 // Timeout duration
+                TimeUnit.SECONDS,   // Unit of timeout
+                this,
+                mCallbacks// Activity (for callback binding)
+        );
+    }
+
+    void sendOtpSu(String phoneNumber) {
+        number = phoneNumber;
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                "+91" + phoneNumber,        // Phone number to verify
+                60,                 // Timeout duration
+                TimeUnit.SECONDS,   // Unit of timeout
+                this,
+                mCallbacksSu// Activity (for callback binding)
+        );
+    }
+
+    void siWiOt(String otp, PhoneAuthCredential cred) {
+        PhoneAuthCredential credential;
+        if (cred == null && otp != null) {
+            credential = PhoneAuthProvider.getCredential(verId, otp);
+        } else {
+            credential = cred;
+        }
         mAuth.signInWithCredential(credential)
-                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onSuccess(AuthResult authResult) {
-                        FLAG = true;
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            stuOrTea();
+                        } else {
+                            liPb.setVisibility(View.INVISIBLE);
+                        }
                     }
                 });
     }
 
-    void signinUser(String code) {
-        if (code.equals("")) {
+    void siWiOtSu(String otp, PhoneAuthCredential cred) {
+        PhoneAuthCredential credential;
+        if (cred == null && otp != null) {
+            credential = PhoneAuthProvider.getCredential(verId, otp);
+        }
+        credential = cred;
+
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+                            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                @Override
+                                public void onAnimationUpdate(ValueAnimator animation) {
+                                    verIcon.setProgress(animation.getAnimatedFraction());
+                                }
+                            });
+                            animator.start();
+                        } else {
+                            liPb.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                });
+    }
+
+    void stuOrTea() {
+        if (number == null) {
             return;
         }
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, code);
-        signinUser(credential);
+        db.collection("TEACHERS")
+                .document(number)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful() && task.getResult().exists()) {
+                            navigate("TEACHER");
+                        }
+                    }
+                });
+        db.collection("STUDENTS")
+                .document(number)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful() && task.getResult().exists()) {
+                            navigate("STUDENT");
+                        }
+                    }
+                });
     }
 
-    void updateUi(boolean task) {
-        if (task) {
-            loader.dialogRaise();
+    void navigate(String direction) {
+        if (direction.equals("STUDENT")) {
+            startActivity(new Intent(this, StudentMainAct.class));
         } else {
-            loader.dialogDismiss();
+            startActivity(new Intent(this, mainDashBoardTeacher.class));
         }
+        finish();
     }
 
-    private void setUpPhoneNumber(String numberPhone) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+    void signUpUser() {
+        if (!checkEnDat()) {
+            Toast.makeText(this, "Please Enter Valid Data", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName(numberPhone)
+                .setDisplayName(nameSu.getText().toString())
                 .build();
-        user.updateProfile(profileUpdates);
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        user.updateEmail(emailSu.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                loadingPopup.dialogDismiss();
+                                startActivity(new Intent(MainActivity.this, SignUpUserActivity.class));
+                                finish();
+                            }
+                        });
+                    }
+                });
     }
+
+    boolean checkEnDat() {
+        String name = nameSu.getText().toString();
+        String mail = emailSu.getText().toString();
+        String phone = phoneNoSu.getText().toString();
+        String state = stateSu.getText().toString();
+        return !name.equals("") && !mail.equals("") && !phone.equals("") && !state.equals("");
+    }
+
+    PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+
+        @Override
+        public void onVerificationCompleted(PhoneAuthCredential credential) {
+            liPb.setVisibility(View.INVISIBLE);
+            siWiOt(null, credential);
+        }
+
+        @Override
+        public void onVerificationFailed(FirebaseException e) {
+            liPb.setVisibility(View.INVISIBLE);
+            Toast.makeText(MainActivity.this, "Failed TO Login", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken token) {
+            verId = verificationId;
+            Toast.makeText(MainActivity.this, "OTP sent", Toast.LENGTH_SHORT).show();
+        }
+    };
+    PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacksSu = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+
+        @Override
+        public void onVerificationCompleted(PhoneAuthCredential credential) {
+            // Custom animation speed or duration.
+            ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    verIcon.setProgress(animation.getAnimatedFraction());
+                }
+            });
+            animator.start();
+            verIcon.setRepeatMode(LottieDrawable.RESTART);
+            suPb.setVisibility(View.INVISIBLE);
+            siWiOtSu(null, credential);
+        }
+
+        @Override
+        public void onVerificationFailed(FirebaseException e) {
+            suPb.setVisibility(View.INVISIBLE);
+            Toast.makeText(MainActivity.this, "Failed TO Login", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken token) {
+            verId = verificationId;
+            suPb.setVisibility(View.VISIBLE);
+            Toast.makeText(MainActivity.this, "OTP sent", Toast.LENGTH_SHORT).show();
+        }
+    };
 }
+
+
+
+
+
+
+
+

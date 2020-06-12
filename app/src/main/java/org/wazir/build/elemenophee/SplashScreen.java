@@ -17,7 +17,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.wazir.build.elemenophee.IntLogSigScreens.OnboardingActivity;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
-import org.wazir.build.elemenophee.Student.StudentMainAct;
+
+
+import org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct;
 import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 
 public class SplashScreen extends AppCompatActivity {
@@ -36,8 +38,11 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        for (int i = 0; i < 1; i++) {
+            System.out.println(i);
+        }
         if (mAuth.getCurrentUser() != null) {
-            String number = mAuth.getCurrentUser().getDisplayName();
+            String number = mAuth.getCurrentUser().getPhoneNumber();
             db.collection("STUDENTS").document(number).get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override

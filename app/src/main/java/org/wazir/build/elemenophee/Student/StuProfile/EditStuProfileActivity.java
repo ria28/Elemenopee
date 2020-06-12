@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,8 +47,8 @@ public class EditStuProfileActivity extends AppCompatActivity {
 
         phone = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         editTextName=findViewById(R.id.name_edit);
-        editTextSchool=findViewById(R.id.school_edit);
-        editTextBio=findViewById(R.id.editText_bio);
+        editTextSchool = findViewById(R.id.school_edit);
+        editTextBio = findViewById(R.id.bio_edit);
         save = findViewById(R.id.save_edit);
 
     }

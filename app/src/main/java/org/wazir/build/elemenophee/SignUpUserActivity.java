@@ -27,7 +27,8 @@ import org.wazir.build.elemenophee.IntLogSigScreens.ChooseMoObj;
 import org.wazir.build.elemenophee.Interfaces.ChooseEveHandler;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
-import org.wazir.build.elemenophee.Student.StudentMainAct;
+
+import org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct;
 import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 
 import java.util.ArrayList;
@@ -87,7 +88,7 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
 
         // setup RecyclerViews
         setupRcviews();
-        phoneNumber = getIntent().getStringExtra("PHONE");
+        phoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
     }
 
     void signUpTeacher() {
