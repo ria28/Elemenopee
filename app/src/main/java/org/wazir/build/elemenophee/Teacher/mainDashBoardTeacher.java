@@ -25,6 +25,7 @@ import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
 import org.wazir.build.elemenophee.Utils.PermissionUtil;
+import org.wazir.build.elemenophee.ViewTeacherProfile;
 
 import java.util.ArrayList;
 
@@ -57,7 +58,8 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         view_upload_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mainDashBoardTeacher.this, viewUploadActivity.class));
+//                startActivity(new Intent(mainDashBoardTeacher.this, viewUploadActivity.class));
+                startActivity(new Intent(mainDashBoardTeacher.this, ViewTeacherProfile.class));
             }
         });
         logoutUser.setOnClickListener(new View.OnClickListener() {
