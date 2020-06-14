@@ -140,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-
     void sendOtp(String phoneNumber) {
         number = "+91" + phoneNumber;
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
@@ -304,7 +303,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onVerificationCompleted(PhoneAuthCredential credential) {
-            // Custom animation speed or duration.
             ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
