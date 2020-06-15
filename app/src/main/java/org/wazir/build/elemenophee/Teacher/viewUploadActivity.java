@@ -2,6 +2,7 @@ package org.wazir.build.elemenophee.Teacher;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -68,13 +69,9 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
         viewChapter = findViewById(R.id.viewUploadChapterSpinner);
         viewContentType = findViewById(R.id.viewUploadContentTypeSpinner);
 
-        Class.add("Class 6");
-        Class.add("Class 7");
-        Class.add("Class 8");
-        Class.add("Class 9");
-        Subject.add("English");
-        Subject.add("Maths");
-        Subject.add("Social Science");
+        Intent intent = getIntent();
+        Class = intent.getStringArrayListExtra("CLASSES");
+        Subject = intent.getStringArrayListExtra("SUBS");
         Chapter.add("SELECT");
         Content.add("VIDEOS");
         Content.add("NOTES");
@@ -88,11 +85,15 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
         contentSpinnerViewAdapter = new ArrayAdapter<String>(viewUploadActivity.this,
                 android.R.layout.simple_spinner_dropdown_item, Content);
 
+        if (Class != null && Subject != null) {
+            viewClass.setAdapter(classSpinnerViewAdapter);
+            viewSubject.setAdapter(subjectSpinnerViewAdapter);
+            viewChapter.setAdapter(chapterSpinnerViewAdapter);
+            viewContentType.setAdapter(contentSpinnerViewAdapter);
+        }
 
-        viewClass.setAdapter(classSpinnerViewAdapter);
-        viewSubject.setAdapter(subjectSpinnerViewAdapter);
-        viewChapter.setAdapter(chapterSpinnerViewAdapter);
-        viewContentType.setAdapter(contentSpinnerViewAdapter);
+
+
 
 
         videoAdapter = new videoRecyclerAdapter(viewUploadActivity.this, false, videoList, this, -1);
@@ -258,8 +259,6 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
             recyclerView.setAdapter(videoAdapter);
         else
             recyclerView.setAdapter(notesAdapter);
-
-
     }
 
     @Override
@@ -268,6 +267,7 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
         intent.putExtra("VIDEO_LINK", videoList.get(i).getFileUrl());
         intent.putExtra("VIDEO_LIST", videoList);
         intent.putExtra("PDF_LIST", pdfList);
+        intent.putExtra("FROM_RECENT",false);
         startActivity(intent);
     }
 }

@@ -57,6 +57,7 @@ public class videoPlayingActivity extends AppCompatActivity {
     SimpleExoPlayer simpleExoPlayer;
     ConstraintLayout layout;
     boolean fScreen = false;
+    boolean fromRecent;
     MediaSource mediaSource;
 
     ViewPager viewPager;
@@ -78,9 +79,7 @@ public class videoPlayingActivity extends AppCompatActivity {
         videoList = getIntent().getParcelableArrayListExtra("VIDEO_LIST");
         pdfList = getIntent().getParcelableArrayListExtra("PDF_LIST");
         playingVideoPosition = getIntent().getIntExtra("PLAYING_VIDEO_POSITION",0);
-
-        Log.d("TAG", "onCreate: "+ videoList.size());
-        Log.d("TAG", "onCreate: " + pdfList.size());
+        fromRecent = getIntent().getBooleanExtra("FROM_RECENT",true);
 
         initVideoPlayer();
 
@@ -249,7 +248,7 @@ public class videoPlayingActivity extends AppCompatActivity {
     private void setUpViewPager(ViewPager Pager) {
         playActivity_ViewPagerAdapter adapter = new playActivity_ViewPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         adapter.addFragment(new videoFrag(playingVideoPosition), "Videos");
-        adapter.addFragment(new notesFrag(), "Notes");
+        adapter.addFragment(new notesFrag(fromRecent), "Notes");
         Pager.setAdapter(adapter);
     }
 
