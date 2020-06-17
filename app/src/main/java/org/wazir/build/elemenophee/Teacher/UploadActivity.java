@@ -198,7 +198,7 @@ public class UploadActivity extends AppCompatActivity {
                     data = new Data.Builder()
                             .putString("fileURI", selectedFilePath.toString())
                             .putBoolean("ADD_TO_EXISTING", addToExisting)
-                            .putString("USER_EMAIL", user.getEmail())
+                            .putString("USER_PHONE", user.getPhoneNumber())
                             .putStringArray("FILE_INFO", new String[]{
                                     selectClassVideo.getSelectedItem() + "",
                                     selectSubjectVideo.getSelectedItem() + "",
@@ -223,7 +223,7 @@ public class UploadActivity extends AppCompatActivity {
                     data = new Data.Builder()
                             .putString("fileURI", selectedFilePath.toString())
                             .putBoolean("ADD_TO_EXISTING", addToExisting)
-                            .putString("USER_EMAIL", user.getEmail())
+                            .putString("USER_PHONE", user.getPhoneNumber())
                             .putStringArray("FILE_INFO", new String[]{
                                     selectClassPDF.getSelectedItem() + "",
                                     selectSubjectPDF.getSelectedItem() + "",
@@ -396,7 +396,7 @@ public class UploadActivity extends AppCompatActivity {
 
                     );
             getChapters
-                    .whereEqualTo("TEACHER_ID", user.getEmail())
+                    .whereEqualTo("TEACHER_ID", user.getPhoneNumber())
                     .get()
                     .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
@@ -434,7 +434,7 @@ public class UploadActivity extends AppCompatActivity {
 
                     );
             getChapters
-                    .whereEqualTo("TEACHER_ID", user.getEmail())
+                    .whereEqualTo("TEACHER_ID", user.getPhoneNumber())
                     .get()
                     .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override

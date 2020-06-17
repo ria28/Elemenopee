@@ -44,7 +44,7 @@ public class UploadUtil extends Worker {
     String[] fileData;
     CollectionReference collectionReference;
     CollectionReference recentRef;
-    String userEmail;
+    String userPhone;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
 
@@ -58,7 +58,7 @@ public class UploadUtil extends Worker {
 
         Data data = getInputData();
         selectedFilePath = Uri.parse(data.getString("fileURI"));
-        userEmail = data.getString("USER_EMAIL");
+        userPhone = data.getString("USER_PHONE");
         fileData = data.getStringArray("FILE_INFO");
 
         if (!data.getBoolean("ADD_TO_EXISTING", false))
@@ -176,10 +176,10 @@ public class UploadUtil extends Worker {
                         nM.add(new contentModel(fileData[3], uri.toString(), Timestamp.now()));
                         Map<String, Object> chapter = new HashMap<>();
                         chapter.put("CHAPTER", fileData[2]);
-                        chapter.put("TEACHER_ID",userEmail);
+                        chapter.put("TEACHER_ID", userPhone);
                         chapter.put(fileData[4], nM);
 
-                        collectionReference.document(userEmail + Timestamp.now().toDate())
+                        collectionReference.document(userPhone + Timestamp.now().toDate())
                                 .set(chapter)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override

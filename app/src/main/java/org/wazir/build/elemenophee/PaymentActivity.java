@@ -1,5 +1,6 @@
 package org.wazir.build.elemenophee;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -8,19 +9,35 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
 import org.json.JSONObject;
+import org.wazir.build.elemenophee.ModelObj.SubscribedTOmodel;
+import org.wazir.build.elemenophee.Teacher.TeacherProfile;
 
 public class PaymentActivity extends AppCompatActivity implements PaymentResultListener {
 
     Button payBtn;
+    CollectionReference TeacherRef = FirebaseFirestore.getInstance().collection("TEACHERS");
+    CollectionReference StudentRef = FirebaseFirestore.getInstance().collection("STUDENTS");
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
+
+
 
         payBtn = findViewById(R.id.PayBtnPaymentScreen);
 
@@ -28,7 +45,6 @@ public class PaymentActivity extends AppCompatActivity implements PaymentResultL
             @Override
             public void onClick(View v) {
                 startPayment();
-                finish();
             }
         });
     }
@@ -55,7 +71,7 @@ public class PaymentActivity extends AppCompatActivity implements PaymentResultL
             options.put("amount", total);
             JSONObject preFill = new JSONObject();
             preFill.put("email", "amitkd2018@gmail.com");
-            preFill.put("contact", "1111111111");
+            preFill.put("contact", "8750348232");
             options.put("prefill", preFill);
             co.open(activity, options);
         } catch (Exception e) {
@@ -67,12 +83,48 @@ public class PaymentActivity extends AppCompatActivity implements PaymentResultL
     @Override
     public void onPaymentSuccess(String s) {
         Toast.makeText(this, "Payment successfully done! " +s, Toast.LENGTH_SHORT).show();
+
+        TeacherRef.document(user.getPhoneNumber())
+                .collection("SUBSCRIBERS")
+                .document("Amit Dubey+918750348232")//TODO:place Student ID here
+                .set(new SubscribedTOmodel("Amit Dubey+918750348232"))//TODO:add Student data acoordingly
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getApplicationContext(),"Subscribed To Amit Dubey",Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+//        StudentRef.document(user.getPhoneNumber())
+//                .collection("SUBSCRIBED_TO")
+//                .document("Amit Dubey+918750348232")//TODO:place Teacher Id here
+//                .set(new SubscribedTOmodel("Amit Dubey+918750348232"))//TODO: add Teacher data Accordingly
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Toast.makeText(getApplicationContext(),"Subscribed To Amit Dubey",Toast.LENGTH_SHORT).show();
+//                        finish();
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+//                finish();
+//            }
+//        });
     }
 
     @Override
     public void onPaymentError(int i, String s) {
         try {
             Toast.makeText(this, "Payment error please try again", Toast.LENGTH_SHORT).show();
+            finish();
         } catch (Exception e) {
             Log.e("OnPaymentError", "Exception in onPaymentError", e);
         }

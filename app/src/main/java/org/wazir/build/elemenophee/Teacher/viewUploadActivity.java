@@ -168,7 +168,7 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
                     "/CONTENT"
             );
             reference
-                    .whereEqualTo("TEACHER_ID", user.getEmail())
+                    .whereEqualTo("TEACHER_ID", user.getPhoneNumber())
                     .whereEqualTo("CHAPTER", viewChapter.getSelectedItem().toString())
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -230,7 +230,7 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
         );
 
         reference
-                .whereEqualTo("TEACHER_ID", user.getEmail())
+                .whereEqualTo("TEACHER_ID", user.getPhoneNumber())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
