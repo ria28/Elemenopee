@@ -23,20 +23,20 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@mipmap/background12"
+            android:background="@mipmap/n_back"
             tools:context=".Student.StudentMainPanel.StudentMainAct">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="16dp"
-                app:lottie_rawRes="@raw/slide_arrow"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
                 android:rotation="-90"
                 app:layout_constraintBottom_toTopOf="@+id/recycler_View"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/heading" />
+                app:layout_constraintTop_toBottomOf="@+id/heading"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/slide_arrow" />
 
 
             <TextView
@@ -48,7 +48,7 @@
                 android:layout_marginEnd="8dp"
                 android:fontFamily="@font/poiret_one"
                 android:text="Student's Panel"
-                android:textColor="@color/white"
+                android:textColor="@color/color5"
                 android:textSize="30sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"

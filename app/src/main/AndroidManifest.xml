@@ -21,8 +21,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Student.StudentProfile.StudentProfileActivity"></activity>
-        <activity android:name=".Student.StuCommPanel.Stu_main_comm_screen" />
+        <activity android:name=".Student.StudentProfile.StudentProfileActivity"/>
+        <activity android:name=".Student.Community.MainCommScreen" />
         <activity android:name=".Student.Lecture.Subject.ViewVideoListActivity" />
         <activity android:name=".Student.Lecture.Subject.ViewVideosChapActivity" />
         <activity android:name=".Student.Community.ViewNotesActivity" />
@@ -42,8 +42,8 @@
         <activity
             android:name=".Teacher.videoPlayingActivity"
             android:configChanges="orientation|screenSize" />
-        <activity android:name=".Teacher.mainDashBoardTeacher" />
-        <activity android:name=".Student.Community.MainCommScreen" />
+        <activity android:name=".Teacher.mainDashBoardTeacher"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Student.Lecture.Subject.LectureActivity" />
         <activity android:name=".Student.StudentActivity.ClassRoomActivity" />
         <activity android:name=".Student.Videos.VideoActivity" />
@@ -52,7 +52,8 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-        <activity android:name=".Student.StudentMainPanel.StudentMainAct" />
+        <activity android:name=".Student.StudentMainPanel.StudentMainAct"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="preloaded_fonts"

@@ -24,7 +24,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@mipmap/background12">
+            android:background="@mipmap/n_back">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:layout_width="30dp"
@@ -207,7 +207,7 @@
                 android:layout_marginTop="32dp"
                 android:fontFamily="@font/poiret_one"
                 android:text="Teacher's Panel"
-                android:textColor="#ffffff"
+                android:textColor="@color/color5"
                 android:textSize="30sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
