@@ -147,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-
     void sendOtp(String phoneNumber) {
         number = "+91" + phoneNumber;
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
@@ -298,6 +297,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onVerificationFailed(FirebaseException e) {
             liPb.setVisibility(View.INVISIBLE);
+            Toast.makeText(MainActivity.this, "Failed TO Login" + e.getMessage(), Toast.LENGTH_SHORT).show();
+
         }
 
         @Override
@@ -310,7 +311,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onVerificationCompleted(PhoneAuthCredential credential) {
-            // Custom animation speed or duration.
             ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
@@ -327,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onVerificationFailed(FirebaseException e) {
             suPb.setVisibility(View.INVISIBLE);
-            Toast.makeText(MainActivity.this, "Failed TO Login", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Failed TO SignUp " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
         @Override
