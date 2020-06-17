@@ -4,7 +4,8 @@
     <Transition
         app:constraintSetEnd="@id/end"
         app:constraintSetStart="@+id/start">
-        <OnSwipe app:dragDirection="dragRight" />
+        <OnSwipe app:dragDirection="dragRight"
+            app:touchAnchorId="@id/mainDashBoardConstraint"/>
 
     </Transition>
 

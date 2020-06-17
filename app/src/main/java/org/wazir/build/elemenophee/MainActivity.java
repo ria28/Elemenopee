@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -89,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
         signUpUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (otpSu.getText().toString().equals("")) {
+                    Toast.makeText(MainActivity.this, "Where is the OTP ??????", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 signUpUser();
                 loadingPopup.dialogRaise();
             }
@@ -109,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             if (s.toString().length() == 10) {
+                Log.d("TAG", "onTextChanged: "+ s);
                 sendOtp(s.toString());
                 liPb.setVisibility(View.VISIBLE);
             } else {
@@ -130,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             if (s.toString().length() == 10) {
+                Log.d("TAG", "onTextChanged: pnSuTw " + s);
                 sendOtpSu(s.toString());
                 suPb.setVisibility(View.VISIBLE);
             }
@@ -291,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
         public void onVerificationFailed(FirebaseException e) {
             liPb.setVisibility(View.INVISIBLE);
             Toast.makeText(MainActivity.this, "Failed TO Login" + e.getMessage(), Toast.LENGTH_SHORT).show();
+
         }
 
         @Override

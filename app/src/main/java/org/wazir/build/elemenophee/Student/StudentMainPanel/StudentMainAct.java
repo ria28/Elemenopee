@@ -41,7 +41,7 @@ public class StudentMainAct extends AppCompatActivity {
         setContentView(R.layout.activity_main_stu);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        cardLogout = findViewById(R.id.cardView7);
+        cardLogout = findViewById(R.id.logout);
         name = findViewById(R.id.textView22);
         designation = findViewById(R.id.textView23);
         mAuth = FirebaseAuth.getInstance();

@@ -19,6 +19,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -41,7 +43,9 @@ public class UploadUtil extends Worker {
     int uploadProgress = 0;
     String[] fileData;
     CollectionReference collectionReference;
-    String userEmail;
+    CollectionReference recentRef;
+    String userPhone;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
 
     public UploadUtil(@NonNull Context context, @NonNull WorkerParameters workerParams) {
@@ -54,7 +58,7 @@ public class UploadUtil extends Worker {
 
         Data data = getInputData();
         selectedFilePath = Uri.parse(data.getString("fileURI"));
-        userEmail = data.getString("USER_EMAIL");
+        userPhone = data.getString("USER_PHONE");
         fileData = data.getStringArray("FILE_INFO");
 
         if (!data.getBoolean("ADD_TO_EXISTING", false))
@@ -63,6 +67,27 @@ public class UploadUtil extends Worker {
             uploadToExistingChapter();
 
         return Result.success();
+    }
+
+    private void addToRECENTS(contentModel model) {
+        recentRef = FirebaseFirestore.getInstance()
+                .collection("/TEACHERS/" +
+                        user.getPhoneNumber() + "/RECENT_UPLOADS/" +
+                        "UPLOADS/" +
+                        fileData[4]
+                );
+        recentRef.document(model.getFileTitle())
+                .set(model).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void uploadToExistingChapter() {
@@ -94,7 +119,7 @@ public class UploadUtil extends Worker {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+                                            addToRECENTS(new contentModel(fileData[3], uri.toString(), Timestamp.now()));
                                         } else
                                             Toast.makeText(getApplicationContext(), task.getException() + "", Toast.LENGTH_SHORT).show();
                                     }
@@ -151,16 +176,16 @@ public class UploadUtil extends Worker {
                         nM.add(new contentModel(fileData[3], uri.toString(), Timestamp.now()));
                         Map<String, Object> chapter = new HashMap<>();
                         chapter.put("CHAPTER", fileData[2]);
-                        chapter.put("TEACHER_ID",userEmail);
+                        chapter.put("TEACHER_ID", userPhone);
                         chapter.put(fileData[4], nM);
 
-                        collectionReference.document(userEmail + Timestamp.now().toDate())
+                        collectionReference.document(userPhone + Timestamp.now().toDate())
                                 .set(chapter)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
+                                            addToRECENTS(new contentModel(fileData[3], uri.toString(), Timestamp.now()));
                                         } else
                                             Toast.makeText(getApplicationContext(), task.getException() + "", Toast.LENGTH_SHORT).show();
                                     }
