@@ -164,7 +164,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         viewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mainDashBoardTeacher.this, TeacherProfile.class));
+                startActivity(new Intent(mainDashBoardTeacher.this, ViewTeacherProfile.class));
             }
         });
     }

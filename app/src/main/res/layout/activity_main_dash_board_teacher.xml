@@ -154,7 +154,7 @@
 
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
-                android:textColor="#ffffff"
+                android:textColor="@color/color5"
                 android:textSize="20sp"
                 android:fontFamily="@font/poiret_one"
                 android:text="Recent Subscribers"
@@ -182,7 +182,7 @@
                     android:layout_marginBottom="5dp"
                     android:fontFamily="@font/poiret_one"
                     android:text="Recent Uploads"
-                    android:textColor="#ffffff"
+                    android:textColor="@color/color5"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"

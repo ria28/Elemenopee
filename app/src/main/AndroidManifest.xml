@@ -25,9 +25,8 @@
         <activity android:name=".PaymentActivity"></activity>
         <activity android:name=".Teacher.TeacherProfile" />
         <activity android:name=".Student.StudentProfile.StudentProfileActivity" />
-        <activity android:name=".Student.StuCommPanel.Stu_main_comm_screen" />
 
-        <activity android:name=".Student.StudentProfile.StudentProfileActivity"/>
+
         <activity android:name=".Student.Community.MainCommScreen" />
 
         <activity android:name=".Student.Lecture.Subject.ViewVideoListActivity" />
