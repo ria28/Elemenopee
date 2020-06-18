@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -114,8 +113,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             if (s.toString().length() == 10) {
-                Log.d("TAG", "onTextChanged: "+ s);
-                sendOtp(s.toString());
+                checkUserPresent("+91" + s.toString());
                 liPb.setVisibility(View.VISIBLE);
             } else {
                 // TODO: 6/10/2020 Do Nothing Here
@@ -136,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             if (s.toString().length() == 10) {
-                Log.d("TAG", "onTextChanged: pnSuTw " + s);
                 sendOtpSu(s.toString());
                 suPb.setVisibility(View.VISIBLE);
             }
@@ -148,9 +145,9 @@ public class MainActivity extends AppCompatActivity {
     };
 
     void sendOtp(String phoneNumber) {
-        number = "+91" + phoneNumber;
+        number = phoneNumber;
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                "+91" + phoneNumber,
+                phoneNumber,
                 60,
                 TimeUnit.SECONDS,
                 this,
@@ -337,6 +334,31 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "OTP sent", Toast.LENGTH_SHORT).show();
         }
     };
+
+    void checkUserPresent(final String userId) {
+        db.collection("STUDENTS").document(userId).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful() && task.getResult().exists()) {
+                            sendOtp(userId);
+                        } else {
+                            db.collection("TEACHERS").document(userId).get()
+                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful() && task.getResult().exists()) {
+                                                sendOtp(userId);
+                                            } else {
+                                                Toast.makeText(MainActivity.this, "User Don't Exists", Toast.LENGTH_SHORT).show();
+                                                liPb.setVisibility(View.INVISIBLE);
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
+    }
 }
 
 
