@@ -4,9 +4,9 @@
     <Transition
         app:constraintSetEnd="@id/end"
         app:constraintSetStart="@id/start">
+      
         <OnSwipe app:dragDirection="dragRight"
             app:touchAnchorId="@id/mainDashBoardConstraint"/>
-
     </Transition>
 
     <ConstraintSet android:id="@+id/start">
@@ -37,7 +37,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-        
+
         <Constraint
             android:id="@id/side_bar"
             android:layout_width="0sp"

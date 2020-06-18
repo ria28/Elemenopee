@@ -26,7 +26,7 @@
             android:id="@+id/mainDashBoardConstraint"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@mipmap/background12">
+            android:background="@mipmap/n_back">
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottieAnimationView"
@@ -190,9 +190,10 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
-                android:textColor="#ffffff"
+                android:textColor="@color/color5"
                 android:textSize="20sp"
                 android:fontFamily="@font/poiret_one"
                 android:text="Recent Subscribers"
@@ -220,7 +221,7 @@
                     android:layout_marginBottom="5dp"
                     android:fontFamily="@font/poiret_one"
                     android:text="Recent Uploads"
-                    android:textColor="#ffffff"
+                    android:textColor="@color/color5"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"

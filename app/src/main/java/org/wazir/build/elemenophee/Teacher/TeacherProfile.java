@@ -69,7 +69,7 @@ public class TeacherProfile extends AppCompatActivity implements ProfilePicBotto
             @Override
             public void onClick(View v) {
                 ProfilePicBottomModalSheet sheet = new ProfilePicBottomModalSheet();
-                sheet.show(getSupportFragmentManager(),"PROFILE_PIC_ACTIONS_BOTTOM_SHEET");
+                sheet.show(getSupportFragmentManager(), "PROFILE_PIC_ACTIONS_BOTTOM_SHEET");
             }
         });
 
@@ -90,20 +90,20 @@ public class TeacherProfile extends AppCompatActivity implements ProfilePicBotto
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
         saveProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!name.getText().toString().equals(obj.getName()) && !name.getText().toString().isEmpty()){
+                if (!name.getText().toString().equals(obj.getName()) && !name.getText().toString().isEmpty()) {
                     profileRef.document(user.getPhoneNumber()).update("name", name.getText().toString());
                 }
-                if(!school.getText().toString().equals(obj.getSchool()) && !school.getText().toString().isEmpty()){
+                if (!school.getText().toString().equals(obj.getSchool()) && !school.getText().toString().isEmpty()) {
                     profileRef.document(user.getPhoneNumber()).update("school", school.getText().toString());
                 }
-                if(!bio.getText().toString().equals(obj.getName()) && !bio.getText().toString().isEmpty()){
+                if (!bio.getText().toString().equals(obj.getName()) && !bio.getText().toString().isEmpty()) {
                     profileRef.document(user.getPhoneNumber()).update("bio", bio.getText().toString());
                 }
                 finish();
@@ -125,12 +125,12 @@ public class TeacherProfile extends AppCompatActivity implements ProfilePicBotto
 
     @Override
     public void BtnClicked(String BtnText) {
-        switch (BtnText){
+        switch (BtnText) {
             case "ViewPic":
                 final AlertDialog.Builder alert = new AlertDialog.Builder(TeacherProfile.this);
                 final View view1 = LayoutInflater.from(TeacherProfile.this).inflate(R.layout.view_profile_pic_dialog, null);
                 ImageView profilePic = view1.findViewById(R.id.view_profile_pic_dialog);
-                if(obj.getProPicURL() == null)
+                if (obj.getProPicURL() == null)
                     Glide.with(TeacherProfile.this).load(getDrawable(R.drawable.profile_dummy)).into(profilePic);
                 else
                     Glide.with(TeacherProfile.this).load(obj.getProPicURL()).into(profilePic);
