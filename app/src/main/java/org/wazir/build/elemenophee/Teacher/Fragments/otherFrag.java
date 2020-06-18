@@ -12,27 +12,26 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.wazir.build.elemenophee.R;
-import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
 
-import static org.wazir.build.elemenophee.Teacher.videoPlayingActivity.pdfList;
+import static org.wazir.build.elemenophee.Teacher.videoPlayingActivity.otherList;
 
-public class notesFrag extends Fragment {
+public class otherFrag extends Fragment {
 
     boolean fromRecent;
     RecyclerView recyclerView;
-    notesRecyclerAdapter notesAdapter;
+    otherAdapter otherAdapter;
     String toastMessage;
 
-    public notesFrag(boolean fromRecent){
+    public otherFrag(boolean fromRecent){
         this.fromRecent = fromRecent;
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.notes_frag_layout, container, false);
-        recyclerView = view.findViewById(R.id.suggestedNotesRecycler);
+        View view = inflater.inflate(R.layout.other_frag_layout, container, false);
+        recyclerView = view.findViewById(R.id.suggestedOtherRecycler);
         return view;
     }
 
@@ -41,7 +40,7 @@ public class notesFrag extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         toastMessage = fromRecent ? "No Recent Files":"No Files found Related to this Chapter";
-        if (pdfList.size() != 0)
+        if (otherList.size() != 0)
             setUpRecyclerView();
         else {
             Toast.makeText(getActivity().getApplicationContext(), toastMessage, Toast.LENGTH_SHORT).show();
@@ -50,15 +49,12 @@ public class notesFrag extends Fragment {
 
     private void setUpRecyclerView() {
 
-        notesAdapter = new notesRecyclerAdapter(getContext(), pdfList);
+        otherAdapter = new otherAdapter(getContext(), otherList);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.hasFixedSize();
-        recyclerView.setAdapter(notesAdapter);
+        recyclerView.setAdapter(otherAdapter);
     }
-
 }
-
-

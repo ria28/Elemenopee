@@ -17,6 +17,7 @@ import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Teacher.adapter.videoRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.videoPlayingActivity;
 
+import static org.wazir.build.elemenophee.Teacher.videoPlayingActivity.otherList;
 import static org.wazir.build.elemenophee.Teacher.videoPlayingActivity.pdfList;
 import static org.wazir.build.elemenophee.Teacher.videoPlayingActivity.videoList;
 
@@ -74,6 +75,8 @@ public class videoFrag extends Fragment implements videoRecyclerAdapter.onLayout
             intent.putExtra("VIDEO_LINK", videoList.get(i).getFileUrl());
             intent.putExtra("VIDEO_LIST", videoList);
             intent.putExtra("PDF_LIST", pdfList);
+            intent.putExtra("OTHER_LIST", otherList);
+            intent.putExtra("IS_TEACHER", true);
             intent.putExtra("PLAYING_VIDEO_POSITION",i);
             startActivity(intent);
             getActivity().finish();
