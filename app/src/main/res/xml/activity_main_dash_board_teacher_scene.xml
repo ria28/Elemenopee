@@ -3,13 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <Transition
         app:constraintSetEnd="@id/end"
-        app:constraintSetStart="@+id/start"
-        app:duration="1000"
-        app:motionInterpolator="easeIn">
-        <OnSwipe
-            app:dragDirection="dragRight"
-            app:touchAnchorId="@id/mainDashBoardConstraint" />
-
+        app:constraintSetStart="@id/start">
+      
+        <OnSwipe app:dragDirection="dragRight"
+            app:touchAnchorId="@id/mainDashBoardConstraint"/>
     </Transition>
 
     <ConstraintSet android:id="@+id/start">

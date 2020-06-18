@@ -84,23 +84,23 @@ public class PaymentActivity extends AppCompatActivity implements PaymentResultL
     public void onPaymentSuccess(String s) {
         Toast.makeText(this, "Payment successfully done! " +s, Toast.LENGTH_SHORT).show();
 
-        TeacherRef.document(user.getPhoneNumber())
-                .collection("SUBSCRIBERS")
-                .document("Amit Dubey+918750348232")//TODO:place Student ID here
-                .set(new SubscribedTOmodel("Amit Dubey+918750348232"))//TODO:add Student data acoordingly
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getApplicationContext(),"Subscribed To Amit Dubey",Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
+//        TeacherRef.document(user.getPhoneNumber())
+//                .collection("SUBSCRIBERS")
+//                .document("Amit Dubey+918750348232")//TODO:place Student ID here
+//                .set(new SubscribedTOmodel("Amit Dubey+918750348232"))//TODO:add Student data acoordingly
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Toast.makeText(getApplicationContext(),"Subscribed To Amit Dubey",Toast.LENGTH_SHORT).show();
+//                        finish();
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+//                finish();
+//            }
+//        });
 //        StudentRef.document(user.getPhoneNumber())
 //                .collection("SUBSCRIBED_TO")
 //                .document("Amit Dubey+918750348232")//TODO:place Teacher Id here
