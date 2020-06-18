@@ -36,7 +36,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Teacher.UploadActivity" />
         <activity android:name=".SignUpUserActivity" />
         <activity
             android:name=".IntLogSigScreens.OnboardingActivity"

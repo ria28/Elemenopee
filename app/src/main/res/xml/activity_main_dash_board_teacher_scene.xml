@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <Transition
         app:constraintSetEnd="@id/end"
-        app:constraintSetStart="@+id/start">
+        app:constraintSetStart="@id/start">
         <OnSwipe app:dragDirection="dragRight"
             app:touchAnchorId="@id/mainDashBoardConstraint"/>
 

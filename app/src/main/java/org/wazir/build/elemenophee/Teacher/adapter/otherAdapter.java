@@ -26,16 +26,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
-public class notesRecyclerAdapter extends RecyclerView.Adapter<notesRecyclerAdapter.ViewHolder> {
+public class otherAdapter extends RecyclerView.Adapter<otherAdapter.ViewHolder> {
 
 
     Context context;
-    ArrayList<contentModel> pdfList;
+    ArrayList<contentModel> otherList;
 
 
-    public notesRecyclerAdapter(Context context, ArrayList<contentModel> pdfList) {
+    public otherAdapter(Context context, ArrayList<contentModel> otherList) {
         this.context = context;
-        this.pdfList = pdfList;
+        this.otherList = otherList;
     }
 
 
@@ -51,18 +51,18 @@ public class notesRecyclerAdapter extends RecyclerView.Adapter<notesRecyclerAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         SimpleDateFormat sfd = new SimpleDateFormat("dd-MM-yyyy \nHH:mm");
 
-        if (pdfList.size() > 0) {
-            holder.title.setText(pdfList.get(position).getFileTitle());
-            holder.timeStamp.setText(sfd.format(pdfList.get(position).getTimeStamp().toDate()));
+        if (otherList.size() > 0) {
+            holder.title.setText(otherList.get(position).getFileTitle());
+            holder.timeStamp.setText(sfd.format(otherList.get(position).getTimeStamp().toDate()));
             holder.image.setImageResource(R.drawable.classroom);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String mime = pdfList.get(position).getMime();
+                    String mime = otherList.get(position).getMime();
 
-                    File notesDirectory = new File(Environment.getExternalStorageDirectory() + "/Elemenophee/Notes");
-                    File outputFile = new File(notesDirectory,pdfList.get(position).getFileTitle()+"."+mime.substring(mime.lastIndexOf("/") + 1));
-                    Toast.makeText(context,outputFile+"",Toast.LENGTH_SHORT).show();
+                    File notesDirectory = new File(Environment.getExternalStorageDirectory().toString() + "/Elemenophee/Notes");
+                    File outputFile = new File(notesDirectory,otherList.get(position).getFileTitle()+"."+mime.substring(mime.lastIndexOf("/") + 1) );
+                    Toast.makeText(context,MimeTypeMap.getFileExtensionFromUrl(otherList.get(position).getFileUrl())+"",Toast.LENGTH_SHORT).show();
                     if (!notesDirectory.exists()) {
                         notesDirectory.mkdirs();
                     }
@@ -76,8 +76,8 @@ public class notesRecyclerAdapter extends RecyclerView.Adapter<notesRecyclerAdap
 
                     downloadAndStoreNotes downloadAndStore = downloadAndStoreNotes.getInstance(context);
 
-                    downloadAndStore.openFILE(outputFile, pdfList.get(position).getFileUrl()
-                            , pdfList.get(position).getFileTitle(),pdfList.get(position).getMime());
+                    downloadAndStore.openFILE(outputFile, otherList.get(position).getFileUrl()
+                            , otherList.get(position).getFileTitle(),otherList.get(position).getMime());
                 }
             });
         }
@@ -85,7 +85,7 @@ public class notesRecyclerAdapter extends RecyclerView.Adapter<notesRecyclerAdap
 
     @Override
     public int getItemCount() {
-        return pdfList.size();
+        return otherList.size();
     }
 
 

@@ -133,7 +133,7 @@ public class TeacherProfile extends AppCompatActivity implements ProfilePicBotto
                 if(obj.getProPicURL() == null)
                     Glide.with(TeacherProfile.this).load(getDrawable(R.drawable.profile_dummy)).into(profilePic);
                 else
-                    Glide.with(TeacherProfile.this).load(getDrawable(obj.getProPicURL())).into(profilePic);
+                    Glide.with(TeacherProfile.this).load(obj.getProPicURL()).into(profilePic);
 
                 profilePic.setImageDrawable(getDrawable(R.drawable.img_intro_4));
                 alert.setView(view1);

@@ -1,8 +1,11 @@
 package org.wazir.build.elemenophee.Teacher;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +40,7 @@ import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
 import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
+import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.videoRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.model.contentModel;
 import org.wazir.build.elemenophee.Utils.PermissionUtil;
@@ -43,32 +48,43 @@ import org.wazir.build.elemenophee.ViewTeacherProfile;
 
 import java.util.ArrayList;
 
-public class mainDashBoardTeacher extends AppCompatActivity implements PermissionUtil.PermissionsCallBack ,videoRecyclerAdapter.onLayoutClick{
+public class mainDashBoardTeacher extends AppCompatActivity implements PermissionUtil.PermissionsCallBack, videoRecyclerAdapter.onLayoutClick {
 
-    ConstraintLayout upload_card;
+    private static final int PICK_VIDEO = 101;
+    private static final int PICK_PDF = 102;
+    private static final int PICK_FILE = 103;
     ConstraintLayout live_lecture_card;
     ConstraintLayout view_upload_card;
+    ImageView uploadVideo, uploadPdf, uploadFile;
     CardView logoutUser;
     CardView viewProfile;
-    TextView name, designation,mainPageName;
+    TextView name, designation, mainPageName;
     ArrayList<String> classes, subjects;
     FirebaseAuth mAuth;
     RecyclerView recyclerView;
 
+
+
     videoRecyclerAdapter videoAdapter;
+    otherAdapter otherAdapter;
     notesRecyclerAdapter notesAdapter;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private ProgressDialog progress;
+
 
     Spinner FileType;
 
     ArrayList<contentModel> videoList = new ArrayList<>();
     ArrayList<contentModel> pdfList = new ArrayList<>();
+    ArrayList<contentModel> otherList = new ArrayList<>();
+
 
     CollectionReference reference;
 
+    String UploadType;
     ArrayAdapter<String> FileTypeSpinnerViewAdapter;
     ArrayList<String> content = new ArrayList<>();
+    private Uri selectedFilePath;
 
 
     @Override
@@ -88,7 +104,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
 
         content.add("VIDEOS");
         content.add("NOTES");
-
+        content.add("OTHER");
 
         FileTypeSpinnerViewAdapter = new ArrayAdapter<>(mainDashBoardTeacher.this,
                 android.R.layout.simple_spinner_dropdown_item, content);
@@ -104,9 +120,11 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
 
         videoAdapter = new videoRecyclerAdapter(mainDashBoardTeacher.this, false, videoList, this, -1);
         notesAdapter = new notesRecyclerAdapter(mainDashBoardTeacher.this, pdfList);
+        otherAdapter = new otherAdapter(mainDashBoardTeacher.this,otherList);
 
         loadData("VIDEOS");
         loadData("NOTES");
+        loadData("OTHER");
 
         FileType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -127,20 +145,66 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         });
 
 
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.hasFixedSize();
         setUpRecyclerView();
 
-        upload_card.setOnClickListener(new View.OnClickListener() {
+
+        uploadVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mainDashBoardTeacher.this, UploadActivity.class);
-                intent.putExtra("CLASSES", classes);
-                intent.putExtra("SUBS", subjects);
-                startActivity(intent);
+                UploadType = "VIDEOS";
+                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                getIntent.setType("video/*");
+
+
+                @SuppressLint("IntentReset")
+                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                pickIntent.setType("video/*");
+
+                Intent chooserIntent = Intent.createChooser(getIntent, "Select Video");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+
+                startActivityForResult(chooserIntent, PICK_VIDEO);
+            }
+        });
+        uploadPdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UploadType = "NOTES";
+                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                getIntent.setType("application/pdf");
+
+
+                @SuppressLint("IntentReset")
+                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                pickIntent.setType("application/pdf");
+
+                Intent chooserIntent = Intent.createChooser(getIntent, "Select PDF");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+
+                startActivityForResult(chooserIntent, PICK_PDF);
+            }
+        });
+        uploadFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                UploadType = "OTHER";
+                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                getIntent.setType("*/*");
+
+
+                @SuppressLint("IntentReset")
+                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                pickIntent.setType("*/*");
+
+                Intent chooserIntent = Intent.createChooser(getIntent, "Select PDF");
+                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+
+                startActivityForResult(chooserIntent, PICK_FILE);
             }
         });
 
@@ -164,7 +228,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         viewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mainDashBoardTeacher.this, TeacherProfile.class));
+                startActivity(new Intent(mainDashBoardTeacher.this, ViewTeacherProfile.class));
             }
         });
     }
@@ -190,15 +254,21 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                         videoList.add(temp);
                         videoAdapter.notifyDataSetChanged();
                     }
-                    Log.d("TAG", "onSuccess: " + videoList.size());
-                } else {
+                } else if(type == "NOTES"){
                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
                         contentModel temp = doc.toObject(contentModel.class);
                         pdfList.add(temp);
                         notesAdapter.notifyDataSetChanged();
                     }
                     progress.dismiss();
-                    Log.d("TAG", "onSuccess: " + pdfList.size());
+                }
+                else if(type == "OTHER"){
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        contentModel temp = doc.toObject(contentModel.class);
+                        otherList.add(temp);
+                        otherAdapter.notifyDataSetChanged();
+                    }
+                    progress.dismiss();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -238,6 +308,27 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == PICK_VIDEO) {
+                selectedFilePath = data.getData();
+            } else if (requestCode == PICK_PDF) {
+                selectedFilePath = data.getData();
+            } else if (requestCode == PICK_FILE) {
+                selectedFilePath = data.getData();
+            }
+            UploadDialog();
+        }
+    }
+
+    private void UploadDialog() {
+        uploadDialog dialog = new uploadDialog(mainDashBoardTeacher.this
+                ,UploadType,classes,subjects,selectedFilePath,user);
+        dialog.openDialog();
+    }
+
     void init() {
         mainPageName = findViewById(R.id.mainDashBoardTeacherName);
         logoutUser = findViewById(R.id.logout);
@@ -245,11 +336,13 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         name = findViewById(R.id.textView22);
         designation = findViewById(R.id.textView23);
         mAuth = FirebaseAuth.getInstance();
-        upload_card = findViewById(R.id.uploadCardTeacher);
         live_lecture_card = findViewById(R.id.LiveCardTeacher);
         view_upload_card = findViewById(R.id.viewUploadCardTeacher);
         FileType = findViewById(R.id.mainDashTeacherRecentSpinner);
         recyclerView = findViewById(R.id.recent_uploads_recycler);
+        uploadVideo = findViewById(R.id.uploadVideo);
+        uploadPdf = findViewById(R.id.uploadPdf);
+        uploadFile = findViewById(R.id.uploadFile);
 
     }
 
@@ -290,8 +383,11 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         intent.putExtra("VIDEO_LINK", videoList.get(i).getFileUrl());
         intent.putExtra("VIDEO_LIST", videoList);
         intent.putExtra("PDF_LIST", pdfList);
+        intent.putExtra("OTHER_LIST", otherList);
         intent.putExtra("FROM_RECENT", true);
-        Log.d("TAG", "onClicked: "+videoList.get(i).getFileTitle());
+        intent.putExtra("IS_TEACHER", true);
+        Log.d("TAG", "onClicked: " + videoList.get(i).getFileTitle());
         startActivity(intent);
     }
 }
+
