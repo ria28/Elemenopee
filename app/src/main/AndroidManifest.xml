@@ -8,20 +8,24 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <uses-feature android:name="android.hardware.camera"
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="false" />
 
-
     <application
-        android:hardwareAccelerated="true"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Student.StudentProfile.StudentProfileActivity"></activity>
+        <activity android:name=".Student.StudentSupport.Chat121.MessageActivity"></activity>
+        <activity android:name=".Student.StudentSupport.ChatGroup.GroupChatActivity" />
+        <activity android:name=".Student.StudentSupport.MainChatPanel.ChatMainActivity" />
+        <activity android:name=".Student.StudentSubscription.StudentSubsActivity" />
+        <activity android:name=".Student.StudentProfile.StudentProfileActivity" />
         <activity android:name=".Student.StuCommPanel.Stu_main_comm_screen" />
         <activity android:name=".Student.Lecture.Subject.ViewVideoListActivity" />
         <activity android:name=".Student.Lecture.Subject.ViewVideosChapActivity" />
@@ -47,7 +51,6 @@
         <activity android:name=".Student.Lecture.Subject.LectureActivity" />
         <activity android:name=".Student.StudentActivity.ClassRoomActivity" />
         <activity android:name=".Student.Videos.VideoActivity" />
-        <activity android:name=".Student.StuProfile.ProfileMainActivity" />
         <activity android:name=".Student.StuProfile.EditStuProfileActivity" />
         <activity
             android:name=".MainActivity"
@@ -76,9 +79,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_path" />
         </provider>
-
-
     </application>
-
 
 </manifest>
