@@ -13,7 +13,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:fadingEdgeLength="5sp"
-        app:cardBackgroundColor="@color/color1"
+        app:cardBackgroundColor="@color/softBlue"
         app:cardCornerRadius="11sp"
         app:cardElevation="7sp"
         app:layout_constraintEnd_toEndOf="parent"

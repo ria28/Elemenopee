@@ -20,10 +20,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -47,6 +50,8 @@ public class TeacherProfile extends AppCompatActivity implements ProfilePicBotto
     CardView changeEmail;
     ImageView saveProfile;
     TeacherObj obj;
+    LoadingPopup loading;
+    FirebaseAuth mAuth;
 
     private StorageReference ref;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -99,6 +104,18 @@ public class TeacherProfile extends AppCompatActivity implements ProfilePicBotto
             public void onClick(View v) {
                 if (!name.getText().toString().equals(obj.getName()) && !name.getText().toString().isEmpty()) {
                     profileRef.document(user.getPhoneNumber()).update("name", name.getText().toString());
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(name.getText().toString())
+                            .build();
+                    mAuth.getCurrentUser().updateProfile(profileUpdates)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(getApplicationContext(), "Name Updated", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                 }
                 if (!school.getText().toString().equals(obj.getSchool()) && !school.getText().toString().isEmpty()) {
                     profileRef.document(user.getPhoneNumber()).update("school", school.getText().toString());
@@ -121,6 +138,8 @@ public class TeacherProfile extends AppCompatActivity implements ProfilePicBotto
         changeEmail = findViewById(R.id.ChangeEmail);
         saveProfile = findViewById(R.id.SaveProfile);
         loadingPopup = new LoadingPopup(TeacherProfile.this);
+        loading = new LoadingPopup(this);
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -147,7 +166,6 @@ public class TeacherProfile extends AppCompatActivity implements ProfilePicBotto
             case "RemovePic":
                 removePic();
                 break;
-
         }
     }
 
@@ -182,7 +200,6 @@ public class TeacherProfile extends AppCompatActivity implements ProfilePicBotto
         Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
         getIntent.setType("image/*");
 
-
         @SuppressLint("IntentReset")
         Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         pickIntent.setType("image/*");
@@ -199,6 +216,7 @@ public class TeacherProfile extends AppCompatActivity implements ProfilePicBotto
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK && requestCode == PICK_PIC) {
+            loading.dialogRaise();
             selectedPicPath = data.getData();
             ref = FirebaseStorage.getInstance("gs://elemenophee-a0ac5.appspot.com/").getReference();
             final StorageReference reference = ref.child("PROFILE_PICTURES/" + user.getPhoneNumber());
@@ -208,10 +226,22 @@ public class TeacherProfile extends AppCompatActivity implements ProfilePicBotto
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
-                        public void onSuccess(Uri uri) {
+                        public void onSuccess(final Uri uri) {
                             profileRef.document(user.getPhoneNumber()).update("proPicURL", uri.toString());
-
-                            Glide.with(TeacherProfile.this).load(uri).into(TeacherProfilePic);
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setPhotoUri(uri)
+                                    .build();
+                            user.updateProfile(profileUpdates)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Glide.with(TeacherProfile.this).load(uri.toString()).into(TeacherProfilePic);
+                                                loading.dialogDismiss();
+                                            }
+                                        }
+                                    });
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override

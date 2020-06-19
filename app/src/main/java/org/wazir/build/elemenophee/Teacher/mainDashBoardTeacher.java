@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +24,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -44,25 +44,26 @@ import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.videoRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.model.contentModel;
 import org.wazir.build.elemenophee.Utils.PermissionUtil;
-import org.wazir.build.elemenophee.ViewTeacherProfile;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class mainDashBoardTeacher extends AppCompatActivity implements PermissionUtil.PermissionsCallBack, videoRecyclerAdapter.onLayoutClick {
 
     private static final int PICK_VIDEO = 101;
     private static final int PICK_PDF = 102;
     private static final int PICK_FILE = 103;
-    ConstraintLayout live_lecture_card;
+    CardView live_lecture_card;
     ConstraintLayout view_upload_card;
-    ImageView uploadVideo, uploadPdf, uploadFile;
+    CardView uploadVideo, uploadPdf, uploadFile;
     CardView logoutUser;
     CardView viewProfile;
     TextView name, designation, mainPageName;
     ArrayList<String> classes, subjects;
     FirebaseAuth mAuth;
     RecyclerView recyclerView;
-
+    CircleImageView profilePic,proPic2;
 
 
     videoRecyclerAdapter videoAdapter;
@@ -101,6 +102,8 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
 
         init();
         getTeacherInfo();
+        Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(profilePic);
+        Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(proPic2);
 
         content.add("VIDEOS");
         content.add("NOTES");
@@ -228,7 +231,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         viewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mainDashBoardTeacher.this, ViewTeacherProfile.class));
+                startActivity(new Intent(mainDashBoardTeacher.this, TeacherProfile.class));
             }
         });
     }
@@ -248,27 +251,30 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if (type == "VIDEOS") {
-                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        contentModel temp = doc.toObject(contentModel.class);
-                        videoList.add(temp);
-                        videoAdapter.notifyDataSetChanged();
-                    }
-                } else if(type == "NOTES"){
-                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        contentModel temp = doc.toObject(contentModel.class);
-                        pdfList.add(temp);
-                        notesAdapter.notifyDataSetChanged();
-                    }
-                    progress.dismiss();
-                }
-                else if(type == "OTHER"){
-                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        contentModel temp = doc.toObject(contentModel.class);
-                        otherList.add(temp);
-                        otherAdapter.notifyDataSetChanged();
-                    }
-                    progress.dismiss();
+                switch (type) {
+                    case "VIDEOS":
+                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                            contentModel temp = doc.toObject(contentModel.class);
+                            videoList.add(temp);
+                            videoAdapter.notifyDataSetChanged();
+                        }
+                        break;
+                    case "NOTES":
+                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                            contentModel temp = doc.toObject(contentModel.class);
+                            pdfList.add(temp);
+                            notesAdapter.notifyDataSetChanged();
+                        }
+                        progress.dismiss();
+                        break;
+                    case "OTHER":
+                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                            contentModel temp = doc.toObject(contentModel.class);
+                            otherList.add(temp);
+                            otherAdapter.notifyDataSetChanged();
+                        }
+                        progress.dismiss();
+                        break;
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -343,7 +349,8 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         uploadVideo = findViewById(R.id.uploadVideo);
         uploadPdf = findViewById(R.id.uploadPdf);
         uploadFile = findViewById(R.id.uploadFile);
-
+        profilePic = findViewById(R.id.id_user_profile);
+        proPic2 = findViewById(R.id.circleImageView);
     }
 
     void getTeacherInfo() {
@@ -363,7 +370,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                         if (task.isSuccessful() && task.getResult().exists()) {
                             TeacherObj obj = task.getResult().toObject(TeacherObj.class);
                             // TODO: 6/7/2020 Here just Take the Classes and Subjects
-                            mainPageName.setText("Hello\n"+ obj.getName());
+                            mainPageName.setText(obj.getName());
                             name.setText(obj.getName());
                             designation.setText("TEACHER");
 
