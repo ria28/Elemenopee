@@ -5,9 +5,7 @@
         app:constraintSetEnd="@id/end"
         app:constraintSetStart="@id/start"
         app:duration="1000">
-        <OnSwipe
-            app:dragDirection="dragRight"
-            app:touchRegionId="@id/mainDashBoardConstraint" />
+        <OnClick app:targetId="@id/lottieAnimationView" />
     </Transition>
 
     <ConstraintSet android:id="@+id/start">

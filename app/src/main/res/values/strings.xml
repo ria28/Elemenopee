@@ -2,6 +2,29 @@
     <string name="app_name">elemenophee</string>
     <string name="maih_exp_title">Elemenophee promises its customers to get best of the best study material , teaching guidance so that its students not only excel in there carrier but also in their life as a whole</string>
     <string name="app_name_title">elemenophee</string>
+    <string-array name="classes_array">
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+    <string-array name="subs_array">
+        <item>English</item>
+        <item>Hindi</item>
+        <item>Maths</item>
+        <item>Chemistry</item>
+        <item>Physics</item>
+        <item>Social Sc.</item>
+        <item>Geography</item>
+        <item>Biology</item>
+        <item>Accounts</item>
+        <item>B. St.</item>
+        <item>Economics</item>
+    </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
