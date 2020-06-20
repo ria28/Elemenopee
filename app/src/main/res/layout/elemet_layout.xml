@@ -44,7 +44,7 @@
             android:id="@+id/id_intro_img"
             android:layout_width="match_parent"
             android:layout_height="300sp"
-            app:srcCompat="@color/color1" />
+            app:srcCompat="@color/softBlue" />
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView

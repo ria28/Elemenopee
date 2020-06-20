@@ -25,6 +25,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
+import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.videoRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.model.contentModel;
 
@@ -37,6 +38,7 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
     RecyclerView recyclerView;
     videoRecyclerAdapter videoAdapter;
     notesRecyclerAdapter notesAdapter;
+    otherAdapter otherAdapter;
     CollectionReference reference;
 
     Spinner viewClass, viewSubject, viewChapter, viewContentType;
@@ -49,6 +51,7 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
 
     ArrayList<contentModel> videoList = new ArrayList<>();
     ArrayList<contentModel> pdfList = new ArrayList<>();
+    ArrayList<contentModel> otherList = new ArrayList<>();
 
 
     ArrayAdapter<String> chapterSpinnerViewAdapter;
@@ -68,16 +71,13 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
         viewChapter = findViewById(R.id.viewUploadChapterSpinner);
         viewContentType = findViewById(R.id.viewUploadContentTypeSpinner);
 
-        Class.add("Class 6");
-        Class.add("Class 7");
-        Class.add("Class 8");
-        Class.add("Class 9");
-        Subject.add("English");
-        Subject.add("Maths");
-        Subject.add("Social Science");
+        Intent intent = getIntent();
+        Class = intent.getStringArrayListExtra("CLASSES");
+        Subject = intent.getStringArrayListExtra("SUBS");
         Chapter.add("SELECT");
         Content.add("VIDEOS");
         Content.add("NOTES");
+        Content.add("OTHER");
 
         classSpinnerViewAdapter = new ArrayAdapter<String>(viewUploadActivity.this,
                 android.R.layout.simple_spinner_dropdown_item, Class);
@@ -88,15 +88,17 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
         contentSpinnerViewAdapter = new ArrayAdapter<String>(viewUploadActivity.this,
                 android.R.layout.simple_spinner_dropdown_item, Content);
 
-
-        viewClass.setAdapter(classSpinnerViewAdapter);
-        viewSubject.setAdapter(subjectSpinnerViewAdapter);
-        viewChapter.setAdapter(chapterSpinnerViewAdapter);
-        viewContentType.setAdapter(contentSpinnerViewAdapter);
+        if (Class != null && Subject != null) {
+            viewClass.setAdapter(classSpinnerViewAdapter);
+            viewSubject.setAdapter(subjectSpinnerViewAdapter);
+            viewChapter.setAdapter(chapterSpinnerViewAdapter);
+            viewContentType.setAdapter(contentSpinnerViewAdapter);
+        }
 
 
         videoAdapter = new videoRecyclerAdapter(viewUploadActivity.this, false, videoList, this, -1);
         notesAdapter = new notesRecyclerAdapter(viewUploadActivity.this, pdfList);
+        otherAdapter = new otherAdapter(viewUploadActivity.this, otherList);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);
@@ -167,7 +169,7 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
                     "/CONTENT"
             );
             reference
-                    .whereEqualTo("TEACHER_ID", user.getEmail())
+                    .whereEqualTo("TEACHER_ID", user.getPhoneNumber())
                     .whereEqualTo("CHAPTER", viewChapter.getSelectedItem().toString())
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -176,12 +178,13 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
                             if (task.isSuccessful()) {
                                 videoList.clear();
                                 pdfList.clear();
+                                otherList.clear();
                                 if (!task.getResult().isEmpty()) {
                                     for (QueryDocumentSnapshot doc : task.getResult()) {
                                         if (doc.get("VIDEOS") != null) {
                                             for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("VIDEOS")) {
                                                 videoList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                        , (Timestamp) obj.get("timeStamp")));
+                                                        , (Timestamp) obj.get("timeStamp"),obj.get("privacy")+"",obj.get("teacherID")+"",obj.get("mime")+""));
                                             }
                                             videoAdapter.notifyDataSetChanged();
                                         }
@@ -190,9 +193,18 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
                                         if (doc.get("NOTES") != null) {
                                             for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("NOTES")) {
                                                 pdfList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                        , (Timestamp) obj.get("timeStamp")));
+                                                        , (Timestamp) obj.get("timeStamp"),obj.get("privacy")+"",obj.get("teacherID")+"",obj.get("mime")+""));
                                             }
                                             notesAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                                        if (doc.get("OTHER") != null) {
+                                            for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("OTHER")) {
+                                                otherList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
+                                                        , (Timestamp) obj.get("timeStamp"),obj.get("privacy")+"",obj.get("teacherID")+"",obj.get("mime")+""));
+                                            }
+                                            otherAdapter.notifyDataSetChanged();
                                         }
                                     }
 
@@ -200,12 +212,15 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
                                     Toast.makeText(getApplicationContext(), "No Data found Related to this Chapter", Toast.LENGTH_SHORT).show();
                                     videoAdapter.notifyDataSetChanged();
                                     notesAdapter.notifyDataSetChanged();
+                                    otherAdapter.notifyDataSetChanged();
                                 }
 
                                 if (contentType.equalsIgnoreCase("VIDEOS"))
                                     recyclerView.setAdapter(videoAdapter);
-                                else
+                                else if(contentType.equalsIgnoreCase("NOTES"))
                                     recyclerView.setAdapter(notesAdapter);
+                                else
+                                    recyclerView.setAdapter(otherAdapter);
                             } else
                                 Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -213,8 +228,10 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
         } else {
             pdfList.clear();
             videoList.clear();
+            otherList.clear();
             videoAdapter.notifyDataSetChanged();
             notesAdapter.notifyDataSetChanged();
+            otherAdapter.notifyDataSetChanged();
         }
 
     }
@@ -229,7 +246,7 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
         );
 
         reference
-                .whereEqualTo("TEACHER_ID", user.getEmail())
+                .whereEqualTo("TEACHER_ID", user.getPhoneNumber())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -258,8 +275,6 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
             recyclerView.setAdapter(videoAdapter);
         else
             recyclerView.setAdapter(notesAdapter);
-
-
     }
 
     @Override
@@ -267,7 +282,10 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
         Intent intent = new Intent(viewUploadActivity.this, videoPlayingActivity.class);
         intent.putExtra("VIDEO_LINK", videoList.get(i).getFileUrl());
         intent.putExtra("VIDEO_LIST", videoList);
+        intent.putExtra("OTHER_LIST", otherList);
         intent.putExtra("PDF_LIST", pdfList);
+        intent.putExtra("IS_TEACHER", true);
+        intent.putExtra("FROM_RECENT",false);
         startActivity(intent);
     }
 }

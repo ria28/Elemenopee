@@ -12,6 +12,7 @@ import android.webkit.MimeTypeMap;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,34 +51,36 @@ public class notesRecyclerAdapter extends RecyclerView.Adapter<notesRecyclerAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         SimpleDateFormat sfd = new SimpleDateFormat("dd-MM-yyyy \nHH:mm");
 
+        if (pdfList.size() > 0) {
+            holder.title.setText(pdfList.get(position).getFileTitle());
+            holder.timeStamp.setText(sfd.format(pdfList.get(position).getTimeStamp().toDate()));
+            holder.image.setImageResource(R.drawable.classroom);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String mime = pdfList.get(position).getMime();
 
-        holder.title.setText(pdfList.get(position).getFileTitle());
-        holder.timeStamp.setText(sfd.format(pdfList.get(position).getTimeStamp().toDate()));
-        holder.image.setImageResource(R.drawable.classroom);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                    File notesDirectory = new File(Environment.getExternalStorageDirectory() + "/Elemenophee/Notes");
+                    File outputFile = new File(notesDirectory,pdfList.get(position).getFileTitle()+"."+mime.substring(mime.lastIndexOf("/") + 1));
+                    Toast.makeText(context,outputFile+"",Toast.LENGTH_SHORT).show();
+                    if (!notesDirectory.exists()) {
+                        notesDirectory.mkdirs();
+                    }
 
-                File notesDirectory = new File(Environment.getExternalStorageDirectory().toString() + "/Elemenophee/Notes");
-                File outputFile = new File(notesDirectory, URLUtil.guessFileName(pdfList.get(position).getFileUrl(), null
-                        , MimeTypeMap.getFileExtensionFromUrl(pdfList.get(position).getFileUrl())));
-                if (!notesDirectory.exists()) {
-                    notesDirectory.mkdirs();
+                    Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+                    } else {
+                        vibrator.vibrate(25);
+                    }
+
+                    downloadAndStoreNotes downloadAndStore = downloadAndStoreNotes.getInstance(context);
+
+                    downloadAndStore.openFILE(outputFile, pdfList.get(position).getFileUrl()
+                            , pdfList.get(position).getFileTitle(),pdfList.get(position).getMime());
                 }
-
-                Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
-                } else {
-                    vibrator.vibrate(25);
-                }
-
-                downloadAndStoreNotes downloadAndStore = downloadAndStoreNotes.getInstance(context);
-
-                downloadAndStore.openPDF(outputFile, pdfList.get(position).getFileUrl()
-                        , pdfList.get(position).getFileTitle());
-            }
-        });
+            });
+        }
     }
 
     @Override

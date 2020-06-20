@@ -1,21 +1,26 @@
 package org.wazir.build.elemenophee.Teacher;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -37,15 +42,24 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Teacher.Fragments.notesFrag;
+import org.wazir.build.elemenophee.Teacher.Fragments.otherFrag;
 import org.wazir.build.elemenophee.Teacher.Fragments.videoFrag;
 import org.wazir.build.elemenophee.Teacher.adapter.playActivity_ViewPagerAdapter;
 import org.wazir.build.elemenophee.Teacher.model.contentModel;
+import org.wazir.build.elemenophee.ViewTeacherProfile;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 
@@ -56,17 +70,23 @@ public class videoPlayingActivity extends AppCompatActivity {
     ImageView fullScreen;
     SimpleExoPlayer simpleExoPlayer;
     ConstraintLayout layout;
+    boolean isTeacher = false;
     boolean fScreen = false;
+    boolean fromRecent;
     MediaSource mediaSource;
 
     ViewPager viewPager;
     TabLayout tabLayout;
 
+    CircleImageView proPic;
+    TextView TeacherName, viewProfile;
+    CardView viewProfileCard;
     int playingVideoPosition = -1;
 
     public String notes_link;
     public static ArrayList<contentModel> videoList;
     public static ArrayList<contentModel> pdfList;
+    public static ArrayList<contentModel> otherList;
 
 
     @Override
@@ -76,12 +96,14 @@ public class videoPlayingActivity extends AppCompatActivity {
 
         notes_link = getIntent().getStringExtra("VIDEO_LINK");
         videoList = getIntent().getParcelableArrayListExtra("VIDEO_LIST");
+        otherList = getIntent().getParcelableArrayListExtra("OTHER_LIST");
         pdfList = getIntent().getParcelableArrayListExtra("PDF_LIST");
-        playingVideoPosition = getIntent().getIntExtra("PLAYING_VIDEO_POSITION",0);
+        isTeacher = getIntent().getBooleanExtra("IS_TEACHER",false);
+        playingVideoPosition = getIntent().getIntExtra("PLAYING_VIDEO_POSITION", 0);
+        fromRecent = getIntent().getBooleanExtra("FROM_RECENT", true);
 
-        Log.d("TAG", "onCreate: "+ videoList.size());
-        Log.d("TAG", "onCreate: " + pdfList.size());
-
+        init();
+        loadTeacherData();
         initVideoPlayer();
 
         viewPager = findViewById(R.id.playActivityViewPager);
@@ -92,16 +114,54 @@ public class videoPlayingActivity extends AppCompatActivity {
         setUpViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
 
+        viewProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String tID = videoList.get(0).getTeacherID();
+                Intent intent=new Intent(videoPlayingActivity.this, ViewTeacherProfile.class);
+                intent.putExtra("TEACHER_ID",tID);
+                startActivity(intent);
+            }
+        });
+
     }
 
-    void initVideoPlayer(){
+    private void loadTeacherData() {
+        CollectionReference reference = FirebaseFirestore.getInstance().collection(
+                "/TEACHERS/"
+        );
+
+        reference
+                .document(videoList.get(playingVideoPosition).getTeacherID())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Glide.with(videoPlayingActivity.this)
+                                .load(documentSnapshot.get("proPicURL"))
+                                .into(proPic);
+                        TeacherName.setText(documentSnapshot.get("name")+"");
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+    }
+
+    void initVideoPlayer() {
         playerview = findViewById(R.id.exo_videoPlayer);
         progressBar = findViewById(R.id.exo_progressBar);
-        fullScreen =findViewById(R.id.bt_fullscreen);
+        fullScreen = findViewById(R.id.bt_fullscreen);
 
 
         //fullScreen Mode
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         //Initiazile LoadController
         LoadControl loadControl = new DefaultLoadControl();
@@ -249,7 +309,8 @@ public class videoPlayingActivity extends AppCompatActivity {
     private void setUpViewPager(ViewPager Pager) {
         playActivity_ViewPagerAdapter adapter = new playActivity_ViewPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         adapter.addFragment(new videoFrag(playingVideoPosition), "Videos");
-        adapter.addFragment(new notesFrag(), "Notes");
+        adapter.addFragment(new notesFrag(fromRecent), "Notes");
+        adapter.addFragment(new otherFrag(fromRecent), "Other");
         Pager.setAdapter(adapter);
     }
 
@@ -276,5 +337,18 @@ public class videoPlayingActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         simpleExoPlayer.release();
+    }
+
+    void init() {
+        proPic = findViewById(R.id.teacherPicVideoPlay);
+        TeacherName = findViewById(R.id.teacherNameVideoPlay);
+        viewProfile = findViewById(R.id.viewTeacherProfileView);
+        viewProfileCard = findViewById(R.id.cardViewProfileVideoPlay);
+
+        if (isTeacher) {
+            viewProfileCard.setVisibility(View.GONE);
+        } else {
+            viewProfileCard.setVisibility(View.VISIBLE);
+        }
     }
 }

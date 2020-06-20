@@ -51,7 +51,7 @@ public class videoRecyclerAdapter extends RecyclerView.Adapter<videoRecyclerAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         SimpleDateFormat sfd = new SimpleDateFormat("dd-MM-yyyy \nHH:mm");
 
-
+        if(videoList.size()>0){
             if (selectedPosition == position) {
                 holder.itemView.setBackgroundColor(Color.parseColor("#F5F5F5"));
                 holder.itemView.setElevation(0);
@@ -65,11 +65,7 @@ public class videoRecyclerAdapter extends RecyclerView.Adapter<videoRecyclerAdap
             Glide.with(context)
                     .load(videoList.get(position).getFileUrl())
                     .into(holder.image);
-//        } else {
-//            holder.title.setText(pdfList.get(position).getFileTitle());
-//            holder.timeStamp.setText(sfd.format(pdfList.get(position).getTimeStamp().toDate()));
-//            holder.image.setImageResource(R.drawable.classroom);
-//        }
+        }
     }
 
     @Override

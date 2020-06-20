@@ -15,6 +15,10 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    repositories {
+        mavenCentral()
+    }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -27,9 +31,8 @@ android {
 dependencies {
 
 
-
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta6'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta7'
     implementation 'com.google.firebase:firebase-auth:19.3.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.13'
@@ -57,8 +60,12 @@ dependencies {
     // lottei
     implementation "com.airbnb.android:lottie:3.0.0"
 
+
     //picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.makeramen:roundedimageview:2.2.1'
     implementation 'com.joooonho:selectableroundedimageview:1.0.1'
+
+    //razerPay
+    implementation 'com.razorpay:checkout:1.5.16'
 }

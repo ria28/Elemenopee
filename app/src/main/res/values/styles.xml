@@ -29,8 +29,8 @@
     <style name="darkCustomAppearance" parent="Widget.Design.TextInputLayout">
         <item name="errorTextAppearance">@android:color/holo_red_dark</item>
         <item name="android:textColor">@color/color5</item>
-        <item name="android:textColorHint">@color/color2</item>
-        <item name="colorControlNormal">@color/color1</item>
+        <item name="android:textColorHint">@color/softRed</item>
+        <item name="colorControlNormal">@color/softBlue</item>
         <item name="colorControlActivated">@color/color5</item>
         <item name="colorControlHighlight">@color/color5</item>
     </style>

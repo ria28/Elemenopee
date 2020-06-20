@@ -6,8 +6,18 @@ public class TeacherObj {
     String school, bio, experience, name,phone;
     ArrayList<String> subs;
     ArrayList<Integer> classes;
+    String proPicURL;
+
 
     public TeacherObj() {
+    }
+
+    public String getProPicURL() {
+        return proPicURL;
+    }
+
+    public void setProPicURL(String proPicURL) {
+        this.proPicURL = proPicURL;
     }
 
     public String getPhone() {

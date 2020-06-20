@@ -13,14 +13,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
+import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
 
 import static org.wazir.build.elemenophee.Teacher.videoPlayingActivity.pdfList;
 
 public class notesFrag extends Fragment {
 
-
+    boolean fromRecent;
     RecyclerView recyclerView;
     notesRecyclerAdapter notesAdapter;
+    String toastMessage;
+
+    public notesFrag(boolean fromRecent){
+        this.fromRecent = fromRecent;
+    }
 
 
     @Override
@@ -34,10 +40,11 @@ public class notesFrag extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        toastMessage = fromRecent ? "No Recent Files":"No Files found Related to this Chapter";
         if (pdfList.size() != 0)
             setUpRecyclerView();
         else {
-            Toast.makeText(getActivity().getApplicationContext(), "No Notes found Related to this Chapter", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity().getApplicationContext(), toastMessage, Toast.LENGTH_SHORT).show();
         }
     }
 

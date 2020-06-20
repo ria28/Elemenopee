@@ -18,11 +18,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.wazir.build.elemenophee.R;
-import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
+import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.videoRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.model.contentModel;
 import org.wazir.build.elemenophee.Teacher.videoPlayingActivity;
-import org.wazir.build.elemenophee.Teacher.viewUploadActivity;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -33,7 +32,7 @@ public class ViewVideoListActivity extends AppCompatActivity implements videoRec
     ArrayList<contentModel> pdfList = new ArrayList<>();
 
     videoRecyclerAdapter videoAdapter;
-    notesRecyclerAdapter notesAdapter;
+    otherAdapter notesAdapter;
     RecyclerView recyclerView;
     CollectionReference reference;
     String chapterTitle;
@@ -77,7 +76,7 @@ public class ViewVideoListActivity extends AppCompatActivity implements videoRec
                                     if (doc.get("VIDEOS") != null) {
                                         for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("VIDEOS")) {
                                             videoList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                    , (Timestamp) obj.get("timeStamp")));
+                                                    , (Timestamp) obj.get("timeStamp"),obj.get("privacy")+"",obj.get("teacherID")+"",obj.get("mime")+""));
                                         }
                                         videoAdapter.notifyDataSetChanged();
                                     }
@@ -87,7 +86,7 @@ public class ViewVideoListActivity extends AppCompatActivity implements videoRec
                                     if (doc.get("NOTES") != null) {
                                         for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("NOTES")) {
                                             pdfList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                    , (Timestamp) obj.get("timeStamp")));
+                                                    , (Timestamp) obj.get("timeStamp"),obj.get("privacy")+"",obj.get("teacherID")+"",obj.get("mime")+""));
                                         }
                                         notesAdapter.notifyDataSetChanged();
                                     }

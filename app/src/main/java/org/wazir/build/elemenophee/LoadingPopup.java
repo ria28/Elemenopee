@@ -16,7 +16,6 @@ public class LoadingPopup extends AppCompatDialog {
         ctx = context;
     }
 
-
     public void dialogRaise() {
         if (ctx == null) {
             return;
