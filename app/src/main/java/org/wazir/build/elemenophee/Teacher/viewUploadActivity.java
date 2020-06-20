@@ -270,7 +270,6 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
     }
 
     private void setUpRecyclerView() {
-
         if (viewContentType.getSelectedItem().toString().equalsIgnoreCase("VIDEOS"))
             recyclerView.setAdapter(videoAdapter);
         else

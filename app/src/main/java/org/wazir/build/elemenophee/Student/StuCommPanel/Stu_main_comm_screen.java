@@ -1,11 +1,5 @@
 package org.wazir.build.elemenophee.Student.StuCommPanel;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +13,12 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,16 +34,13 @@ import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
 import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.Chapters;
+import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.SubComm;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.ChapterAdapter;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.SubjectAdapter;
-import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.SubComm;
-import org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct;
 import org.wazir.build.elemenophee.Student.StudentProfile.StudentProfileActivity;
 import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
 
 public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAdapter.OnSubjListener {
 
@@ -78,14 +75,14 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         setContentView(R.layout.activity_stu_main_comm_screen);
 
         mAuth = FirebaseAuth.getInstance();
-        profilePic=findViewById(R.id.circleImageView);
-        Intro_pic=findViewById(R.id.Comm_pro_image);
+        profilePic = findViewById(R.id.circleImageView);
+        Intro_pic = findViewById(R.id.Comm_pro_image);
         StudentName = findViewById(R.id.textView22);
-        profileLayout= findViewById(R.id.ViewProfile);
-        cardLogout = findViewById(R.id.cardView7);
-        Subscribe= findViewById(R.id.stu_subscribe);
-        name=findViewById(R.id.Comm_name);
-        view_class_tv=findViewById(R.id.to_view_class);
+        profileLayout = findViewById(R.id.ViewProfile);
+        cardLogout = findViewById(R.id.logout);
+        Subscribe = findViewById(R.id.stu_subscribe);
+        name = findViewById(R.id.Comm_name);
+        view_class_tv = findViewById(R.id.to_view_class);
         getProfilePic();
 
         profileLayout.setOnClickListener(new View.OnClickListener() {
@@ -147,8 +144,6 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
 
                 adapter1 = new SubjectAdapter(Stu_main_comm_screen.this, list1, Stu_main_comm_screen.this);
                 setUpRecyclerView();
-
-
 
             }
 
@@ -346,7 +341,9 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         final String SubName = list1.get(position).getSubName();
 
         if(SubName!=null) {
-            reference = FirebaseFirestore.getInstance().collection("CLASSES").document(viewClass.getSelectedItem().toString()).collection("SUBJECT")
+            reference = FirebaseFirestore.getInstance().collection("CLASSES")
+                    .document(viewClass.getSelectedItem().toString())
+                    .collection("SUBJECT")
                     .document(SubName).collection("CONTENT");
 
             reference.get()
