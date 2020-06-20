@@ -21,13 +21,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Student.StudentSupport.Chat121.MessageActivity"></activity>
-        <activity android:name=".Student.StudentSupport.ChatGroup.GroupChatActivity" />
-        <activity android:name=".Student.StudentSupport.MainChatPanel.ChatMainActivity" />
-        <activity android:name=".Student.StudentSubscription.StudentSubsActivity" />
-        <activity android:name=".Student.StudentProfile.StudentProfileActivity" />
-        <activity android:name=".Student.StuCommPanel.Stu_main_comm_screen" />
-        <activity android:name=".PaymentActivity"></activity>
         <activity android:name=".CommunitySection.ComPanActivity"></activity>
         <activity android:name=".PaymentActivity" />
         <activity android:name=".Teacher.TeacherProfile" />
