@@ -36,6 +36,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.wazir.build.elemenophee.CommunitySection.ComPanActivity;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
@@ -55,7 +56,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     private static final int PICK_PDF = 102;
     private static final int PICK_FILE = 103;
     CardView live_lecture_card;
-    ConstraintLayout view_upload_card;
+    ConstraintLayout view_upload_card, communityCard;
     CardView uploadVideo, uploadPdf, uploadFile;
     CardView logoutUser;
     CardView viewProfile;
@@ -63,7 +64,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     ArrayList<String> classes, subjects;
     FirebaseAuth mAuth;
     RecyclerView recyclerView;
-    CircleImageView profilePic,proPic2;
+    CircleImageView profilePic, proPic2;
 
 
     videoRecyclerAdapter videoAdapter;
@@ -351,6 +352,13 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         uploadFile = findViewById(R.id.uploadFile);
         profilePic = findViewById(R.id.id_user_profile);
         proPic2 = findViewById(R.id.circleImageView);
+        communityCard = findViewById(R.id.community_card);
+        communityCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(mainDashBoardTeacher.this, ComPanActivity.class));
+            }
+        });
     }
 
     void getTeacherInfo() {
