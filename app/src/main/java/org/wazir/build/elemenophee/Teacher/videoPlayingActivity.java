@@ -79,7 +79,7 @@ public class videoPlayingActivity extends AppCompatActivity {
     TabLayout tabLayout;
 
     CircleImageView proPic;
-    TextView TeacherName, viewProfile;
+    TextView TeacherName;
     CardView viewProfileCard;
     int playingVideoPosition = -1;
 
@@ -94,14 +94,7 @@ public class videoPlayingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_playing);
 
-        notes_link = getIntent().getStringExtra("VIDEO_LINK");
-        videoList = getIntent().getParcelableArrayListExtra("VIDEO_LIST");
-        otherList = getIntent().getParcelableArrayListExtra("OTHER_LIST");
-        pdfList = getIntent().getParcelableArrayListExtra("PDF_LIST");
-        isTeacher = getIntent().getBooleanExtra("IS_TEACHER",false);
-        playingVideoPosition = getIntent().getIntExtra("PLAYING_VIDEO_POSITION", 0);
-        fromRecent = getIntent().getBooleanExtra("FROM_RECENT", true);
-
+        setupIntentData();
         init();
         loadTeacherData();
         initVideoPlayer();
@@ -113,25 +106,21 @@ public class videoPlayingActivity extends AppCompatActivity {
 
         setUpViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
+    }
 
-        viewProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String tID = videoList.get(0).getTeacherID();
-                Intent intent=new Intent(videoPlayingActivity.this, ViewTeacherProfile.class);
-                intent.putExtra("TEACHER_ID",tID);
-                startActivity(intent);
-            }
-        });
+    void setupIntentData() {
+        notes_link = getIntent().getStringExtra("VIDEO_LINK");
+        videoList = getIntent().getParcelableArrayListExtra("VIDEO_LIST");
+        otherList = getIntent().getParcelableArrayListExtra("OTHER_LIST");
+        pdfList = getIntent().getParcelableArrayListExtra("PDF_LIST");
+        isTeacher = getIntent().getBooleanExtra("IS_TEACHER", false);
+        playingVideoPosition = getIntent().getIntExtra("PLAYING_VIDEO_POSITION", 0);
+        fromRecent = getIntent().getBooleanExtra("FROM_RECENT", true);
 
     }
 
     private void loadTeacherData() {
-        CollectionReference reference = FirebaseFirestore.getInstance().collection(
-                "/TEACHERS/"
-        );
-
+        CollectionReference reference = FirebaseFirestore.getInstance().collection("/TEACHERS/");
         reference
                 .document(videoList.get(playingVideoPosition).getTeacherID())
                 .get()
@@ -141,15 +130,16 @@ public class videoPlayingActivity extends AppCompatActivity {
                         Glide.with(videoPlayingActivity.this)
                                 .load(documentSnapshot.get("proPicURL"))
                                 .into(proPic);
-                        TeacherName.setText(documentSnapshot.get("name")+"");
+                        TeacherName.setText(documentSnapshot.get("name") + "");
 
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
 
 
     }
@@ -342,7 +332,6 @@ public class videoPlayingActivity extends AppCompatActivity {
     void init() {
         proPic = findViewById(R.id.teacherPicVideoPlay);
         TeacherName = findViewById(R.id.teacherNameVideoPlay);
-        viewProfile = findViewById(R.id.viewTeacherProfileView);
         viewProfileCard = findViewById(R.id.cardViewProfileVideoPlay);
 
         if (isTeacher) {
@@ -350,5 +339,12 @@ public class videoPlayingActivity extends AppCompatActivity {
         } else {
             viewProfileCard.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void navToTeacProfile(View view) {
+        String tID = videoList.get(0).getTeacherID();
+        Intent intent = new Intent(videoPlayingActivity.this, ViewTeacherProfile.class);
+        intent.putExtra("TEACHER_ID", tID);
+        startActivity(intent);
     }
 }
