@@ -22,8 +22,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -55,6 +58,8 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     Context context;
     String subject;
 
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
     RecyclerView first_rv;
     RecyclerView second_rv;
     RecyclerView.Adapter adapter1;
@@ -63,11 +68,14 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     CollectionReference reference;
     FirebaseAuth mAuth;
 
-    ImageView profilePic,Intro_pic;
-    TextView StudentName,name,view_class_tv;
+    ImageView profilePic, Intro_pic;
+    TextView StudentName, name, view_class_tv;
     LinearLayout profileLayout;
     CardView cardLogout;
     Button Subscribe;
+
+    CollectionReference isSubs = FirebaseFirestore.getInstance().collection("/TEACHERS/");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -349,14 +357,30 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
                             if (task.isSuccessful()) {
                                 chapList.clear();
                                 if (!task.getResult().isEmpty()) {
-                                    for (QueryDocumentSnapshot doc : task.getResult()) {
-                                        chapList.add(new Chapters(doc.get("CHAPTER").toString(),"",  SubName,viewClass.getSelectedItem().toString()));
+                                    for (final QueryDocumentSnapshot doc : task.getResult()) {
+                                        isSubs.document(doc.get("TEACHER_ID").toString())
+                                                .collection("SUBSCRIBERS")
+                                                .whereEqualTo("studentId", user.getPhoneNumber())
+                                                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                if (queryDocumentSnapshots.size() == 1) {
+                                                    chapList.add(new Chapters(doc.get("CHAPTER").toString(), doc.get("TEACHER_ID").toString(), SubName, viewClass.getSelectedItem().toString(), true));
+                                                } else
+                                                    chapList.add(new Chapters(doc.get("CHAPTER").toString(), doc.get("TEACHER_ID").toString(), SubName, viewClass.getSelectedItem().toString(), false));
+                                                adapter2.notifyDataSetChanged();
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                                     }
-                                    adapter2.notifyDataSetChanged();
                                 } else {
                                     chapList.add(new Chapters("No Chapters", SubName));
                                     adapter2.notifyDataSetChanged();
-                                }//doc.get("TEACHER_ID")
+                                }
                             } else
                                 Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }

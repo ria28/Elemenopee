@@ -15,12 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Teacher.adapter.videoRecyclerAdapter;
+import org.wazir.build.elemenophee.Teacher.model.contentModel;
 import org.wazir.build.elemenophee.Teacher.videoPlayingActivity;
 
-import static org.wazir.build.elemenophee.Teacher.videoPlayingActivity.otherList;
-import static org.wazir.build.elemenophee.Teacher.videoPlayingActivity.pdfList;
-import static org.wazir.build.elemenophee.Teacher.videoPlayingActivity.videoList;
-
+import java.util.ArrayList;
 
 
 public class videoFrag extends Fragment implements videoRecyclerAdapter.onLayoutClick {
@@ -30,9 +28,18 @@ public class videoFrag extends Fragment implements videoRecyclerAdapter.onLayout
     videoRecyclerAdapter adapter;
 
     int playingVideoPosition;
+    public ArrayList<contentModel> videoList;
+    public ArrayList<contentModel> pdfList;
+    public ArrayList<contentModel> otherList;
+    boolean isTeacher;
 
-    public videoFrag(int playingVideoPosition){
+    public videoFrag(int playingVideoPosition, ArrayList<contentModel> videoList,
+                     ArrayList<contentModel> pdfList, ArrayList<contentModel> otherList, boolean isTeacher) {
         this.playingVideoPosition = playingVideoPosition;
+        this.videoList = videoList;
+        this.pdfList = pdfList;
+        this.otherList = otherList;
+        this.isTeacher = isTeacher;
     }
 
 
@@ -76,8 +83,8 @@ public class videoFrag extends Fragment implements videoRecyclerAdapter.onLayout
             intent.putExtra("VIDEO_LIST", videoList);
             intent.putExtra("PDF_LIST", pdfList);
             intent.putExtra("OTHER_LIST", otherList);
-            intent.putExtra("IS_TEACHER", true);
-            intent.putExtra("PLAYING_VIDEO_POSITION",i);
+            intent.putExtra("IS_TEACHER", isTeacher);
+            intent.putExtra("PLAYING_VIDEO_POSITION", i);
             startActivity(intent);
             getActivity().finish();
         }

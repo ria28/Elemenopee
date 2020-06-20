@@ -1,20 +1,20 @@
 package org.wazir.build.elemenophee.ModelObj;
 
-class SubscribersModel {
-    String StudentId;
+public class SubscribersModel {
+    String studentId;
 
     public String getStudentId() {
-        return StudentId;
+        return studentId;
     }
 
     public SubscribersModel() {
     }
 
     public void setStudentId(String studentId) {
-        StudentId = studentId;
+        this.studentId = studentId;
     }
 
     public SubscribersModel(String studentId) {
-        StudentId = studentId;
+        this.studentId = studentId;
     }
 }

@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
-import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
+import org.wazir.build.elemenophee.Teacher.model.contentModel;
 
-import static org.wazir.build.elemenophee.Teacher.videoPlayingActivity.pdfList;
+import java.util.ArrayList;
 
 public class notesFrag extends Fragment {
 
@@ -24,8 +24,11 @@ public class notesFrag extends Fragment {
     notesRecyclerAdapter notesAdapter;
     String toastMessage;
 
-    public notesFrag(boolean fromRecent){
+    public ArrayList<contentModel> pdfList;
+
+    public notesFrag(boolean fromRecent, ArrayList<contentModel> pdfList) {
         this.fromRecent = fromRecent;
+        this.pdfList = pdfList;
     }
 
 

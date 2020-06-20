@@ -18,14 +18,15 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
-
 import org.json.JSONObject;
 import org.wazir.build.elemenophee.ModelObj.SubscribedTOmodel;
-import org.wazir.build.elemenophee.Teacher.TeacherProfile;
+import org.wazir.build.elemenophee.ModelObj.SubscribersModel;
+
 
 public class PaymentActivity extends AppCompatActivity implements PaymentResultListener {
 
     Button payBtn;
+    String tID;
     CollectionReference TeacherRef = FirebaseFirestore.getInstance().collection("TEACHERS");
     CollectionReference StudentRef = FirebaseFirestore.getInstance().collection("STUDENTS");
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -37,7 +38,7 @@ public class PaymentActivity extends AppCompatActivity implements PaymentResultL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
 
-
+        tID = getIntent().getStringExtra("TEACHER_ID");
 
         payBtn = findViewById(R.id.PayBtnPaymentScreen);
 
@@ -84,40 +85,39 @@ public class PaymentActivity extends AppCompatActivity implements PaymentResultL
     public void onPaymentSuccess(String s) {
         Toast.makeText(this, "Payment successfully done! " +s, Toast.LENGTH_SHORT).show();
 
-//        TeacherRef.document(user.getPhoneNumber())
-//                .collection("SUBSCRIBERS")
-//                .document("Amit Dubey+918750348232")//TODO:place Student ID here
-//                .set(new SubscribedTOmodel("Amit Dubey+918750348232"))//TODO:add Student data acoordingly
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Toast.makeText(getApplicationContext(),"Subscribed To Amit Dubey",Toast.LENGTH_SHORT).show();
-//                        finish();
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
-//                finish();
-//            }
-//        });
-//        StudentRef.document(user.getPhoneNumber())
-//                .collection("SUBSCRIBED_TO")
-//                .document("Amit Dubey+918750348232")//TODO:place Teacher Id here
-//                .set(new SubscribedTOmodel("Amit Dubey+918750348232"))//TODO: add Teacher data Accordingly
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Toast.makeText(getApplicationContext(),"Subscribed To Amit Dubey",Toast.LENGTH_SHORT).show();
-//                        finish();
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
-//                finish();
-//            }
-//        });
+        TeacherRef.document(tID)
+                .collection("SUBSCRIBERS")
+                .document(user.getPhoneNumber())//TODO:place Student ID here
+                .set(new SubscribersModel(user.getPhoneNumber()))//TODO:add Student data acoordingly
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getApplicationContext(),"Subscription",Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+        StudentRef.document(user.getPhoneNumber())
+                .collection("SUBSCRIBED_TO")
+                .document(tID)//TODO:place Teacher Id here
+                .set(new SubscribedTOmodel(tID))//TODO: add Teacher data Accordingly
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getApplicationContext(),"Done",Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
     }
 
     @Override

@@ -84,9 +84,9 @@ public class videoPlayingActivity extends AppCompatActivity {
     int playingVideoPosition = -1;
 
     public String notes_link;
-    public static ArrayList<contentModel> videoList;
-    public static ArrayList<contentModel> pdfList;
-    public static ArrayList<contentModel> otherList;
+    public ArrayList<contentModel> videoList;
+    public ArrayList<contentModel> pdfList;
+    public ArrayList<contentModel> otherList;
 
 
     @Override
@@ -308,9 +308,9 @@ public class videoPlayingActivity extends AppCompatActivity {
 
     private void setUpViewPager(ViewPager Pager) {
         playActivity_ViewPagerAdapter adapter = new playActivity_ViewPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        adapter.addFragment(new videoFrag(playingVideoPosition), "Videos");
-        adapter.addFragment(new notesFrag(fromRecent), "Notes");
-        adapter.addFragment(new otherFrag(fromRecent), "Other");
+        adapter.addFragment(new videoFrag(playingVideoPosition, videoList, pdfList, otherList, isTeacher), "Videos");
+        adapter.addFragment(new notesFrag(fromRecent, pdfList), "Notes");
+        adapter.addFragment(new otherFrag(fromRecent, otherList), "Other");
         Pager.setAdapter(adapter);
     }
 

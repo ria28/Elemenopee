@@ -13,8 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
+import org.wazir.build.elemenophee.Teacher.model.contentModel;
 
-import static org.wazir.build.elemenophee.Teacher.videoPlayingActivity.otherList;
+import java.util.ArrayList;
+
 
 public class otherFrag extends Fragment {
 
@@ -23,8 +25,11 @@ public class otherFrag extends Fragment {
     otherAdapter otherAdapter;
     String toastMessage;
 
-    public otherFrag(boolean fromRecent){
+    public ArrayList<contentModel> otherList;
+
+    public otherFrag(boolean fromRecent, ArrayList<contentModel> otherList) {
         this.fromRecent = fromRecent;
+        this.otherList = otherList;
     }
 
 

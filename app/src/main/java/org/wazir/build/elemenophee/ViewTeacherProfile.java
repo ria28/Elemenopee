@@ -134,7 +134,11 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
         subscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ViewTeacherProfile.this,PaymentActivity.class));
+                Intent intent = new Intent(ViewTeacherProfile.this, PaymentActivity.class);
+                if (!teacher_ID.isEmpty()) {
+                    intent.putExtra("TEACHER_ID", teacher_ID);
+                    startActivity(intent);
+                }
             }
         });
 
