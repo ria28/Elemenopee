@@ -45,9 +45,8 @@
         <activity
             android:name=".Teacher.videoPlayingActivity"
             android:configChanges="orientation|screenSize" />
-        <activity
-            android:name=".Teacher.mainDashBoardTeacher"
-            android:screenOrientation="portrait" />
+        <activity android:name=".Teacher.mainDashBoardTeacher"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Student.Lecture.Subject.LectureActivity" />
         <activity android:name=".Student.StudentActivity.ClassRoomActivity" />
         <activity android:name=".Student.Videos.VideoActivity" />
@@ -56,9 +55,8 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-        <activity
-            android:name=".Student.StudentMainPanel.StudentMainAct"
-            android:screenOrientation="portrait" />
+        <activity android:name=".Student.StudentMainPanel.StudentMainAct"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="preloaded_fonts"

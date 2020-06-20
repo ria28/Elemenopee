@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onVerificationFailed(FirebaseException e) {
             liPb.setVisibility(View.INVISIBLE);
-            Toast.makeText(MainActivity.this, "Failed TO Login" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Failed TO Login"+ e.getMessage(), Toast.LENGTH_SHORT).show();
 
         }
 

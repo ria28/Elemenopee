@@ -54,28 +54,30 @@
                     android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_above="@+id/school"
                     android:layout_below="@+id/profile_image"
                     android:layout_alignParentStart="true"
-                    android:layout_marginStart="121dp"
+                    android:layout_marginStart="123dp"
                     android:layout_marginTop="7dp"
-                    android:text="Wahab Khan" />
+                    android:layout_marginBottom="0dp"
+                    android:hint="Wahab Khan" />
 
                 <TextView
                     android:id="@+id/school"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/name"
+                    android:layout_height="17dp"
                     android:layout_alignParentStart="true"
-                    android:layout_marginStart="100dp"
-                    android:layout_marginTop="3dp"
-                    android:text="Neo Convent School" />
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="105dp"
+                    android:layout_marginBottom="50dp"
+                    android:hint="Neo Convent School" />
 
                 <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="14dp"
+                    android:layout_width="17dp"
+                    android:layout_height="24dp"
                     android:layout_below="@+id/school"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="68dp"
                     android:layout_marginEnd="4dp"
                     android:layout_marginBottom="18dp"
                     android:layout_toStartOf="@+id/subscribe"
@@ -107,9 +109,11 @@
                 <TextView
                     android:id="@+id/connection"
                     android:layout_width="wrap_content"
-                    android:layout_height="13dp"
+                    android:layout_height="14dp"
                     android:layout_above="@+id/tv2"
                     android:layout_below="@+id/school"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginTop="72dp"
                     android:layout_marginBottom="-2dp"
                     android:layout_toEndOf="@+id/image_2"
                     android:text="49"

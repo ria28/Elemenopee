@@ -20,6 +20,7 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.MyViewHo
     private Context mContext;
     private OnSubjListener mOnSubjListener;
 
+
     public SubjectAdapter(Context mContext, ArrayList<SubComm> data,  OnSubjListener onSubjListener) {
         this.data = data;
         this.mContext = mContext;
@@ -36,6 +37,8 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.MyViewHo
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.image.setImageResource(data.get(position).getImage());
+        holder.SubName.setText(data.get(position).getSubName());
+
     }
 
     @Override
@@ -46,11 +49,12 @@ public class SubjectAdapter extends RecyclerView.Adapter<SubjectAdapter.MyViewHo
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView image;
         OnSubjListener onSubjListener;
-        TextView title;
+        TextView SubName;
 
         public MyViewHolder(View itemView,OnSubjListener onSubjListener) {
             super(itemView);
             image = itemView.findViewById(R.id.image_comm);
+            SubName= itemView.findViewById(R.id.sub_name);
             this.onSubjListener=onSubjListener;
 
             itemView.setOnClickListener(this);
