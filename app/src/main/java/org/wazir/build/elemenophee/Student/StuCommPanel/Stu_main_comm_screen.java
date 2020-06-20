@@ -350,13 +350,13 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
                                 chapList.clear();
                                 if (!task.getResult().isEmpty()) {
                                     for (QueryDocumentSnapshot doc : task.getResult()) {
-                                        chapList.add(new Chapters(doc.get("CHAPTER").toString()," ", SubName,viewClass.getSelectedItem().toString()));
+                                        chapList.add(new Chapters(doc.get("CHAPTER").toString(),"",  SubName,viewClass.getSelectedItem().toString()));
                                     }
                                     adapter2.notifyDataSetChanged();
                                 } else {
                                     chapList.add(new Chapters("No Chapters", SubName));
                                     adapter2.notifyDataSetChanged();
-                                }
+                                }//doc.get("TEACHER_ID")
                             } else
                                 Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }

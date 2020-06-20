@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.Chapters;
-import org.wazir.build.elemenophee.Student.Community.ViewNotesActivity;
 import org.wazir.build.elemenophee.Teacher.videoPlayingActivity;
 
 import java.util.ArrayList;
@@ -51,8 +50,8 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHo
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, videoPlayingActivity.class);
                 intent.putExtra("CHAPTER_TITLE", title);
-                intent.putExtra("SUBJECT",data.get(position).getSubName());
-                intent.putExtra("CLASS",data.get(position).getClasss());
+                intent.putExtra("SUBJECT", data.get(position).getSubName());
+                intent.putExtra("CLASS", data.get(position).getClasss());
                 mContext.startActivity(intent);
             }
         });
