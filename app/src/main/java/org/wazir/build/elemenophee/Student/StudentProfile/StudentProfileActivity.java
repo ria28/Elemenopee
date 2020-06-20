@@ -1,20 +1,20 @@
 package org.wazir.build.elemenophee.Student.StudentProfile;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -32,11 +32,14 @@ public class StudentProfileActivity extends AppCompatActivity {
     Button edit;
     String phone, Text;
     ArrayList<Integer> Classs = new ArrayList<>();
+    FirebaseAuth mAuth;
+    String url_;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_profile);
+        mAuth = FirebaseAuth.getInstance();
 
         name = findViewById(R.id.name);
         school = findViewById(R.id.school);
@@ -45,6 +48,7 @@ public class StudentProfileActivity extends AppCompatActivity {
         others = findViewById(R.id.others);
         edit = findViewById(R.id.edit2);
         profileImage=findViewById(R.id.profile_image_view);
+
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,18 +71,7 @@ public class StudentProfileActivity extends AppCompatActivity {
         String bio_ = intent.getStringExtra("BIO_");
         String target_ = intent.getStringExtra("TARGET_");
         String others_= intent.getStringExtra("OTH_");
-        Bitmap ImageBitmap= BitmapFactory.decodeByteArray(intent.getByteArrayExtra("byteArray"),0,intent.getByteArrayExtra("byteArray").length);
-        profileImage.setImageBitmap(ImageBitmap);
-
-//        if(getIntent().hasExtra("byteArray")) {
-//            ImageView _imv= new ImageView(this);
-//            Bitmap _bitmap = BitmapFactory.decodeByteArray(
-//                    getIntent().getByteArrayExtra("byteArray"),0,getIntent().getByteArrayExtra("byteArray").length);
-//            _imv.setImageBitmap(_bitmap);
-//        }
-//        Log.d("classs", "onCreate: "+ others_);
-//        String phone = intent.getStringExtra("PHONE_");
-//        ArrayList<Integer> Classs = intent.getIntegerArrayListExtra("CLASS_");
+        url_ = intent.getStringExtra("imageName");
 
         name.setText(name_);
         school.setText(school_);
@@ -101,11 +94,16 @@ public class StudentProfileActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         getStudentData();
+
     }
 
     void getStudentData() {
-        String number = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-        FirebaseFirestore.getInstance().collection("STUDENTS").document(number)
+        FirebaseUser curUser = mAuth.getCurrentUser();
+        if (curUser == null) {
+            return;
+        }
+        String number = mAuth.getCurrentUser().getPhoneNumber().substring(3);
+        FirebaseFirestore.getInstance().collection("STUDENTS").document("+91"+number)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -122,8 +120,14 @@ public class StudentProfileActivity extends AppCompatActivity {
                             phone = obj.getContact();
                             Classs = obj.getClasses();
 
+                            DocumentSnapshot document = task.getResult();
+                            String url= document.getString("imageUrl");
+                            Glide.with(profileImage.getContext()).load(url).into(profileImage);
+//                            Picasso.get().load(url).placeholder(R.mipmap.student1).fit().centerCrop().into(profileImage);
+
                         }
                     }
                 });
+
     }
 }

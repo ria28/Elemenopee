@@ -12,8 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.wazir.build.elemenophee.R;
+import org.wazir.build.elemenophee.Student.StuCommPanel.Stu_main_comm_screen;
 import org.wazir.build.elemenophee.Student.StudentMainPanel.Objects.SingleVertical;
-import org.wazir.build.elemenophee.Student.StudentProfile.StudentProfileActivity;
+import org.wazir.build.elemenophee.Student.StudentSupport.MainChatPanel.ChatMainActivity;
 
 import java.util.ArrayList;
 
@@ -66,10 +67,12 @@ public class VerticalAdapter extends RecyclerView.Adapter<VerticalAdapter.MyView
                         if(pos==0)
                         {
                             // TODO: 6/11/2020 class missing
+                            Intent intent = new Intent(mContext, Stu_main_comm_screen.class);
+                            mContext.startActivity(intent);
                         }
                         if(pos==1)
                         {
-                            Intent intent = new Intent(mContext, StudentProfileActivity.class);
+                            Intent intent = new Intent(mContext, ChatMainActivity.class);
                             mContext.startActivity(intent);
                         }
 
