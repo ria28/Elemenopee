@@ -110,9 +110,6 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
                 startActivity(intent);
             }
         });
-
-
-
         Class.add("Class 6");
         Class.add("Class 7");
         Class.add("Class 8");
@@ -136,11 +133,10 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         viewClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
                 view_class_tv.setText( viewClass.getSelectedItem().toString());
 //                loadSubject();
                 list1.clear();
-               list1= getList2_modified();
+                list1 = getList2_modified();
 
                 adapter1 = new SubjectAdapter(Stu_main_comm_screen.this, list1, Stu_main_comm_screen.this);
                 setUpRecyclerView();
