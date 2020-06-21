@@ -1,68 +1,39 @@
 package org.wazir.build.elemenophee.Student.StuProfile;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Parcelable;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
-
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import org.wazir.build.elemenophee.LoadingPopup;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.R;
-import org.wazir.build.elemenophee.SignUpUserActivity;
-import org.wazir.build.elemenophee.Student.StudentProfile.StudentProfileActivity;
-import org.wazir.build.elemenophee.Teacher.model.contentModel;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class EditStuProfileActivity extends AppCompatActivity {
 
@@ -91,6 +62,7 @@ public class EditStuProfileActivity extends AppCompatActivity {
     private StorageTask mUploadTask;
     StorageReference fileReference;
     String imageUrl;
+    LoadingPopup loader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +78,7 @@ public class EditStuProfileActivity extends AppCompatActivity {
         cam = findViewById(R.id.camera);
         profileImage = findViewById(R.id.profile_image);
         mAuth = FirebaseAuth.getInstance();
+        loader = new LoadingPopup(this);
 
 
         cam.setOnClickListener(new View.OnClickListener() {
@@ -119,6 +92,7 @@ public class EditStuProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 clicked = true;
+                loader.dialogRaise();
                 saveDetails();
             }
         });
@@ -175,9 +149,7 @@ public class EditStuProfileActivity extends AppCompatActivity {
         String number = mAuth.getCurrentUser().getPhoneNumber().substring(3);
 //        System.currentTimeMillis()
         if (mImageUri != null) {
-            fileReference = mStorageRef.child(number
-                    + ".png");
-//            + getFileExtension(mImageUri));
+            fileReference = mStorageRef.child(number + ".png");
 
             mUploadTask = fileReference.putFile(mImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -188,9 +160,28 @@ public class EditStuProfileActivity extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(final Uri uri) {
                                             imageUrl = uri.toString();
-                                            String number = mAuth.getCurrentUser().getPhoneNumber().substring(3);
-                                            FirebaseFirestore.getInstance().collection("STUDENTS").document("+91" + number)
+                                            String number = mAuth.getCurrentUser().getPhoneNumber();
+                                            FirebaseFirestore.getInstance()
+                                                    .collection("STUDENTS")
+                                                    .document(number)
                                                     .update("imageUrl", imageUrl);
+                                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                                    .setPhotoUri(uri)
+                                                    .build();
+
+                                            user.updateProfile(profileUpdates)
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()){
+                                                                loader.dialogDismiss();
+                                                                onBackPressed();
+                                                            } else {
+                                                                Toast.makeText(EditStuProfileActivity.this, "Failed To Update", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
                                         }
                                     });
                             Toast.makeText(EditStuProfileActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
@@ -208,7 +199,6 @@ public class EditStuProfileActivity extends AppCompatActivity {
     }
 
     private void saveDetails() {
-
         name = editTextName.getText().toString();
         school = editTextSchool.getText().toString();
         bio = editTextBio.getText().toString();
@@ -220,7 +210,7 @@ public class EditStuProfileActivity extends AppCompatActivity {
         obj.setSchool(school);
         obj.setBio(bio);
         obj.setTarget(target);
-        obj.setContact(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        obj.setContact(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber());
         obj.setClasses(Classs);
         obj.setmImageUrl(imageUrl);
 
@@ -230,7 +220,6 @@ public class EditStuProfileActivity extends AppCompatActivity {
             return;
         }
         String number = mAuth.getCurrentUser().getPhoneNumber().substring(3);
-
         FirebaseFirestore.getInstance().collection("STUDENTS").document("+91" + number).update(
                 "name", name,
                 "target", target,
@@ -239,19 +228,7 @@ public class EditStuProfileActivity extends AppCompatActivity {
                 "classes", Classs,
                 "imageUrl", imageUrl
         );
-
         uploadFile();
-
-        if (clicked) {
-            Intent intent2 = new Intent(EditStuProfileActivity.this, StudentProfileActivity.class);
-            intent2.putExtra("NAME_", name);
-            intent2.putExtra("SCHOOL_", school);
-            intent2.putExtra("BIO_", bio);
-            intent2.putExtra("TARGET_", target);
-            intent2.putExtra("OTH_", text);
-            intent2.putExtra("imageName", imageUrl);
-            startActivity(intent2);
-        }
     }
 
     @Override

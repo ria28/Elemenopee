@@ -28,6 +28,8 @@ import org.wazir.build.elemenophee.Interfaces.ChooseEveHandler;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 
+import org.wazir.build.elemenophee.Student.Community.MainCommScreen;
+import org.wazir.build.elemenophee.Student.StuCommPanel.Stu_main_comm_screen;
 import org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct;
 import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 
@@ -225,7 +227,7 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
             Intent intent = new Intent(SignUpUserActivity.this, mainDashBoardTeacher.class);
             startActivity(intent);
         } else {
-            Intent intent = new Intent(SignUpUserActivity.this, StudentMainAct.class);
+            Intent intent = new Intent(SignUpUserActivity.this, Stu_main_comm_screen.class);
             startActivity(intent);
         }
         finish();

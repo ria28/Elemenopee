@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -45,6 +45,8 @@ import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivi
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAdapter.OnSubjListener {
 
     ArrayList<String> Class = new ArrayList<>();
@@ -68,11 +70,11 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     CollectionReference reference;
     FirebaseAuth mAuth;
 
-    ImageView profilePic, Intro_pic;
+    CircleImageView profilePic, Intro_pic;
     TextView StudentName, name, view_class_tv;
-    LinearLayout profileLayout;
+    CardView profileLayout;
     CardView cardLogout;
-    Button Subscribe;
+    CardView Subscribe;
 
     CollectionReference isSubs = FirebaseFirestore.getInstance().collection("/TEACHERS/");
 
@@ -81,15 +83,16 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stu_main_comm_screen);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
         mAuth = FirebaseAuth.getInstance();
         profilePic = findViewById(R.id.circleImageView);
         Intro_pic = findViewById(R.id.Comm_pro_image);
         StudentName = findViewById(R.id.textView22);
-        profileLayout = findViewById(R.id.ViewProfile);
+        profileLayout = findViewById(R.id.ProfileTeacher);
         cardLogout = findViewById(R.id.logout);
         Subscribe = findViewById(R.id.stu_subscribe);
-        name = findViewById(R.id.Comm_name);
+        name = findViewById(R.id.textView26);
         view_class_tv = findViewById(R.id.to_view_class);
         getProfilePic();
 
@@ -113,7 +116,6 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         Subscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent= new Intent(Stu_main_comm_screen.this, StudentSubsActivity.class);
                 startActivity(intent);
             }
@@ -166,35 +168,18 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     }
 
     private void getProfilePic() {
-
-        String number = mAuth.getCurrentUser().getPhoneNumber().substring(3);
-        FirebaseFirestore.getInstance().collection("STUDENTS").document("+91"+number)
-                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful() && task.getResult().exists()){
-                    StudentObj obj = task.getResult().toObject(StudentObj.class);
-
-                    DocumentSnapshot document = task.getResult();
-                    String url= document.getString("imageUrl");
-                    Glide.with(profilePic.getContext()).load(url).into(profilePic);
-                    Glide.with(Intro_pic.getContext()).load(url).into(Intro_pic);
-                    StudentName.setText(obj.getName());
-                    String str = "Hi! "+obj.getName();
-                    name.setText(str);
-
-                }
-            }
-        });
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Glide.with(profilePic.getContext()).load(user.getPhotoUrl()).into(profilePic);
+        Glide.with(Intro_pic.getContext()).load(user.getPhotoUrl()).into(Intro_pic);
+        StudentName.setText(user.getDisplayName());
+        name.setText(user.getDisplayName());
     }
 
     public void loadSubject() {
-
         reference = FirebaseFirestore.getInstance()
                 .collection("CLASSES")
                 .document( viewClass.getSelectedItem().toString())
                 .collection("SUBJECT");
-
         reference.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

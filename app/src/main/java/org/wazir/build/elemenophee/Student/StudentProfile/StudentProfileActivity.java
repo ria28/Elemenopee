@@ -1,14 +1,15 @@
 package org.wazir.build.elemenophee.Student.StudentProfile;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,15 +22,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.StuProfile.EditStuProfileActivity;
-import org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct;
 
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class StudentProfileActivity extends AppCompatActivity {
 
     TextView name, school, bio, target, others;
-    ImageView profileImage;
-    Button edit;
+    CircleImageView profileImage;
+    CardView edit;
     String phone, Text;
     ArrayList<Integer> Classs = new ArrayList<>();
     FirebaseAuth mAuth;
@@ -39,15 +41,16 @@ public class StudentProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_profile);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         mAuth = FirebaseAuth.getInstance();
 
         name = findViewById(R.id.name);
         school = findViewById(R.id.school);
-        bio = findViewById(R.id.bio);
-        target = findViewById(R.id.target);
-        others = findViewById(R.id.others);
-        edit = findViewById(R.id.edit2);
-        profileImage=findViewById(R.id.profile_image_view);
+        bio = findViewById(R.id.textView41);
+        target = findViewById(R.id.textView37);
+        others = findViewById(R.id.textView42);
+        edit = findViewById(R.id.id_raise_ques);
+        profileImage = findViewById(R.id.profile_image);
 
 
         edit.setOnClickListener(new View.OnClickListener() {
@@ -58,7 +61,6 @@ public class StudentProfileActivity extends AppCompatActivity {
                 intent.putExtra("SCHOOL", school.getText());
                 intent.putExtra("BIO", bio.getText());
                 intent.putExtra("TARGET", target.getText());
-//                intent.putExtra("OTH",Text);
                 intent.putExtra("PHONE", phone);
                 intent.putExtra("CLASS", Classs);
                 startActivity(intent);
@@ -71,23 +73,11 @@ public class StudentProfileActivity extends AppCompatActivity {
         String bio_ = intent.getStringExtra("BIO_");
         String target_ = intent.getStringExtra("TARGET_");
         String others_= intent.getStringExtra("OTH_");
-        url_ = intent.getStringExtra("imageName");
-
         name.setText(name_);
         school.setText(school_);
         bio.setText(bio_);
         target.setText(target_);
         others.setText(others_);
-
-
-
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        startActivity(new Intent(StudentProfileActivity.this, StudentMainAct.class));
-        finish();
     }
 
     @Override
@@ -98,12 +88,14 @@ public class StudentProfileActivity extends AppCompatActivity {
     }
 
     void getStudentData() {
-        FirebaseUser curUser = mAuth.getCurrentUser();
+        final FirebaseUser curUser = mAuth.getCurrentUser();
         if (curUser == null) {
             return;
         }
-        String number = mAuth.getCurrentUser().getPhoneNumber().substring(3);
-        FirebaseFirestore.getInstance().collection("STUDENTS").document("+91"+number)
+        String number = mAuth.getCurrentUser().getPhoneNumber();
+        FirebaseFirestore.getInstance()
+                .collection("STUDENTS")
+                .document(number)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -113,21 +105,17 @@ public class StudentProfileActivity extends AppCompatActivity {
                             // TODO: 6/7/2020 Do what ever you want With the Student DATA here
                             name.setText(obj.getName());
                             school.setText(obj.getSchool());
-                            Text = "\nCLASSES :" + obj.getClasses() + "\nCONTACT :" + obj.getContact();
+                            Text = "" + obj.getClasses();
                             bio.setText(obj.getBio());
-                            others.setText(Text);                                           // cannot change-------------------------------------------------
+                            others.setText(Text);
                             target.setText(obj.getTarget());
                             phone = obj.getContact();
                             Classs = obj.getClasses();
-
-                            DocumentSnapshot document = task.getResult();
-                            String url= document.getString("imageUrl");
-                            Glide.with(profileImage.getContext()).load(url).into(profileImage);
-//                            Picasso.get().load(url).placeholder(R.mipmap.student1).fit().centerCrop().into(profileImage);
-
+                            Glide.with(profileImage.getContext())
+                                    .load(curUser.getPhotoUrl())
+                                    .into(profileImage);
                         }
                     }
                 });
-
     }
 }

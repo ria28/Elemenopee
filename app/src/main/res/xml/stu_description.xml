@@ -6,9 +6,7 @@
         motion:constraintSetStart="@id/set_start"
         motion:duration="1000"
         motion:motionInterpolator="easeIn">
-        <OnSwipe
-            motion:dragDirection="dragRight"
-            motion:touchAnchorId="@id/main_layout_stu" />
+        <OnClick motion:targetId="@id/lottieAnimationView" />
 
     </Transition>
 

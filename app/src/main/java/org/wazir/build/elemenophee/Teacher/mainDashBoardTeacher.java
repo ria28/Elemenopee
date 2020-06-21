@@ -55,7 +55,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     private static final int PICK_VIDEO = 101;
     private static final int PICK_PDF = 102;
     private static final int PICK_FILE = 103;
-    CardView live_lecture_card;
+    CardView live_lecture_card, sub_btn;
     ConstraintLayout view_upload_card, communityCard;
     CardView uploadVideo, uploadPdf, uploadFile;
     CardView logoutUser;
@@ -337,6 +337,8 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     }
 
     void init() {
+        sub_btn = findViewById(R.id.stu_subscribe);
+        sub_btn.setVisibility(View.GONE);
         mainPageName = findViewById(R.id.mainDashBoardTeacherName);
         logoutUser = findViewById(R.id.logout);
         viewProfile = findViewById(R.id.ProfileTeacher);

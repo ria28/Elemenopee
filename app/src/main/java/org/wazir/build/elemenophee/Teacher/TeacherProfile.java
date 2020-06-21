@@ -39,6 +39,8 @@ import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.ProfilePicBottomModalSheet;
 import org.wazir.build.elemenophee.R;
 
+import java.util.Objects;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TeacherProfile extends AppCompatActivity implements ProfilePicBottomModalSheet.BottomSheetListener {
@@ -53,12 +55,10 @@ public class TeacherProfile extends AppCompatActivity implements ProfilePicBotto
     LoadingPopup loading;
     FirebaseAuth mAuth;
 
-    private StorageReference ref;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     CollectionReference profileRef = FirebaseFirestore.getInstance().collection("TEACHERS");
 
     LoadingPopup loadingPopup;
-    private Uri selectedPicPath;
 
 
     @Override
@@ -80,11 +80,12 @@ public class TeacherProfile extends AppCompatActivity implements ProfilePicBotto
 
         loadingPopup.dialogRaise();
         profileRef
-                .document(user.getPhoneNumber())
+                .document(Objects.requireNonNull(user.getPhoneNumber()))
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 obj = documentSnapshot.toObject(TeacherObj.class);
+                assert obj != null;
                 name.setText(obj.getName());
                 school.setText(obj.getSchool());
                 bio.setText(obj.getBio());
@@ -217,8 +218,8 @@ public class TeacherProfile extends AppCompatActivity implements ProfilePicBotto
 
         if (resultCode == Activity.RESULT_OK && requestCode == PICK_PIC) {
             loading.dialogRaise();
-            selectedPicPath = data.getData();
-            ref = FirebaseStorage.getInstance("gs://elemenophee-a0ac5.appspot.com/").getReference();
+            Uri selectedPicPath = data.getData();
+            StorageReference ref = FirebaseStorage.getInstance("gs://elemenophee-a0ac5.appspot.com/").getReference();
             final StorageReference reference = ref.child("PROFILE_PICTURES/" + user.getPhoneNumber());
 
             reference.putFile(selectedPicPath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
