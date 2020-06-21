@@ -7,6 +7,24 @@
     android:background="@color/color5"
     app:layoutDescription="@xml/stu_description">
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="25dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardElevation="7dp"
+        android:fadingEdgeLength="3dp">
+
+        <ImageView
+            android:id="@+id/imageView17"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            app:srcCompat="@drawable/ic_menu_dots" />
+    </androidx.cardview.widget.CardView>
+
     <include
         android:id="@+id/side_bar"
         layout="@layout/temp_layout1"
@@ -18,18 +36,20 @@
         android:id="@+id/main_layout_stu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="11dp">
+        app:cardCornerRadius="11dp"
+        >
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@mipmap/n_back">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView13"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:outlineSpotShadowColor="#2984FF"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="11dp"
                 app:cardElevation="7dp"
                 android:fadingEdgeLength="5dp"
@@ -41,42 +61,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <com.airbnb.lottie.LottieAnimationView
-                        android:id="@+id/lottieAnimationView"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:rotation="-90"
-                        app:layout_constraintBottom_toTopOf="@+id/first_recycler_view"
-                        app:layout_constraintStart_toStartOf="@+id/textView26"
-                        app:layout_constraintTop_toBottomOf="@+id/textView26"
-                        app:lottie_autoPlay="true"
-                        app:lottie_loop="true"
-                        app:lottie_rawRes="@raw/slide_arrow" />
-
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/Comm_pro_image"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="32dp"
                         android:src="@color/color5"
                         app:civ_border_color="@color/softBlue"
                         app:civ_border_width="2dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/Comm_name" />
-
-                    <TextView
-                        android:id="@+id/Comm_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="32dp"
-                        android:fontFamily="@font/nunito"
-                        android:text="Welcome Back,"
-                        android:textColor="@color/color6"
-                        android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -86,11 +80,9 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginTop="4dp"
-                        app:layout_constraintEnd_toEndOf="@+id/Comm_name"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toEndOf="@+id/textView26"
-                        app:layout_constraintTop_toBottomOf="@+id/textView26" />
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="@+id/textView26"
+                        app:layout_constraintTop_toBottomOf="@+id/Comm_pro_image" />
 
                     <TextView
                         android:id="@+id/to_view_class"
@@ -100,7 +92,7 @@
                         android:layout_toStartOf="@+id/viewClassSpinner"
                         android:text="Class 6"
                         app:layout_constraintBottom_toBottomOf="@+id/viewClassSpinner"
-                        app:layout_constraintEnd_toStartOf="@+id/viewClassSpinner"
+                        app:layout_constraintStart_toEndOf="@+id/viewClassSpinner"
                         app:layout_constraintTop_toTopOf="@+id/viewClassSpinner" />
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -116,19 +108,23 @@
                         android:orientation="horizontal"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/textView26"
+                        app:layout_constraintStart_toStartOf="@+id/Comm_pro_image"
                         app:layout_constraintTop_toBottomOf="@+id/viewClassSpinner" />
 
                     <TextView
                         android:id="@+id/textView26"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
                         android:fontFamily="@font/poiret_one"
                         android:text="Akshay Rein"
                         android:textColor="@color/softBlue"
-                        android:textSize="24sp"
-                        app:layout_constraintStart_toStartOf="@+id/Comm_name"
-                        app:layout_constraintTop_toBottomOf="@+id/Comm_name" />
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/Comm_pro_image"
+                        app:layout_constraintStart_toEndOf="@+id/Comm_pro_image"
+                        app:layout_constraintTop_toTopOf="@+id/Comm_pro_image" />
+
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
@@ -163,4 +159,5 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.motion.widget.MotionLayout>

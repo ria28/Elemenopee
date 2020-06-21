@@ -4,10 +4,11 @@
     <Transition
         motion:constraintSetEnd="@id/set_end"
         motion:constraintSetStart="@id/set_start"
-        motion:duration="1000"
+        motion:duration="500"
         motion:motionInterpolator="easeIn">
-        <OnClick motion:targetId="@id/lottieAnimationView" />
-
+        <OnClick
+            motion:clickAction="toggle"
+            motion:targetId="@id/cardView18" />
     </Transition>
 
     <ConstraintSet android:id="@+id/set_start">
@@ -30,6 +31,14 @@
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toStartOf="parent"
             motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:id="@id/cardView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="8dp"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"/>
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/set_end">
@@ -56,5 +65,14 @@
             motion:layout_constraintHorizontal_bias="0.0"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintVertical_bias="0.0" />
+        <Constraint
+            android:id="@id/cardView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="8dp"
+            motion:layout_constraintEnd_toStartOf="@id/main_layout_stu"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_goneMarginTop="32dp" />
     </ConstraintSet>
 </MotionScene>

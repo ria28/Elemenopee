@@ -44,7 +44,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:fadingEdgeLength="2dp"
-        app:cardBackgroundColor="@color/softGreen"
+        app:cardBackgroundColor="@color/softRed"
+        app:cardCornerRadius="7dp"
         app:cardElevation="5dp"
         app:layout_constraintStart_toStartOf="@+id/circleImageView"
         app:layout_constraintTop_toBottomOf="@+id/circleImageView">
