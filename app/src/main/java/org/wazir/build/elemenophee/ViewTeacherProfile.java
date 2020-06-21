@@ -2,6 +2,7 @@ package org.wazir.build.elemenophee;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.videoRecyclerAdapter;
@@ -48,6 +51,8 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
     String teacher_ID;
     boolean isSubscriber = false;
     CollectionReference Sref;
+    TeacherObj teacherObj;
+    LoadingPopup loadingPopup;
 
     Spinner FileType;
 
@@ -56,6 +61,9 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
     ArrayList<contentModel> otherList = new ArrayList<>();
 
     CollectionReference reference;
+    CollectionReference teacherReference;
+    CollectionReference SubsRef;
+
 
     ArrayAdapter<String> FileTypeSpinnerViewAdapter;
     ArrayList<String> content = new ArrayList<>();
@@ -74,8 +82,17 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
                         teacher_ID +
                         "/RECENT_UPLOADS"
         );
+        teacherReference = FirebaseFirestore.getInstance().collection("/TEACHERS/");
+        SubsRef = FirebaseFirestore.getInstance().collection(
+                "/TEACHERS/" +
+                        teacher_ID +
+                        "/SUBSCRIBERS"
+        );
 
+        loadingPopup = new LoadingPopup(ViewTeacherProfile.this);
+        loadingPopup.dialogRaise();
         init();
+        getTeacherData();
 
         content.add("VIDEOS");
         content.add("NOTES");
@@ -134,14 +151,52 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
         subscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ViewTeacherProfile.this, PaymentActivity.class);
-                if (!teacher_ID.isEmpty()) {
-                    intent.putExtra("TEACHER_ID", teacher_ID);
-                    startActivity(intent);
+                if (subscribe.getText().toString().equalsIgnoreCase("SUBSCRIBE")) {
+                    Intent intent = new Intent(ViewTeacherProfile.this, PaymentActivity.class);
+                    if (!teacher_ID.isEmpty()) {
+                        intent.putExtra("TEACHER_ID", teacher_ID);
+                        startActivity(intent);
+                    }
                 }
             }
         });
 
+    }
+
+    private void getTeacherData() {
+        teacherReference.document(teacher_ID)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        teacherObj = documentSnapshot.toObject(TeacherObj.class);
+                        teacherName.setText(teacherObj.getName());
+                        schoolName.setText(teacherObj.getSchool());
+                        Glide.with(ViewTeacherProfile.this).load(teacherObj.getProPicURL()).into(profilePic);
+                        SubsRef
+                                .whereEqualTo("studentId",user.getPhoneNumber())
+                                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                if(queryDocumentSnapshots.size() == 1){
+                                    subscribe.setText("SUBSCRIBED");
+                                    subscribe.setTextColor(Color.parseColor("#eac7c7"));
+                                    loadingPopup.dialogDismiss();
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(ViewTeacherProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ViewTeacherProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setUpRecyclerView() {
