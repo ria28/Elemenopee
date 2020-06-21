@@ -18,10 +18,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.wazir.build.elemenophee.R;
+import org.wazir.build.elemenophee.Student.Community.CommAdapter.MainAdapterComm;
 import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.Chapters;
 import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.SubComm;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.ChapterAdapter;
-import org.wazir.build.elemenophee.Student.Community.CommAdapter.MainAdapterComm;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.SubjectAdapter;
 
 import java.util.ArrayList;
@@ -50,20 +50,16 @@ public class MainCommScreen extends AppCompatActivity implements SubjectAdapter.
     }
 
     private  ArrayList<Object> getObject() {
-
         objects.add(getSubjects().get(0));
         if (getChapters().size() != 0)
             objects.add(getChapters().get(0));
         chapterAdapter.notifyDataSetChanged();
-
-
         return objects;
     }
 
     @NonNull
     public static ArrayList<SubComm> getSubjects() {
         list1 = new ArrayList<>();
-
 //        list1.add(new SubComm(R.drawable.maths, "Maths"));
 //        list1.add(new SubComm(R.drawable.sci, "Science"));
 //        list1.add(new SubComm(R.drawable.sst, "Sst"));
@@ -79,10 +75,7 @@ public class MainCommScreen extends AppCompatActivity implements SubjectAdapter.
     public void onSubjClick(int position) {
         subject = list1.get(position);
         String SubName = subject.getSubName();
-
-
         Chapter = new ArrayList<>();
-
         subjRef.document("English").collection("CONTENT")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

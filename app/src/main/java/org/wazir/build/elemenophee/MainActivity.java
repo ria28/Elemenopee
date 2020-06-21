@@ -31,6 +31,8 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.wazir.build.elemenophee.Student.Community.MainCommScreen;
+import org.wazir.build.elemenophee.Student.StuCommPanel.Stu_main_comm_screen;
 import org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct;
 import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 
@@ -243,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
 
     void navigate(String direction) {
         if (direction.equals("STUDENT")) {
-            startActivity(new Intent(this, StudentMainAct.class));
+            startActivity(new Intent(this, Stu_main_comm_screen.class));
         } else {
             startActivity(new Intent(this, mainDashBoardTeacher.class));
         }

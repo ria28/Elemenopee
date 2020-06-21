@@ -1,224 +1,303 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:backgroundTint="#F8FCFF">
+    android:background="@mipmap/n_back"
+    android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.5"
-        android:background="@mipmap/student">
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="0sp"
+        android:layout_height="250dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/student"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView9"
+        android:layout_width="0sp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="11dp"
+        app:cardElevation="7dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView8">
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="21dp"
-            android:src="@drawable/ic_bell" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="316dp"
-            android:layout_height="176dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="47dp"
-            android:layout_marginBottom="28dp"
-            android:outlineAmbientShadowColor="#2984FF"
-            android:elevation="2dp"
-            app:cardUseCompatPadding="true"
-            >
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal">
-
-                <ImageView
-                    android:id="@+id/profile_image"
-                    android:layout_width="81dp"
-                    android:layout_height="74dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginEnd="114dp"
-                    android:src="@mipmap/student1" />
-
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/profile_image"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginStart="121dp"
-                    android:layout_marginTop="7dp"
-                    android:text="Wahab Khan" />
-
-                <TextView
-                    android:id="@+id/school"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/name"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginStart="100dp"
-                    android:layout_marginTop="3dp"
-                    android:text="Neo Convent School" />
-
-                <ImageView
-                    android:layout_width="29dp"
-                    android:layout_height="20dp"
-                    android:layout_below="@+id/school"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginTop="21dp"
-                    android:layout_marginEnd="6dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_toStartOf="@+id/subscribe"
-                    android:src="@drawable/ic_membership" />
-
-                <TextView
-                    android:id="@+id/subscribe"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="15dp"
-                    android:text="SUBSCRIBER"
-                    android:textColor="#FF7D43"
-                    android:textSize="14sp" />
-
-                <ImageView
-                    android:id="@+id/image_2"
-                    android:layout_width="29dp"
-                    android:layout_height="24dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginStart="58dp"
-                    android:layout_marginBottom="15dp"
-                    android:src="@drawable/ic_people" />
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="35dp"
+                android:fontFamily="@font/nunito"
+                android:text="Wahab Khan"
+                android:textColor="@color/color6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
-                <TextView
-                    android:id="@+id/connection"
-                    android:layout_width="wrap_content"
-                    android:layout_height="13dp"
-                    android:layout_above="@+id/tv2"
-                    android:layout_below="@+id/school"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="-2dp"
-                    android:layout_toEndOf="@+id/image_2"
-                    android:text="49"
-                    android:textSize="8sp" />
+            <TextView
+                android:id="@+id/school"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/name"
+                android:layout_alignParentStart="true"
+                android:fontFamily="@font/nunito"
+                android:text="Neo Convent School"
+                app:layout_constraintEnd_toEndOf="@+id/name"
+                app:layout_constraintStart_toStartOf="@+id/name"
+                app:layout_constraintTop_toBottomOf="@+id/name" />
 
-                <TextView
-                    android:id="@+id/tv2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_toEndOf="@+id/image_2"
-                    android:text="Connections"
-                    android:textSize="8sp" />
+            <ImageView
+                android:layout_width="29dp"
+                android:layout_height="20dp"
+                android:layout_below="@+id/school"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="8dp"
+                android:layout_toStartOf="@+id/subscribe"
+                android:src="@drawable/ic_membership"
+                app:layout_constraintEnd_toStartOf="@+id/subscribe"
+                app:layout_constraintTop_toTopOf="@+id/subscribe" />
+
+            <TextView
+                android:id="@+id/subscribe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginEnd="8dp"
+                android:text="SUBSCRIBER"
+                android:textColor="#FF7D43"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/image_2" />
+
+            <ImageView
+                android:id="@+id/image_2"
+                android:layout_width="29dp"
+                android:layout_height="24dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/ic_people"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/school" />
+
+            <TextView
+                android:id="@+id/connection"
+                android:layout_width="wrap_content"
+                android:layout_height="13dp"
+                android:layout_above="@+id/tv2"
+                android:layout_below="@+id/school"
+                android:layout_toEndOf="@+id/image_2"
+                android:text="49"
+                android:textSize="8sp"
+                app:layout_constraintStart_toEndOf="@+id/image_2"
+                app:layout_constraintTop_toTopOf="@+id/image_2" />
+
+            <TextView
+                android:id="@+id/tv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_toEndOf="@+id/image_2"
+                android:text="Connections"
+                android:textSize="8sp"
+                app:layout_constraintStart_toEndOf="@+id/image_2"
+                app:layout_constraintTop_toBottomOf="@+id/connection" />
 
 
-            </RelativeLayout>
-        </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="center_horizontal"
+        android:elevation="10dp"
+        android:src="@mipmap/student1"
+        app:civ_border_color="@color/softBlue"
+        app:civ_border_width="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cardView9"
+        app:layout_constraintEnd_toEndOf="@+id/cardView9"
+        app:layout_constraintStart_toStartOf="@+id/cardView9"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    </RelativeLayout>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv2"
+        android:layout_width="0sp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv3"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:fadingEdgeLength="5dp"
+        app:cardCornerRadius="11dp"
+        app:cardElevation="7dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv3">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.5"
-        >
+            <TextView
+                android:id="@+id/tv4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/nunito"
+                android:text="Bio"
+                android:textColor="@color/color6"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tv3"
-            android:layout_width="105dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="About Student" />
+            <TextView
+                android:id="@+id/textView41"
+                android:layout_width="0sp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv4"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/nunito_extralight"
+                android:hint="t"
+                android:textColor="@color/color6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv4" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cv2"
-            android:layout_width="365dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv3"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="21dp"
-            android:layout_marginTop="15dp"
-           >
+            <TextView
+                android:id="@+id/textView40"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/nunito"
+                android:text="Classes"
+                android:textColor="@color/color6"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/tv4"
+                app:layout_constraintTop_toBottomOf="@+id/textView41" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/textView42"
+                android:layout_width="0sp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/nunito_extralight"
+                android:text="TextView"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/textView41"
+                app:layout_constraintStart_toStartOf="@+id/textView40"
+                app:layout_constraintTop_toBottomOf="@+id/textView40" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
-                <TextView
-                    android:id="@+id/tv4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:text="BIO" />
+    <TextView
+        android:id="@+id/tv3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="8dp"
+        android:text="About Student"
+        android:textColor="@color/softGreen"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/cardView9"
+        app:layout_constraintTop_toBottomOf="@+id/cardView9" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv4"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:hint="Some Text To Enter in Bio Some Some Text To Enter in Bio Some Some Text To Enter in Bio Some Text To Enter in Bio Some Text To Enter in Bio Some Text To Enter in Bio Some Text To Enter in Bio" />
-            </RelativeLayout>
-        </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView15"
+        android:layout_width="0sp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cv2"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="11dp"
+        app:cardElevation="7dp"
+        app:layout_constraintEnd_toEndOf="@+id/cv2"
+        app:layout_constraintStart_toStartOf="@+id/cv2"
+        app:layout_constraintTop_toBottomOf="@+id/cv2">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="365dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/cv2"
-            android:layout_marginStart="21dp"
-            android:layout_marginTop="15dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/tv5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/nunito"
                 android:text="Target Exam"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"/>
+                android:textColor="@color/color6"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv5"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="Target Exams Comes here" />
+            <TextView
+                android:id="@+id/textView37"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv5"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/nunito_extralight"
+                android:text="Target Exams Comes here"
+                android:textColor="@color/color6"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tv5"
+                app:layout_constraintTop_toBottomOf="@+id/tv5" />
 
-            </RelativeLayout>
-        </androidx.cardview.widget.CardView>
-    </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/id_raise_ques"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:fadingEdgeLength="5dp"
+        android:onClick="askQues"
+        app:cardBackgroundColor="@color/softGreen"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="7dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_ask_question" />
+    </androidx.cardview.widget.CardView>
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

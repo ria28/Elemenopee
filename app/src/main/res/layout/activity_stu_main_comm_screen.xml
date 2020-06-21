@@ -7,6 +7,24 @@
     android:background="@color/color5"
     app:layoutDescription="@xml/stu_description">
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="25dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardElevation="7dp"
+        android:fadingEdgeLength="3dp">
+
+        <ImageView
+            android:id="@+id/imageView17"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            app:srcCompat="@drawable/ic_menu_dots" />
+    </androidx.cardview.widget.CardView>
+
     <include
         android:id="@+id/side_bar"
         layout="@layout/temp_layout1"
@@ -18,39 +36,28 @@
         android:id="@+id/main_layout_stu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="11dp">
+        app:cardCornerRadius="11dp"
+        >
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            >
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="86dp"
-                android:layout_marginBottom="500dp"
-                android:rotation="-90"
-                app:layout_constraintBottom_toTopOf="@id/linear_layout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linear_layout"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
-                app:lottie_rawRes="@raw/slide_arrow" />
+            android:background="@mipmap/n_back">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView13"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:outlineSpotShadowColor="#2984FF"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="10dp"
-                app:cardUseCompatPadding="true"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="11dp"
+                app:cardElevation="7dp"
+                android:fadingEdgeLength="5dp"
+                app:cardUseCompatPadding="false"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <RelativeLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -58,26 +65,13 @@
                         android:id="@+id/Comm_pro_image"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="18dp"
+                        android:layout_marginTop="32dp"
                         android:src="@color/color5"
-                        app:civ_border_color="@color/colorPrimary"
+                        app:civ_border_color="@color/softBlue"
                         app:civ_border_width="2dp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/Comm_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="60dp"
-                        android:layout_marginTop="36dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text=" Hi ! Akshay Rein"
-                        android:textColor="#000000"
-                        app:layout_constraintStart_toEndOf="@+id/Comm_pro_image"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <Spinner
@@ -86,76 +80,84 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginStart="340dp"
-                        android:layout_marginTop="36dp"
-                        android:layout_marginEnd="29dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintEnd_toEndOf="@+id/textView26"
+                        app:layout_constraintTop_toBottomOf="@+id/Comm_pro_image" />
 
                     <TextView
                         android:id="@+id/to_view_class"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignBottom="@+id/viewClassSpinner"
-                        android:layout_marginEnd="-350dp"
-                        android:layout_marginBottom="4dp"
                         android:layout_toStartOf="@+id/viewClassSpinner"
-                        android:text="Class 6" />
-
-                    <TextView
-                        android:id="@+id/ChooseSubj"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/Comm_pro_image"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginStart="0dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="16dp"
-                        android:text="Choose Subject"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:text="Class 6"
+                        app:layout_constraintBottom_toBottomOf="@+id/viewClassSpinner"
+                        app:layout_constraintStart_toEndOf="@+id/viewClassSpinner"
+                        app:layout_constraintTop_toTopOf="@+id/viewClassSpinner" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/first_recycler_view"
-                        android:layout_width="match_parent"
+                        android:layout_width="0sp"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/ChooseSubj"
+                        android:layout_below="@+id/Comm_pro_image"
                         android:layout_alignParentStart="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="18dp"
-                        android:layout_marginBottom="10dp"
-                        android:orientation="horizontal" />
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/Comm_pro_image"
+                        app:layout_constraintTop_toBottomOf="@+id/viewClassSpinner" />
 
-                </RelativeLayout>
+                    <TextView
+                        android:id="@+id/textView26"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/poiret_one"
+                        android:text="Akshay Rein"
+                        android:textColor="@color/softBlue"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/Comm_pro_image"
+                        app:layout_constraintStart_toEndOf="@+id/Comm_pro_image"
+                        app:layout_constraintTop_toTopOf="@+id/Comm_pro_image" />
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
-            <LinearLayout
-                android:id="@+id/linear_layout"
+            <TextView
+                android:id="@+id/textView34"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/nunito"
+                android:text="Choose Chapter"
+                android:textAllCaps="true"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView13" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/second_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView13">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView34" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:text="Choose Chapters"
-                    android:textAllCaps="true"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/second_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:orientation="vertical" />
-            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.motion.widget.MotionLayout>

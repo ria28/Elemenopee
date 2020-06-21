@@ -38,29 +38,38 @@
         app:layout_constraintBottom_toBottomOf="@+id/circleImageView"
         app:layout_constraintStart_toStartOf="@+id/textView22" />
 
-    <Button
+    <androidx.cardview.widget.CardView
         android:id="@+id/stu_subscribe"
-        android:layout_width="79dp"
-        android:layout_height="19dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="11dp"
-        android:background="@color/color5"
-        android:text="SUBSCRIBE"
-        android:textColor="#FF7D43"
-        app:layout_constraintStart_toEndOf="@+id/textView23"
-        app:layout_constraintTop_toBottomOf="@+id/textView22" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fadingEdgeLength="2dp"
+        app:cardBackgroundColor="@color/softRed"
+        app:cardCornerRadius="7dp"
+        app:cardElevation="5dp"
+        app:layout_constraintStart_toStartOf="@+id/circleImageView"
+        app:layout_constraintTop_toBottomOf="@+id/circleImageView">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="SUBSCRIBE"
+            android:textColor="@color/white" />
+
+    </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/logout"
         android:layout_width="0sp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="7dp"
         app:cardElevation="7dp"
-        app:layout_constraintEnd_toEndOf="@+id/cardView9"
-        app:layout_constraintStart_toStartOf="@+id/cardView9"
-        app:layout_constraintTop_toBottomOf="@+id/cardView9">
+        app:layout_constraintEnd_toEndOf="@+id/ProfileTeacher"
+        app:layout_constraintStart_toStartOf="@+id/ProfileTeacher"
+        app:layout_constraintTop_toBottomOf="@+id/ProfileTeacher">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -94,14 +103,14 @@
         android:id="@+id/ProfileTeacher"
         android:layout_width="0sp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="7dp"
         app:cardElevation="7dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/circleImageView"
-        app:layout_constraintTop_toBottomOf="@+id/circleImageView">
+        app:layout_constraintTop_toBottomOf="@+id/stu_subscribe">
 
         <LinearLayout
             android:id="@+id/ViewProfile"
@@ -128,46 +137,6 @@
                 android:layout_marginStart="8sp"
                 android:layout_marginEnd="8sp"
                 android:text="View Profile"
-                android:textColor="@color/color5" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView9"
-        android:layout_width="0sp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="7dp"
-        app:cardElevation="7dp"
-        app:layout_constraintEnd_toEndOf="@+id/ProfileTeacher"
-        app:layout_constraintStart_toStartOf="@+id/ProfileTeacher"
-        app:layout_constraintTop_toBottomOf="@+id/ProfileTeacher">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:background="@android:color/transparent"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/imageView8"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="8sp"
-                android:layout_marginTop="8sp"
-                android:layout_marginBottom="8sp"
-                app:srcCompat="@drawable/ic_history_sidenav" />
-
-            <TextView
-                android:id="@+id/textView26"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="8sp"
-                android:layout_marginEnd="8sp"
-                android:text="Play History"
                 android:textColor="@color/color5" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
