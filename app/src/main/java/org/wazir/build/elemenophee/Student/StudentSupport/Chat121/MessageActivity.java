@@ -236,6 +236,7 @@ public class MessageActivity extends AppCompatActivity {
 
     private void uploadFile() {
         if (imageUri != null) {
+            //--
             final StorageReference fileReference = mStorageRef.child("images/" + System.currentTimeMillis() + "." + getFileExtension(imageUri));
             mUploadTask = fileReference.putFile(imageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
