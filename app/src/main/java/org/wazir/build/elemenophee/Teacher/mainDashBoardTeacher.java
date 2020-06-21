@@ -67,7 +67,6 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     CircleImageView profilePic, proPic2;
     CardView messages;
 
-
     videoRecyclerAdapter videoAdapter;
     otherAdapter otherAdapter;
     notesRecyclerAdapter notesAdapter;
