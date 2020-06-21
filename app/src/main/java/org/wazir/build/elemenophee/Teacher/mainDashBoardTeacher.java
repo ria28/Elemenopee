@@ -65,6 +65,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     FirebaseAuth mAuth;
     RecyclerView recyclerView;
     CircleImageView profilePic, proPic2;
+    CardView messages;
 
 
     videoRecyclerAdapter videoAdapter;
@@ -339,6 +340,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     void init() {
         sub_btn = findViewById(R.id.stu_subscribe);
         sub_btn.setVisibility(View.GONE);
+        messages = findViewById(R.id.message_id);
         mainPageName = findViewById(R.id.mainDashBoardTeacherName);
         logoutUser = findViewById(R.id.logout);
         viewProfile = findViewById(R.id.ProfileTeacher);
@@ -359,6 +361,12 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(mainDashBoardTeacher.this, ComPanActivity.class));
+            }
+        });
+        messages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: 6/21/2020 navigate To messages activity
             }
         });
     }
