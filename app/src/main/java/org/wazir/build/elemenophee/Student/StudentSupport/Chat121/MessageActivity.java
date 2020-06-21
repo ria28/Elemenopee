@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,8 +28,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -39,12 +42,12 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import org.wazir.build.elemenophee.R;
-import org.wazir.build.elemenophee.Student.StudentSupport.ChatGroup.GroupChatActivity;
 import org.wazir.build.elemenophee.Student.StudentSupport.MainChatPanel.MessObj;
 import org.wazir.build.elemenophee.Student.StudentSupport.MainChatPanel.MessageAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -96,31 +99,53 @@ public class MessageActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+        mchats = new ArrayList<>();
+        messageAdapter = new MessageAdapter(mchats, this);
+        recyclerView.setAdapter(messageAdapter);
 
-        intent = getIntent();
-        userId = intent.getStringExtra("user_id");    /// other person id
 
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
-        mStorageRef= FirebaseStorage.getInstance().getReference();
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
-//        reference=database.getInstace.ref(child).child(userid)
 
+        intent = getIntent();
+        userId = intent.getStringExtra("user_id");    /// other person id  phone no
+
+        db.collection("TEACHERS").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot doc = task.getResult();
+                    username.setText(doc.get("name").toString());
+                    String imageUrl = doc.get("proPicURL").toString();
+                    Glide.with(profile_image.getContext()).load(imageUrl).into(profile_image);
+                }
+
+            }
+        });
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String doc_id = sdf.format(new Date());
+        saveDocId = doc_id;
 
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String message = text_send.getText().toString();
                 if (!message.equals("")) {
-                    sendMessage(fuser.getUid(), userId, message, fuser.getDisplayName());
+                    sendMessage(fuser.getPhoneNumber(), userId, message, fuser.getDisplayName());
+                } else if (tempImage.getVisibility() == View.VISIBLE) {
+                    uploadFile();
                 } else
                     Toast.makeText(MessageActivity.this, "YOU CAN'T SEND EMPTY MESSAGE", Toast.LENGTH_SHORT).show();
                 text_send.setText("");
 
             }
         });
-        readMessage(fuser.getUid(), userId, "");
+
+        readMessage(fuser.getPhoneNumber(), userId, "");
 
     }
 
@@ -138,22 +163,50 @@ public class MessageActivity extends AppCompatActivity {
             mchats = messageAdapter.getMessages();
             mchats.add(0, obj);
             messageAdapter.setMessages(mchats);
+            messageAdapter.notifyDataSetChanged();
+            recyclerView.setAdapter(messageAdapter);
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-            String doc_id = sdf.format(new Date());
-            saveDocId = doc_id;
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+//            String doc_id = sdf.format(new Date());
+//            saveDocId = doc_id;
 
-            db.collection("ChatRoom").document(doc_id).collection("Chats")
-                    .document("messages").set(obj);
+            db.collection("ChatRoom").document(receiver).collection("Chats")
+                    .document(saveDocId).set(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    finish();
+                }
+            });
 
-            db.collection("STUDENTS").document(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber()).set(doc_id);
+            String number = mAuth.getCurrentUser().getPhoneNumber();
+            HashMap<String, Object> hashMap = new HashMap<>();
+            hashMap.put("Contacts", receiver);
+            HashMap<String ,Object>hashMapTeacher= new HashMap<>();
+            hashMapTeacher.put("Contacts",number);
+            db.collection("STUDENTS").document(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber()).collection("Contacts").document("list").update("Contacts", FieldValue.arrayUnion(userId));;
+            db.collection("TEACHERS").document(userId).collection("Contacts").document("list").update("Contacts", FieldValue.arrayUnion(number));
         }
 
     }
 
 
     private void readMessage(final String myid, String userid, String imageUrl) {
-        CollectionReference reference = db.collection("ChatRoom").document(saveDocId).collection("Chats");
+
+
+//        DocumentReference reference2 = db.collection("ChatRoom").document(userid)
+//                .collection("Chats").document(saveDocId);
+//        reference2.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+//            @Override
+//            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+//                mchats = new ArrayList<>();
+//                mchats.add(documentSnapshot.toObject(MessObj.class));
+//                Collections.reverse(mchats);
+//                messageAdapter.setMessages(mchats);
+//            }
+//
+//        });
+
+        CollectionReference reference = db.collection("ChatRoom").document(userid).collection("Chats");
         reference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -195,7 +248,7 @@ public class MessageActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     MessObj object = new MessObj(text_send.getText().toString(),
-                                            mAuth.getCurrentUser().getUid(),
+                                            mAuth.getCurrentUser().getPhoneNumber(),
                                             userId,
                                             mAuth.getCurrentUser().getDisplayName());
                                     object.setImageUrl(uri.toString());
@@ -203,9 +256,10 @@ public class MessageActivity extends AppCompatActivity {
                                     mchats.add(0, object);
                                     messageAdapter.setMessages(mchats);
 
-                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-                                    String doc_id = sdf.format(new Date());
-                                    db.collection("ChatRoom").document(saveDocId).collection("Chats").document("messages")
+//                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+//                                    String doc_id = sdf.format(new Date());
+
+                                    db.collection("ChatRoom").document(userId).collection("Chats").document(saveDocId)
                                             .set(object)
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override

@@ -21,7 +21,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CommunitySection.ComPanActivity"></activity>
+        <activity android:name=".Student.StudentSupport.ChatActivity"></activity>
+        <activity android:name=".CommunitySection.ComPanActivity" />
         <activity android:name=".PaymentActivity" />
         <activity android:name=".Teacher.TeacherProfile" />
         <activity android:name=".Student.StudentProfile.StudentProfileActivity" />
@@ -29,7 +30,9 @@
         <activity android:name=".Student.Lecture.Subject.ViewVideoListActivity" />
         <activity android:name=".ViewTeacherProfile" />
         <activity android:name=".Student.Lecture.Subject.ViewVideosChapActivity" />
+        <activity android:name=".Student.StudentSupport.MainChatPanel.ChatMainActivity" />
         <activity android:name=".Student.Community.ViewNotesActivity" />
+        <activity android:name=".Student.StudentSupport.Chat121.MessageActivity" />
         <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,19 +48,20 @@
         <activity
             android:name=".Teacher.videoPlayingActivity"
             android:configChanges="orientation|screenSize" />
-        <activity android:name=".Teacher.mainDashBoardTeacher"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Teacher.mainDashBoardTeacher"
+            android:screenOrientation="portrait" />
         <activity android:name=".Student.Lecture.Subject.LectureActivity" />
         <activity android:name=".Student.StudentActivity.ClassRoomActivity" />
         <activity android:name=".Student.Videos.VideoActivity" />
-        <activity android:name=".Student.StuCommPanel.Stu_main_comm_screen"/>
-
+        <activity android:name=".Student.StuCommPanel.Stu_main_comm_screen" />
         <activity android:name=".Student.StuProfile.EditStuProfileActivity" />
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-        <activity android:name=".Student.StudentMainPanel.StudentMainAct"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Student.StudentMainPanel.StudentMainAct"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="preloaded_fonts"

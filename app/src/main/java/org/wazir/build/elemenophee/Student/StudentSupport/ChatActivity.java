@@ -1,16 +1,13 @@
-package org.wazir.build.elemenophee.Student.StudentSupport.MainChatPanel.StuChatFrag;
-
-import android.os.Bundle;
+package org.wazir.build.elemenophee.Student.StudentSupport;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -18,7 +15,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -27,43 +23,41 @@ import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.User;
 import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.UserAdapter;
-import org.wazir.build.elemenophee.Student.StudentSupport.MainChatPanel.ChatMainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class ChatsFragment extends Fragment {
+public class ChatActivity extends AppCompatActivity {
 
-    private static final String TAG = "View Contacts Activity";
 
     RecyclerView recyclerView;
     UserAdapter userAdapter;
-    List<User> mUsers;
+    List<User> mUsers=new ArrayList<>();
     List<String> userList;
     FirebaseUser fuser;
     FirebaseFirestore db;
     CollectionReference reference;
-    ArrayList<String> doc_id;
+    ArrayList<String> doc_id =new ArrayList<>();
     FirebaseAuth mAuth;
     TeacherObj teachers;
-
-    public ChatsFragment() {
-        // Required empty public constructor
-    }
+    Toolbar mToolbar;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_chat);
 
-        View view = inflater.inflate(R.layout.fragment_chats, container, false);
+        mToolbar = findViewById(R.id.main_page_toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("Student Support");
 
-        mUsers = new ArrayList<>();
-        recyclerView = view.findViewById(R.id.chats_list_rv);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
+        userAdapter=new UserAdapter(this,mUsers);
+        recyclerView = findViewById(R.id.chats_list_rv_);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(userAdapter);
 
 
         db = FirebaseFirestore.getInstance();
@@ -71,23 +65,41 @@ public class ChatsFragment extends Fragment {
         reference = db.collection("ChatRoom");
         mAuth = FirebaseAuth.getInstance();
         String number = mAuth.getCurrentUser().getPhoneNumber();
-        doc_id = new ArrayList<>();
 
         //get all contacts
 
-        FirebaseFirestore.getInstance().collection("STUDENTS").document(number)
+        // Student login
+        FirebaseFirestore.getInstance().collection("STUDENTS").document(number).collection("Contacts").document("list")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful() && task.getResult().exists()) {
-                            StudentObj obj = task.getResult().toObject(StudentObj.class);
-                            // TODO: 6/7/2020 Do what ever you want With the Student DATA here
-//                            doc_id = obj.getContacts();
+                            DocumentSnapshot doc = task.getResult();
+                            doc_id.add(doc.get("Contacts").toString());
+                            Log.d("contacts", "onComplete: "+ doc_id.get(0));
                         } else
-                            Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+
+//        Log.d("Contacts", "onCreate: "+doc_id.get(0));
+
+        // Teacher login
+
+//        FirebaseFirestore.getInstance().collection("TEACHERS").document(number).collection("Contacts").document("list")
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                        if (task.isSuccessful() && task.getResult().exists()) {
+//                            DocumentSnapshot doc = task.getResult();
+//                            doc_id.add(doc.get("Contacts").toString());
+//                        } else
+//                            Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+
 
         //doc_id teacher's number
         doc_id.add("+918130981088");
@@ -98,30 +110,33 @@ public class ChatsFragment extends Fragment {
                 FirebaseFirestore.getInstance().collection("TEACHERS").document(s).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
+                        if (task.isSuccessful() && task.getResult().exists()) {
                             DocumentSnapshot doc = task.getResult();
                             String id = doc.get("phone").toString();
                             String username = doc.get("name").toString();
                             String imageUrl = doc.get("proPicURL").toString();
 
                             mUsers.add(new User(id, username, imageUrl));
-                            userAdapter = new UserAdapter(getContext(), mUsers);
+                            userAdapter = new UserAdapter(ChatActivity.this, mUsers);
                             userAdapter.notifyDataSetChanged();
                             recyclerView.setAdapter(userAdapter);
 
                         } else
-                            Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
                     }
 
                 });
-//                Log.d("user info", "onCreateView: "+ mUsers.get(0).getUsername());
+//                userAdapter.notifyDataSetChanged();
+//                recyclerView.setAdapter(userAdapter);
             }
 
 
         } else {
-            Toast.makeText(getContext(), "No contacts", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ChatActivity.this, "No contacts", Toast.LENGTH_SHORT).show();
         }
+
+        setUpRcView();
 
 //        if (doc_id != null) {
 //            for (String s : doc_id) {
@@ -240,7 +255,9 @@ public class ChatsFragment extends Fragment {
 //            }
 //        });
 //    }
-        return view;
     }
 
+    private void setUpRcView() {
+        recyclerView.setAdapter(userAdapter);
+    }
 }
