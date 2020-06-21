@@ -39,12 +39,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.wazir.build.elemenophee.CommunitySection.ComPanActivity;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
-import org.wazir.build.elemenophee.ModelObj.SubscribedTOmodel;
 import org.wazir.build.elemenophee.ModelObj.SubscribersModel;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
-import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
 import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.recentSubscriberAdapter;
@@ -53,7 +51,6 @@ import org.wazir.build.elemenophee.Teacher.model.contentModel;
 import org.wazir.build.elemenophee.Utils.PermissionUtil;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -67,6 +64,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     CardView uploadVideo, uploadPdf, uploadFile;
     CardView logoutUser;
     CardView viewProfile;
+
     TextView name, designation, mainPageName;
     ArrayList<String> classes, subjects;
     FirebaseAuth mAuth;
@@ -170,7 +168,9 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         recentContent.hasFixedSize();
         setUpRecyclerView();
 
-        recentSubs.setLayoutManager(layoutManager);
+        RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(this);
+        ((LinearLayoutManager) layoutManager1).setOrientation(RecyclerView.HORIZONTAL);
+        recentSubs.setLayoutManager(layoutManager1);
         recentSubs.hasFixedSize();
         recentSubs.setAdapter(recentSubscriberAdapter);
 
@@ -262,6 +262,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        subsList = new ArrayList<>();
                         for (DocumentSnapshot doc : queryDocumentSnapshots) {
                             SubscribersModel model = doc.toObject(SubscribersModel.class);
                             subsList.add(model.getStudentId());
