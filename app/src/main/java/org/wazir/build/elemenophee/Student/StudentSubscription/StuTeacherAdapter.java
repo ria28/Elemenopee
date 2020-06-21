@@ -1,5 +1,6 @@
 package org.wazir.build.elemenophee.Student.StudentSubscription;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,15 +11,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import org.wazir.build.elemenophee.R;
 
 import java.util.ArrayList;
 
 public class StuTeacherAdapter extends RecyclerView.Adapter<StuTeacherAdapter.MyViewHolder> {
+    Context context;
     private ArrayList<TeacherObj> TeacherList;
 
 
-    public StuTeacherAdapter(ArrayList<TeacherObj> exampleList) {
+    public StuTeacherAdapter(Context context,ArrayList<TeacherObj> exampleList) {
+        this.context = context;
         this.TeacherList = exampleList;
     }
     @Override
@@ -29,12 +34,11 @@ public class StuTeacherAdapter extends RecyclerView.Adapter<StuTeacherAdapter.My
     }
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        for(int i=0;i<1;i++)
-            System.out.println(i);
+;
         TeacherObj currentItem = TeacherList.get(position);;
         holder.name.setText(currentItem.getTeacherName());
-
         holder.description.setText(currentItem.getDescription());
+        Glide.with(context).load(currentItem.picURL).into(holder.profileImage);
 
     }
 
