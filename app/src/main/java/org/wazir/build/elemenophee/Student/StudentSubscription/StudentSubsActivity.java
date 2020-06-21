@@ -39,24 +39,19 @@ public class StudentSubsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
 
-        reference = FirebaseFirestore.getInstance()
-                .collection("TEACHERS");
+        reference = FirebaseFirestore.getInstance().collection("TEACHERS");
 
         reference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
                 if (task.isSuccessful() && !task.getResult().isEmpty()) {
                     for (QueryDocumentSnapshot doc : task.getResult()) {
                         String name_ = doc.get("name").toString();
                         String description_ = doc.get("experience").toString();
                         ArrayList<String> subjects_ = (ArrayList<String>) doc.get("subs");
-//                        teacher(number);
-
                         list.add(new TeacherObj(name_, description_, subjects_));
                         recyclerView.setAdapter(new StuTeacherAdapter(list));
                     }
-
                 } else
                     Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
             }
