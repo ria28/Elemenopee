@@ -60,7 +60,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     private static final int PICK_VIDEO = 101;
     private static final int PICK_PDF = 102;
     private static final int PICK_FILE = 103;
-    CardView live_lecture_card, sub_btn;
+    CardView live_lecture_card, sub_btn, search_teach;
     ConstraintLayout view_upload_card, communityCard;
     CardView uploadVideo, uploadPdf, uploadFile;
     CardView logoutUser;
@@ -422,6 +422,8 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         profilePic = findViewById(R.id.id_user_profile);
         proPic2 = findViewById(R.id.circleImageView);
         communityCard = findViewById(R.id.community_card);
+        search_teach = findViewById(R.id.stu_search_teacher);
+        search_teach.setVisibility(View.GONE);
         communityCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
