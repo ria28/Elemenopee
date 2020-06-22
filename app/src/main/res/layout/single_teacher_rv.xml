@@ -6,6 +6,7 @@
     app:cardCornerRadius="4dp">
 
     <RelativeLayout
+        android:id="@+id/single_Teacher_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="4dp">
@@ -18,8 +19,8 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            app:civ_border_color="#FFFFFF"
             android:src="@color/softBlue"
+            app:civ_border_color="#FFFFFF"
             app:civ_border_width="2dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -48,6 +49,7 @@
             android:textSize="15sp" />
 
         <Button
+            android:id="@+id/viewProfileText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -55,7 +57,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
-            android:text="SUBSCRIBE"
+            android:text="View Profile"
             android:textColor="#FF7D43" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
