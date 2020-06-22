@@ -96,18 +96,21 @@ public class LoadingPopup extends AppCompatDialog {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
+        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         view1.findViewById(R.id.cardView2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!question.getEditText().getText().equals("")) {
                     questionObj.setQuestion(question.getEditText().getText().toString());
-                    questionObj.setStuId(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber());
+                    questionObj.setStuName(mAuth.getCurrentUser().getDisplayName());
+                    questionObj.setStuProfile(mAuth.getCurrentUser().getPhotoUrl().toString());
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy_HH:mm:ss");
                     questionObj.setTime(sdf.format(new Date()));
+                    SimpleDateFormat doc_id = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                    questionObj.setQues_id(doc_id.format(new Date()));
                     questionObj.setSubClass(stuClass);
                     questionObj.setSubject(subject);
                     beginAskQues(questionObj);
@@ -125,18 +128,33 @@ public class LoadingPopup extends AppCompatDialog {
         alertDialog.show();
     }
 
-    public void beginAskQues(QuestionObj obj) {
+    public void beginAskQues(final QuestionObj obj) {
         quesPb.setVisibility(View.VISIBLE);
         FirebaseFirestore.getInstance().collection("QUESTIONS")
                 .document(stuClass)
                 .collection(subject)
-                .document()
+                .document(obj.getQues_id())
                 .set(obj)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                            alertDialog.dismiss();
+                        if (task.isSuccessful()) {
+                            FirebaseFirestore.getInstance()
+                                    .collection("STUDENTS")
+                                    .document(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber())
+                                    .collection("QUESTIONS")
+                                    .document(obj.getQues_id())
+                                    .set(obj)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                alertDialog.dismiss();
+                                            } else {
+                                                quesPb.setVisibility(View.GONE);
+                                            }
+                                        }
+                                    });
                         } else {
                             quesPb.setVisibility(View.GONE);
                         }

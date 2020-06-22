@@ -1,19 +1,55 @@
 package org.wazir.build.elemenophee.ModelObj;
 
 public class QuestionObj {
-    private String stuId, question, subject, subClass, time, ques_id;
+    private String question, subject, subClass, time, ques_id;
+    private String StuName, stuProfile;
     private boolean satisfied;
+    int likes, ansCount;
 
     public QuestionObj() {
     }
 
-    public QuestionObj(String stuId, String question, String subject, String subClass, String time, boolean satisfied) {
-        this.stuId = stuId;
+    public QuestionObj(String question, String subject, String subClass, String time, boolean satisfied) {
+
         this.question = question;
         this.subject = subject;
         this.subClass = subClass;
         this.time = time;
         this.satisfied = satisfied;
+        likes = 0;
+        ansCount = 0;
+    }
+
+    public String getStuName() {
+        return StuName;
+    }
+
+    public void setStuName(String stuName) {
+        StuName = stuName;
+    }
+
+    public String getStuProfile() {
+        return stuProfile;
+    }
+
+    public void setStuProfile(String stuProfile) {
+        this.stuProfile = stuProfile;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public int getAnsCount() {
+        return ansCount;
+    }
+
+    public void setAnsCount(int ansCount) {
+        this.ansCount = ansCount;
     }
 
     public String getQues_id() {
@@ -22,14 +58,6 @@ public class QuestionObj {
 
     public void setQues_id(String ques_id) {
         this.ques_id = ques_id;
-    }
-
-    public String getStuId() {
-        return stuId;
-    }
-
-    public void setStuId(String stuId) {
-        this.stuId = stuId;
     }
 
     public String getQuestion() {

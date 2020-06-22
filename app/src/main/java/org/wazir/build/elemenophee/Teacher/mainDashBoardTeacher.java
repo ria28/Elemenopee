@@ -440,7 +440,6 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         messages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent= new Intent(mainDashBoardTeacher.this, ChatActivity.class);
                 startActivity(intent);
                 // TODO: 6/21/2020 navigate To messages activity
