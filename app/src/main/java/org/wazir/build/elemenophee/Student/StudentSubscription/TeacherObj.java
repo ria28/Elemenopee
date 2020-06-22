@@ -6,11 +6,21 @@ public class TeacherObj {
 
     String TeacherName;
     String Description;
+    String picURL;
     ArrayList<String>subjects;
 
-    public TeacherObj(String teacherName, String description, ArrayList<String> subjects) {
+    public String getPicURL() {
+        return picURL;
+    }
+
+    public void setPicURL(String picURL) {
+        this.picURL = picURL;
+    }
+
+    public TeacherObj(String teacherName, String description, String picURL, ArrayList<String> subjects) {
         TeacherName = teacherName;
         Description = description;
+        this.picURL = picURL;
         this.subjects = subjects;
     }
 

@@ -34,15 +34,19 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.wazir.build.elemenophee.CommunitySection.ComPanActivity;
+import org.wazir.build.elemenophee.ModelObj.StudentObj;
+import org.wazir.build.elemenophee.ModelObj.SubscribersModel;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
 import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
+import org.wazir.build.elemenophee.Teacher.adapter.recentSubscriberAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.videoRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.model.contentModel;
 import org.wazir.build.elemenophee.Utils.PermissionUtil;
@@ -61,17 +65,18 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     CardView uploadVideo, uploadPdf, uploadFile;
     CardView logoutUser;
     CardView viewProfile;
+
     TextView name, designation, mainPageName;
     ArrayList<String> classes, subjects;
     FirebaseAuth mAuth;
-    RecyclerView recyclerView;
+    RecyclerView recentContent, recentSubs;
     CircleImageView profilePic, proPic2;
     CardView messages;
-
 
     videoRecyclerAdapter videoAdapter;
     otherAdapter otherAdapter;
     notesRecyclerAdapter notesAdapter;
+    recentSubscriberAdapter recentSubscriberAdapter;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private ProgressDialog progress;
 
@@ -81,6 +86,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     ArrayList<contentModel> videoList = new ArrayList<>();
     ArrayList<contentModel> pdfList = new ArrayList<>();
     ArrayList<contentModel> otherList = new ArrayList<>();
+    ArrayList<StudentObj> subsribersList = new ArrayList<>();
 
 
     CollectionReference reference;
@@ -89,6 +95,10 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     ArrayAdapter<String> FileTypeSpinnerViewAdapter;
     ArrayList<String> content = new ArrayList<>();
     private Uri selectedFilePath;
+
+    private CollectionReference studentRef;
+    private CollectionReference subsRef;
+    private ArrayList<String> subsList;
 
 
     @Override
@@ -126,11 +136,13 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
 
         videoAdapter = new videoRecyclerAdapter(mainDashBoardTeacher.this, false, videoList, this, -1);
         notesAdapter = new notesRecyclerAdapter(mainDashBoardTeacher.this, pdfList);
-        otherAdapter = new otherAdapter(mainDashBoardTeacher.this,otherList);
+        otherAdapter = new otherAdapter(mainDashBoardTeacher.this, otherList);
+        recentSubscriberAdapter = new recentSubscriberAdapter(subsribersList, mainDashBoardTeacher.this);
 
         loadData("VIDEOS");
         loadData("NOTES");
         loadData("OTHER");
+        loadSubscriber();
 
         FileType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -153,9 +165,15 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.hasFixedSize();
+        recentContent.setLayoutManager(layoutManager);
+        recentContent.hasFixedSize();
         setUpRecyclerView();
+
+        RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(this);
+        ((LinearLayoutManager) layoutManager1).setOrientation(RecyclerView.HORIZONTAL);
+        recentSubs.setLayoutManager(layoutManager1);
+        recentSubs.hasFixedSize();
+        recentSubs.setAdapter(recentSubscriberAdapter);
 
 
         uploadVideo.setOnClickListener(new View.OnClickListener() {
@@ -239,12 +257,57 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         });
     }
 
+    private void loadSubscriber() {
+        subsRef
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        subsList = new ArrayList<>();
+                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                            SubscribersModel model = doc.toObject(SubscribersModel.class);
+                            subsList.add(model.getStudentId());
+                        }
+                        if (subsList.size() > 0) {
+                            reference
+                                    .whereIn("contact", subsList)
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                            if (task.isSuccessful()) {
+                                                if (!task.getResult().isEmpty()) {
+                                                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                                                        StudentObj model = doc.toObject(StudentObj.class);
+                                                        subsribersList.add(model);
+                                                        recentSubscriberAdapter.notifyDataSetChanged();
+                                                    }
+
+                                                }
+                                                else
+                                                    Log.d("TAG", "onComplete: ");
+                                            } else
+                                                Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(mainDashBoardTeacher.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
     private void setUpRecyclerView() {
 
         if (FileType.getSelectedItem().toString() == "VIDEOS")
-            recyclerView.setAdapter(videoAdapter);
+            recentContent.setAdapter(videoAdapter);
         else
-            recyclerView.setAdapter(notesAdapter);
+            recentContent.setAdapter(notesAdapter);
     }
 
 
@@ -351,7 +414,8 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         live_lecture_card = findViewById(R.id.LiveCardTeacher);
         view_upload_card = findViewById(R.id.viewUploadCardTeacher);
         FileType = findViewById(R.id.mainDashTeacherRecentSpinner);
-        recyclerView = findViewById(R.id.recent_uploads_recycler);
+        recentContent = findViewById(R.id.recent_uploads_recycler);
+        recentSubs = findViewById(R.id.recent_subscriber_recycler);
         uploadVideo = findViewById(R.id.uploadVideo);
         uploadPdf = findViewById(R.id.uploadPdf);
         uploadFile = findViewById(R.id.uploadFile);
@@ -364,6 +428,13 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                 startActivity(new Intent(mainDashBoardTeacher.this, ComPanActivity.class));
             }
         });
+
+
+        studentRef = FirebaseFirestore.getInstance()
+                .collection("STUDENTS");
+        subsRef = FirebaseFirestore.getInstance().collection("TEACHERS")
+                .document(user.getPhoneNumber()).collection("SUBSCRIBERS");
+
         messages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -55,7 +55,7 @@ public class LoadingPopup extends AppCompatDialog {
         alertDialog.dismiss();
     }
 
-    public void getQuestionObj() {
+    public void askQuestionPopup() {
         if (ctx == null) {
             return;
         }
@@ -144,4 +144,7 @@ public class LoadingPopup extends AppCompatDialog {
                 });
     }
 
+    public void pushAnswerPopup(){
+
+    }
 }
