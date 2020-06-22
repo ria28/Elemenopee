@@ -33,12 +33,12 @@ public class ChatActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     UserAdapter userAdapter;
-    List<User> mUsers = new ArrayList<>();
+    List<User> mUsers = new ArrayList<>() ;
     List<String> userList;
     FirebaseUser fuser;
     FirebaseFirestore db;
     CollectionReference reference;
-    ArrayList<String> doc_id = new ArrayList<>();
+    ArrayList<String> doc_id ;
     FirebaseAuth mAuth;
     TeacherObj teachers;
     Toolbar mToolbar;
@@ -66,6 +66,9 @@ public class ChatActivity extends AppCompatActivity {
         reference = db.collection("ChatRoom");
         mAuth = FirebaseAuth.getInstance();
         String number = mAuth.getCurrentUser().getPhoneNumber();
+
+        doc_id=new ArrayList<>();
+//        mUsers= new ArrayList<>();
 
         checkStuTea(number);
         setUpRcView();
@@ -224,7 +227,7 @@ public class ChatActivity extends AppCompatActivity {
                         if (task.isSuccessful() && task.getResult().exists()) {
                             DocumentSnapshot doc = task.getResult();
                             doc_id.add(doc.get("Contacts").toString());
-                            Log.d("contacts", "onComplete: " + doc_id.get(0));
+//                            Log.d("contacts", "onComplete: " + doc_id.get(0));
                         } else
                             Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
@@ -235,9 +238,11 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void getStudentContacts(ArrayList<String> doc_id) {
+//        Log.d("contacts", "getStudentContacts: "+ doc_id.get(0));
 
         if (doc_id != null) {
             for (String s : doc_id) {
+//                Log.d("contacts", "getStudentContacts: "+s);
                 FirebaseFirestore.getInstance().collection("TEACHERS").document(s)
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -272,7 +277,13 @@ public class ChatActivity extends AppCompatActivity {
 
     private void Teacher(String number) {
 
-        FirebaseFirestore.getInstance().collection("ChatRoom").document(number).collection("Chats")
+//        FirebaseFirestore.getInstance().collection("TEACHERS").document(number).collection("Contacts")
+//                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+
+//        FirebaseFirestore.getInstance().collection("ChatRoom").document(number).collection("Chats")
+//                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+
+                FirebaseFirestore.getInstance().collection("ChatRoom").document(number).collection("Chats")
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -294,7 +305,7 @@ public class ChatActivity extends AppCompatActivity {
         if (doc_id != null) {
             for (String s : doc_id) {
                 final String str = s;
-                FirebaseFirestore.getInstance().collection("Student").document(s)
+                FirebaseFirestore.getInstance().collection("STUDENTS").document(s)
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
