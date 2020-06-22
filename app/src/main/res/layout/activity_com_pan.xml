@@ -8,6 +8,7 @@
     tools:context=".CommunitySection.ComPanActivity">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/community_main_screen_ID"
         android:layout_width="0sp"
         android:layout_height="0sp"
         app:layout_constraintBottom_toBottomOf="parent"
