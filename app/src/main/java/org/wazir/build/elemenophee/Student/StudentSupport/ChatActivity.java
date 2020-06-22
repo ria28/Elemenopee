@@ -288,7 +288,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void getTeacherContacts(ArrayList<String> doc_id) {
         if (doc_id != null) {
-            db.collection("Student")
+            db.collection("STUDENTS")
                     .whereIn("contact", Arrays.asList(doc_id))
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
