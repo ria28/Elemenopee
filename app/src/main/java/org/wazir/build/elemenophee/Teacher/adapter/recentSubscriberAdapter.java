@@ -1,6 +1,7 @@
 package org.wazir.build.elemenophee.Teacher.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,9 @@ public class recentSubscriberAdapter extends RecyclerView.Adapter<recentSubscrib
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if (list.get(position).getmImageUrl() != null && !list.get(position).getmImageUrl().isEmpty())
+        Log.d("TAG", "recentSubscriberAdapter: "+list.get(position).getmImageUrl());
+
+        if (list.get(position).getmImageUrl() != null && list.get(position).getmImageUrl() !="")
             Glide.with(context).load(list.get(position).getmImageUrl()).into(holder.image);
         else
             Glide.with(context).load(context.getDrawable(R.drawable.img_intro_4)).into(holder.image);

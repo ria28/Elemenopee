@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,12 +40,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.wazir.build.elemenophee.CommunitySection.ComPanActivity;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
-import org.wazir.build.elemenophee.ModelObj.SubscribedTOmodel;
 import org.wazir.build.elemenophee.ModelObj.SubscribersModel;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
-import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
 import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.recentSubscriberAdapter;
@@ -53,7 +52,6 @@ import org.wazir.build.elemenophee.Teacher.model.contentModel;
 import org.wazir.build.elemenophee.Utils.PermissionUtil;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -171,9 +169,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         recentContent.hasFixedSize();
         setUpRecyclerView();
 
-        RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(this);
-        ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.HORIZONTAL);
-        recentSubs.setLayoutManager(layoutManager1);
+        recentSubs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
         recentSubs.hasFixedSize();
         recentSubs.setAdapter(recentSubscriberAdapter);
 
@@ -267,29 +263,31 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (DocumentSnapshot doc : queryDocumentSnapshots) {
                             SubscribersModel model = doc.toObject(SubscribersModel.class);
-                            subsList.add(model.getStudentId());
+                            subsList.add(model.getStudentID());
                         }
                         if (subsList.size() > 0) {
+                            Log.d("TAG", "onSuccess: "+ subsList);
                             studentRef
                                     .whereIn("contact", subsList)
                                     .limit(10)
                                     .get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                         @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                                            if (task.isSuccessful()) {
-                                                if (!task.getResult().isEmpty()) {
-                                                    for (QueryDocumentSnapshot doc : task.getResult()) {
-                                                        StudentObj model = doc.toObject(StudentObj.class);
-                                                        subsribersList.add(model);
-                                                        recentSubscriberAdapter.notifyDataSetChanged();
-                                                    }
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            if (queryDocumentSnapshots.size() > 0) {
+                                                for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                                                    StudentObj model = doc.toObject(StudentObj.class);
+                                                    subsribersList.add(model);
+                                                    recentSubscriberAdapter.notifyDataSetChanged();
                                                 }
-                                            } else
-                                                Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
                                         }
-                                    });
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(mainDashBoardTeacher.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {

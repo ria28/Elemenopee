@@ -128,6 +128,7 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
                 // TODO: 6/21/2020 nav to Messages
             }
         });
+        Class.add("Class 5");
         Class.add("Class 6");
         Class.add("Class 7");
         Class.add("Class 8");
