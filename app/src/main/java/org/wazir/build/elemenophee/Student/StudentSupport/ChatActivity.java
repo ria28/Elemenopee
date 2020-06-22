@@ -1,14 +1,14 @@
 package org.wazir.build.elemenophee.Student.StudentSupport;
 
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,7 +25,9 @@ import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.User;
 import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.UserAdapter;
 
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
@@ -38,7 +40,7 @@ public class ChatActivity extends AppCompatActivity {
     FirebaseUser fuser;
     FirebaseFirestore db;
     CollectionReference reference;
-    ArrayList<String> doc_id = new ArrayList<>();
+    ArrayList<String> doc_id;
     FirebaseAuth mAuth;
     TeacherObj teachers;
     Toolbar mToolbar;
@@ -49,6 +51,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        doc_id = new ArrayList<>();
         mToolbar = findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Student Support");
@@ -211,10 +214,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void Student(String number) {
-
-        doc_id.add("+918130981088");
-        doc_id.add("+918750348232");
-
         FirebaseFirestore.getInstance().collection("STUDENTS").document(number)
                 .collection("Contacts").document("list")
                 .get()
@@ -271,54 +270,49 @@ public class ChatActivity extends AppCompatActivity {
 
 
     private void Teacher(String number) {
-
-        FirebaseFirestore.getInstance().collection("ChatRoom").document(number).collection("Chats")
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        CollectionReference reference = db.collection("TEACHERS").document(number).collection("Contacts");
+        reference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        doc_id.add(document.getId());
+                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                        doc_id.add(snapshot.getId());
                     }
                 } else {
-                    Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChatActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 }
-
                 getTeacherContacts(doc_id);
             }
         });
     }
 
     private void getTeacherContacts(ArrayList<String> doc_id) {
-
         if (doc_id != null) {
-            for (String s : doc_id) {
-                final String str = s;
-                FirebaseFirestore.getInstance().collection("Student").document(s)
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful() && task.getResult().exists()) {
-                                    DocumentSnapshot doc = task.getResult();
-                                    String id = str;
+            db.collection("Student")
+                    .whereIn("contact", Arrays.asList(doc_id))
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                    DocumentSnapshot doc = snapshot;
+                                    String id = doc.get("contact").toString();
                                     String username = doc.get("name").toString();
                                     String imageUrl = doc.get("imageUrl").toString();
-
                                     mUsers.add(new User(id, username, imageUrl));
-                                    userAdapter = new UserAdapter(ChatActivity.this, mUsers);
-                                    userAdapter.notifyDataSetChanged();
-                                    recyclerView.setAdapter(userAdapter);
-
-                                } else
-                                    Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-
+                                }
+                            } else {
+                                Toast.makeText(ChatActivity.this, "No Students Found", Toast.LENGTH_SHORT).show();
                             }
 
-                        });
+                            userAdapter = new UserAdapter(ChatActivity.this, mUsers);
+                            userAdapter.notifyDataSetChanged();
+                            recyclerView.setAdapter(userAdapter);
+                        }
+                    });
 //                userAdapter.notifyDataSetChanged();
 //                recyclerView.setAdapter(userAdapter);
-            }
 
 
         } else {
