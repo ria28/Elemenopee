@@ -58,6 +58,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageActivity extends AppCompatActivity {
+    //--
 
     CircleImageView profile_image;
     TextView username;
