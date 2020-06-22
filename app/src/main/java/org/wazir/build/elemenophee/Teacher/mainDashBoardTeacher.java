@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +43,7 @@ import org.wazir.build.elemenophee.ModelObj.SubscribersModel;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
+import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.recentSubscriberAdapter;
@@ -60,18 +60,18 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     private static final int PICK_VIDEO = 101;
     private static final int PICK_PDF = 102;
     private static final int PICK_FILE = 103;
-    CardView live_lecture_card, sub_btn;
+    CardView live_lecture_card, sub_btn, search_teach;
     ConstraintLayout view_upload_card, communityCard;
     CardView uploadVideo, uploadPdf, uploadFile;
     CardView logoutUser;
     CardView viewProfile;
+
     TextView name, designation, mainPageName;
     ArrayList<String> classes, subjects;
     FirebaseAuth mAuth;
     RecyclerView recentContent, recentSubs;
     CircleImageView profilePic, proPic2;
     CardView messages;
-
 
     videoRecyclerAdapter videoAdapter;
     otherAdapter otherAdapter;
@@ -98,7 +98,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
 
     private CollectionReference studentRef;
     private CollectionReference subsRef;
-    private ArrayList<String> subsList = new ArrayList<>();
+    private ArrayList<String> subsList;
 
 
     @Override
@@ -169,7 +169,9 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         recentContent.hasFixedSize();
         setUpRecyclerView();
 
-        recentSubs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
+        RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(this);
+        ((LinearLayoutManager) layoutManager1).setOrientation(RecyclerView.HORIZONTAL);
+        recentSubs.setLayoutManager(layoutManager1);
         recentSubs.hasFixedSize();
         recentSubs.setAdapter(recentSubscriberAdapter);
 
@@ -261,33 +263,34 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        subsList = new ArrayList<>();
                         for (DocumentSnapshot doc : queryDocumentSnapshots) {
                             SubscribersModel model = doc.toObject(SubscribersModel.class);
-                            subsList.add(model.getStudentID());
+                            subsList.add(model.getStudentId());
                         }
                         if (subsList.size() > 0) {
-                            Log.d("TAG", "onSuccess: "+ subsList);
-                            studentRef
+                            reference
                                     .whereIn("contact", subsList)
-                                    .limit(10)
                                     .get()
-                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override
-                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                            if (queryDocumentSnapshots.size() > 0) {
-                                                for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                                                    StudentObj model = doc.toObject(StudentObj.class);
-                                                    subsribersList.add(model);
-                                                    recentSubscriberAdapter.notifyDataSetChanged();
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                            if (task.isSuccessful()) {
+                                                if (!task.getResult().isEmpty()) {
+                                                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                                                        StudentObj model = doc.toObject(StudentObj.class);
+                                                        subsribersList.add(model);
+                                                        recentSubscriberAdapter.notifyDataSetChanged();
+                                                    }
+
                                                 }
-                                            }
+                                                else
+                                                    Log.d("TAG", "onComplete: ");
+                                            } else
+                                                Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                         }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(mainDashBoardTeacher.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                                    });
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -419,6 +422,8 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         profilePic = findViewById(R.id.id_user_profile);
         proPic2 = findViewById(R.id.circleImageView);
         communityCard = findViewById(R.id.community_card);
+        search_teach = findViewById(R.id.stu_search_teacher);
+        search_teach.setVisibility(View.GONE);
         communityCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -435,6 +440,9 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         messages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Intent intent= new Intent(mainDashBoardTeacher.this, ChatActivity.class);
+                startActivity(intent);
                 // TODO: 6/21/2020 navigate To messages activity
             }
         });

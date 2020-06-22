@@ -46,13 +46,13 @@ public class ChatMainActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Student Support");
 
-        myViewPager = (ViewPager) findViewById(R.id.main_tabs_pager);
+        myViewPager = findViewById(R.id.main_tabs_pager);
         myTabsAccessorAdapter = new TabsAccessorAdapter(getSupportFragmentManager());
         myViewPager.setAdapter(myTabsAccessorAdapter);
 
 
-        myTabLayout = (TabLayout) findViewById(R.id.main_tabs);
-        myTabLayout.setupWithViewPager(myViewPager);
+//        myTabLayout = (TabLayout) findViewById(R.id.main_tabs);
+//        myTabLayout.setupWithViewPager(myViewPager);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -68,7 +68,7 @@ public class ChatMainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId()==R.id.create_group){
-            RequestNewGroup();
+//            RequestNewGroup();
             return true;
         }else
             return super.onOptionsItemSelected(item);
@@ -76,46 +76,46 @@ public class ChatMainActivity extends AppCompatActivity {
 
     }
 
-    private void RequestNewGroup() {
+//    private void RequestNewGroup() {
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(ChatMainActivity.this,R.style.AlertDialog);
+//        builder.setTitle("Enter Group Name");
+//        final EditText groupNameField = new EditText(ChatMainActivity.this);
+//        groupNameField.setHint("e.g Coding Cafe");
+//        builder.setView(groupNameField);
+//
+//        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i)
+//            {
+//                String groupName = groupNameField.getText().toString();
+//
+//                if (TextUtils.isEmpty(groupName))
+//                {
+//                    Toast.makeText(ChatMainActivity.this, "Please write Group Name...", Toast.LENGTH_SHORT).show();
+//                }
+//                else
+//                {
+//                    CreateNewGroup(groupName);
+//                }
+//            }
+//        });
+//
+//        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i)
+//            {
+//                dialogInterface.cancel();
+//            }
+//        });
+//
+//        builder.show();
+//    }
+//
+//    private void CreateNewGroup(String groupName) {
+////        String number = mAuth.getCurrentUser().getPhoneNumber().substring(3);
+//////        FirebaseFirestore.getInstance().collection("ChatRooms").document("+91"+number)
+//
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(ChatMainActivity.this,R.style.AlertDialog);
-        builder.setTitle("Enter Group Name");
-        final EditText groupNameField = new EditText(ChatMainActivity.this);
-        groupNameField.setHint("e.g Coding Cafe");
-        builder.setView(groupNameField);
-
-        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i)
-            {
-                String groupName = groupNameField.getText().toString();
-
-                if (TextUtils.isEmpty(groupName))
-                {
-                    Toast.makeText(ChatMainActivity.this, "Please write Group Name...", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    CreateNewGroup(groupName);
-                }
-            }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i)
-            {
-                dialogInterface.cancel();
-            }
-        });
-
-        builder.show();
-    }
-
-    private void CreateNewGroup(String groupName) {
-//        String number = mAuth.getCurrentUser().getPhoneNumber().substring(3);
-////        FirebaseFirestore.getInstance().collection("ChatRooms").document("+91"+number)
-
-
-    }
+//    }
 }
