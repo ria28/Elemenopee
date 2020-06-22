@@ -40,6 +40,7 @@ import org.wazir.build.elemenophee.CommunitySection.ComPanActivity;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
+import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.videoRecyclerAdapter;
@@ -366,6 +367,9 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         messages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Intent intent= new Intent(mainDashBoardTeacher.this, ChatActivity.class);
+                startActivity(intent);
                 // TODO: 6/21/2020 navigate To messages activity
             }
         });
