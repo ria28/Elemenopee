@@ -75,6 +75,7 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     CardView profileLayout;
     CardView cardLogout;
     CardView Subscribe;
+    CardView messages;
 
     CollectionReference isSubs = FirebaseFirestore.getInstance().collection("/TEACHERS/");
 
@@ -93,6 +94,7 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         cardLogout = findViewById(R.id.logout);
         Subscribe = findViewById(R.id.stu_subscribe);
         name = findViewById(R.id.textView26);
+        messages = findViewById(R.id.message_id);
         view_class_tv = findViewById(R.id.to_view_class);
         getProfilePic();
 
@@ -118,6 +120,12 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
             public void onClick(View v) {
                 Intent intent= new Intent(Stu_main_comm_screen.this, StudentSubsActivity.class);
                 startActivity(intent);
+            }
+        });
+        messages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: 6/21/2020 nav to Messages
             }
         });
         Class.add("Class 6");

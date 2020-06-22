@@ -99,6 +99,7 @@ public class StudentSubsActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(StudentSubsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
             }
         });
 
