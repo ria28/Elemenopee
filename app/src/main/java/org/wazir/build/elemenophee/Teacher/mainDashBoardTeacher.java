@@ -99,7 +99,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
 
     private CollectionReference studentRef;
     private CollectionReference subsRef;
-    private ArrayList<String> subsList;
+    private ArrayList<String> subsList = new ArrayList<>();
 
 
     @Override
@@ -170,7 +170,9 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         recentContent.hasFixedSize();
         setUpRecyclerView();
 
-        recentSubs.setLayoutManager(layoutManager);
+        RecyclerView.LayoutManager layoutManager1 = new LinearLayoutManager(this);
+        ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.HORIZONTAL);
+        recentSubs.setLayoutManager(layoutManager1);
         recentSubs.hasFixedSize();
         recentSubs.setAdapter(recentSubscriberAdapter);
 
@@ -267,8 +269,9 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                             subsList.add(model.getStudentId());
                         }
                         if (subsList.size() > 0) {
-                            reference
+                            studentRef
                                     .whereIn("contact", subsList)
+                                    .limit(10)
                                     .get()
                                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override
@@ -281,10 +284,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                                                         subsribersList.add(model);
                                                         recentSubscriberAdapter.notifyDataSetChanged();
                                                     }
-
                                                 }
-                                                else
-                                                    Log.d("TAG", "onComplete: ");
                                             } else
                                                 Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                         }
