@@ -194,12 +194,12 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(ViewTeacherProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                onBackPressed();
             }
         });
     }
 
     private void setUpRecyclerView() {
-
         if (FileType.getSelectedItem().toString() == "VIDEOS")
             recyclerView.setAdapter(videoAdapter);
         else if (FileType.getSelectedItem().toString() == "NOTES")

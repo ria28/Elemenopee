@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.StuCommPanel.Stu_main_comm_screen;
 import org.wazir.build.elemenophee.Student.StudentMainPanel.Objects.SingleVertical;
+import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 import org.wazir.build.elemenophee.Student.StudentSupport.MainChatPanel.ChatMainActivity;
+import org.wazir.build.elemenophee.Student.StudentSupport.MainChatPanel.StuChatFrag.ChatsFragment;
 
 import java.util.ArrayList;
 
@@ -72,7 +74,7 @@ public class VerticalAdapter extends RecyclerView.Adapter<VerticalAdapter.MyView
                         }
                         if(pos==1)
                         {
-                            Intent intent = new Intent(mContext, ChatMainActivity.class);
+                            Intent intent = new Intent(mContext, ChatActivity.class);
                             mContext.startActivity(intent);
                         }
 

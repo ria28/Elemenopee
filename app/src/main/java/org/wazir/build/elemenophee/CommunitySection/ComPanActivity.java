@@ -9,6 +9,8 @@ import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.wazir.build.elemenophee.LoadingPopup;
 import org.wazir.build.elemenophee.R;
@@ -18,6 +20,7 @@ public class ComPanActivity extends AppCompatActivity {
     String claSpiMainStr, subSpiMainStr;
     CardView raiseQuestionCard;
     LoadingPopup loading;
+    RecyclerView commRcView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +28,7 @@ public class ComPanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_com_pan);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         initLayout();
+        initiateRcView();
     }
 
     void initLayout() {
@@ -67,7 +71,13 @@ public class ComPanActivity extends AppCompatActivity {
         raiseQuestionCard = findViewById(R.id.id_raise_ques);
     }
 
+    void initiateRcView() {
+        commRcView = findViewById(R.id.community_main_screen_ID);
+        commRcView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+
+    }
+
     public void askQues(View view) {
-        loading.getQuestionObj();
+        loading.askQuestionPopup();
     }
 }

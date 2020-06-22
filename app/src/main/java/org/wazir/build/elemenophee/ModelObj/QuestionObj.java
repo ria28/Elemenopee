@@ -1,11 +1,11 @@
 package org.wazir.build.elemenophee.ModelObj;
 
-import java.util.ArrayList;
-
 public class QuestionObj {
-    private String stuId, question, subject, subClass, time;
+    private String stuId, question, subject, subClass, time, ques_id;
     private boolean satisfied;
-    private ArrayList<AnsObj> ansObjs;
+
+    public QuestionObj() {
+    }
 
     public QuestionObj(String stuId, String question, String subject, String subClass, String time, boolean satisfied) {
         this.stuId = stuId;
@@ -14,19 +14,14 @@ public class QuestionObj {
         this.subClass = subClass;
         this.time = time;
         this.satisfied = satisfied;
-        ansObjs = new ArrayList<>();
     }
 
-    public QuestionObj() {
-        ansObjs = new ArrayList<>();
+    public String getQues_id() {
+        return ques_id;
     }
 
-    public ArrayList<AnsObj> getAnsObjs() {
-        return ansObjs;
-    }
-
-    public void setAnsObjs(ArrayList<AnsObj> ansObjs) {
-        this.ansObjs = ansObjs;
+    public void setQues_id(String ques_id) {
+        this.ques_id = ques_id;
     }
 
     public String getStuId() {
