@@ -42,6 +42,7 @@ import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.ChapterAd
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.SubjectAdapter;
 import org.wazir.build.elemenophee.Student.StudentProfile.StudentProfileActivity;
 import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
+import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 
 import java.util.ArrayList;
 
@@ -125,6 +126,9 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         messages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Intent intent= new Intent(Stu_main_comm_screen.this, ChatActivity.class);
+                startActivity(intent);
                 // TODO: 6/21/2020 nav to Messages
             }
         });

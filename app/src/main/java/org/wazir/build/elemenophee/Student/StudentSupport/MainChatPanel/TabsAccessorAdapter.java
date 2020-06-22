@@ -1,12 +1,10 @@
 package org.wazir.build.elemenophee.Student.StudentSupport.MainChatPanel;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import org.wazir.build.elemenophee.Student.StudentSupport.MainChatPanel.StuChatFrag.ChatsFragment;
-import org.wazir.build.elemenophee.Student.StudentSupport.MainChatPanel.StuChatFrag.GroupsFragment;
 
 public class TabsAccessorAdapter extends FragmentPagerAdapter {
 
@@ -23,10 +21,10 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter {
             case 0:
                 ChatsFragment chatsFragment = new ChatsFragment();
                 return chatsFragment;
-
-            case 1:
-                GroupsFragment groupsFragment = new GroupsFragment();
-                return groupsFragment;
+//
+//            case 1:
+//                GroupsFragment groupsFragment = new GroupsFragment();
+//                return groupsFragment;
 
 //            case 2:
 //                ContactsFragment contactsFragment = new ContactsFragment();
@@ -45,24 +43,24 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount()
     {
-        return 2;
+        return 1;
     }
 
 
-    @Nullable
-    @Override
-    public CharSequence getPageTitle(int position)
-    {
-        switch (position)
-        {
-            case 0:
-                return "Chats";
-
-            case 1:
-                return "Groups";
-
-            default:
-                return null;
-        }
-    }
+//    @Nullable
+//    @Override
+//    public CharSequence getPageTitle(int position)
+//    {
+//        switch (position)
+//        {
+//            case 0:
+//                return "Chats";
+//
+////            case 1:
+////                return "Groups";
+//
+//            default:
+//                return null;
+//        }
+//    }
 }

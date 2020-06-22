@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
+import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.User;
 import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.UserAdapter;
@@ -46,6 +48,7 @@ public class ChatsFragment extends Fragment {
     CollectionReference reference;
     ArrayList<String> doc_id;
     FirebaseAuth mAuth;
+    TeacherObj teachers;
 
     public ChatsFragment() {
         // Required empty public constructor
@@ -56,16 +59,21 @@ public class ChatsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_chats, container, false);
-        recyclerView = view.findViewById(R.id.chats_list_rv);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(userAdapter);
 
-        db=FirebaseFirestore.getInstance();
+        mUsers = new ArrayList<>();
+        recyclerView = view.findViewById(R.id.chats_list_rv);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setHasFixedSize(true);
+
+
+        db = FirebaseFirestore.getInstance();
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         reference = db.collection("ChatRoom");
         mAuth = FirebaseAuth.getInstance();
         String number = mAuth.getCurrentUser().getPhoneNumber();
+        doc_id = new ArrayList<>();
+
+        //get all contacts
 
         FirebaseFirestore.getInstance().collection("STUDENTS").document(number)
                 .get()
@@ -75,39 +83,74 @@ public class ChatsFragment extends Fragment {
                         if (task.isSuccessful() && task.getResult().exists()) {
                             StudentObj obj = task.getResult().toObject(StudentObj.class);
                             // TODO: 6/7/2020 Do what ever you want With the Student DATA here
-                            doc_id = obj.getContacts();
-                        }else
+//                            doc_id = obj.getContacts();
+                        } else
                             Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
-        if(doc_id!=null) {
+        //doc_id teacher's number
+        doc_id.add("+918130981088");
+        doc_id.add("+918750348232");
+
+        if (doc_id != null) {
             for (String s : doc_id) {
-                DocumentReference DocRef = reference.document(s).collection("Chats").document("messages");
-                DocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                FirebaseFirestore.getInstance().collection("TEACHERS").document(s).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             DocumentSnapshot doc = task.getResult();
-//                        userList.add(doc.get("sendName").toString());
-                            String id = doc.get("receiverId").toString();
-                            String username = doc.get("sendName").toString();
-                            String imageUrl = doc.get("imageUrl").toString();  // not profile image --> send message image
-                            User user = new User(id, username, "");
-                            mUsers.add(user);
+                            String id = doc.get("phone").toString();
+                            String username = doc.get("name").toString();
+                            String imageUrl = doc.get("proPicURL").toString();
 
+                            mUsers.add(new User(id, username, imageUrl));
                             userAdapter = new UserAdapter(getContext(), mUsers);
                             userAdapter.notifyDataSetChanged();
                             recyclerView.setAdapter(userAdapter);
 
                         } else
                             Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+
                     }
+
                 });
+//                Log.d("user info", "onCreateView: "+ mUsers.get(0).getUsername());
             }
-        }else{
-            Toast.makeText(getContext(),"No contacts",Toast.LENGTH_SHORT).show();
+
+
+        } else {
+            Toast.makeText(getContext(), "No contacts", Toast.LENGTH_SHORT).show();
         }
+
+//        if (doc_id != null) {
+//            for (String s : doc_id) {
+//                DocumentReference DocRef = reference.document(s).collection("Chats").document("messages");
+//                DocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            DocumentSnapshot doc = task.getResult();
+//
+////                        userList.add(doc.get("sendName").toString());
+//                            String id = doc.get("Phone").toString();
+//                            String username = doc.get("sendName").toString();
+////                            String imageUrl = doc.get("imageUrl").toString();  // not profile image --> send message image
+//                            User user = new User(id, username, "");
+//                            mUsers.add(user);
+//
+//                            userAdapter = new UserAdapter(getContext(), mUsers);
+//                            userAdapter.notifyDataSetChanged();
+//                            recyclerView.setAdapter(userAdapter);
+//
+//                        } else
+//                            Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//            }
+//        } else {
+//            Toast.makeText(getContext(), "No contacts", Toast.LENGTH_SHORT).show();
+//        }
 //        mAuth = FirebaseAuth.getInstance();
 //        number = mAuth.getCurrentUser().getPhoneNumber();
 //        chatFragmentView = inflater.inflate(R.layout.fragment_chats, container, false);
@@ -199,4 +242,5 @@ public class ChatsFragment extends Fragment {
 //    }
         return view;
     }
+
 }
