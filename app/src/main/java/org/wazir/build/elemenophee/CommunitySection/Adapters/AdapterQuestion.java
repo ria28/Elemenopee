@@ -55,6 +55,10 @@ public class AdapterQuestion extends RecyclerView.Adapter<AdapterQuestion.QuesVi
             holder.likes.setVisibility(View.VISIBLE);
             holder.likes.setText("" + dataset.get(position).getUpVotes());
         }
+        if (dataset.get(position).getAnswersCount() > 0) {
+            holder.answers.setVisibility(View.VISIBLE);
+            holder.answers.setText(""+dataset.get(position).getAnswersCount());
+        }
         Glide.with(mContext).load(dataset.get(position).getStuProPic()).into(holder.profilePic);
 
         holder.voteQues.setOnClickListener(new View.OnClickListener() {
@@ -100,6 +104,7 @@ public class AdapterQuestion extends RecyclerView.Adapter<AdapterQuestion.QuesVi
             solveQues = itemView.findViewById(R.id.linearLayout6);
             viewQues = itemView.findViewById(R.id.linearLayout7);
             likes = itemView.findViewById(R.id.textView45);
+            answers = itemView.findViewById(R.id.textView47);
         }
     }
 }

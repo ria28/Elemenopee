@@ -122,22 +122,26 @@ public class ComPanActivity extends AppCompatActivity implements QuesInteract {
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        questions.clear();
-                        for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
-                            QuestionObj obj = snapshot.toObject(QuestionObj.class);
-                            QuesDispObj obj1 = new QuesDispObj();
+                        if (queryDocumentSnapshots != null) {
+                            questions.clear();
+                            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                                QuestionObj obj = snapshot.toObject(QuestionObj.class);
+                                QuesDispObj obj1 = new QuesDispObj();
 
-                            obj1.setQuestion(obj.getQuestion());
-                            obj1.setDate(obj.getTime());
-                            obj1.setAnswersCount(obj.getAnsCount());
-                            obj1.setQuesId(obj.getQues_id());
-                            obj1.setSolved(obj.isSatisfied());
-                            obj1.setStuName(obj.getStuName());
-                            obj1.setStuProPic(obj.getStuProfile());
-                            obj1.setUpVotes(obj.getLikes());
-                            questions.add(obj1);
+                                obj1.setQuestion(obj.getQuestion());
+                                obj1.setDate(obj.getTime());
+                                obj1.setAnswersCount(obj.getAnsCount());
+                                obj1.setQuesId(obj.getQues_id());
+                                obj1.setAnswersCount(obj.getAnsCount());
+                                obj1.setStuName(obj.getStuName());
+                                obj1.setStuProPic(obj.getStuProfile());
+                                obj1.setUpVotes(obj.getLikes());
+                                questions.add(obj1);
+                            }
+                            setupAdapter();
+                        } else {
+                            Toast.makeText(context, "No Querys", Toast.LENGTH_SHORT).show();
                         }
-                        setupAdapter();
                     }
                 });
     }
@@ -179,7 +183,7 @@ public class ComPanActivity extends AppCompatActivity implements QuesInteract {
 
     @Override
     public void giveSolution(String quesId, int pos) {
-
+        loading.postSolution(quesId, claSpiMainStr, subSpiMainStr);
     }
 
     @Override

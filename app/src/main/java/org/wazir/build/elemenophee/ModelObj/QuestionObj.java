@@ -3,7 +3,6 @@ package org.wazir.build.elemenophee.ModelObj;
 public class QuestionObj {
     private String question, subject, subClass, time, ques_id;
     private String StuName, stuProfile;
-    private boolean satisfied;
     int likes, ansCount;
 
     public QuestionObj() {
@@ -15,7 +14,6 @@ public class QuestionObj {
         this.subject = subject;
         this.subClass = subClass;
         this.time = time;
-        this.satisfied = satisfied;
         likes = 0;
         ansCount = 0;
     }
@@ -90,13 +88,5 @@ public class QuestionObj {
 
     public void setTime(String time) {
         this.time = time;
-    }
-
-    public boolean isSatisfied() {
-        return satisfied;
-    }
-
-    public void setSatisfied(boolean satisfied) {
-        this.satisfied = satisfied;
     }
 }

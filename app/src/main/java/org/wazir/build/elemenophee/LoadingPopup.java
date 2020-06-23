@@ -7,6 +7,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -16,11 +17,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.wazir.build.elemenophee.ModelObj.AnsObj;
 import org.wazir.build.elemenophee.ModelObj.QuestionObj;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class LoadingPopup extends AppCompatDialog {
@@ -128,6 +132,54 @@ public class LoadingPopup extends AppCompatDialog {
         alertDialog.show();
     }
 
+    public void postSolution(final String quesId, final String quesClass, final String quesSubject) {
+        if (ctx == null) {
+            return;
+        }
+        questionObj = new QuestionObj();
+        final AlertDialog.Builder alert = new AlertDialog.Builder(ctx);
+        final View view1 = LayoutInflater.from(ctx).inflate(R.layout.solve_ques_layout, null);
+        alert.setView(view1);
+        final TextInputLayout solution = view1.findViewById(R.id.textInputLayout10);
+        quesPb = view1.findViewById(R.id.progressBar5);
+        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        view1.findViewById(R.id.cardView2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                quesPb.setVisibility(View.VISIBLE);
+                v.setEnabled(false);
+                if (!solution.getEditText().getText().equals("")) {
+                    AnsObj sol = new AnsObj();
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy_HH:mm:ss");
+
+                    sol.setAnswer(solution.getEditText().getText().toString());
+                    sol.setTime(sdf.format(new Date()));
+                    sol.setUserName(mAuth.getCurrentUser().getDisplayName());
+                    sol.setUserProPic(mAuth.getCurrentUser().getPhotoUrl().toString());
+                    ArrayList<String> path = new ArrayList<>();
+                    path.add(quesClass);
+                    path.add(quesSubject);
+                    path.add(quesId);
+                    pushAnswerPopup(sol, path);
+
+                } else {
+                    Toast.makeText(ctx, "No Data", Toast.LENGTH_SHORT).show();
+                    alertDialog.dismiss();
+                }
+            }
+        });
+        view1.findViewById(R.id.cardView8).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog = alert.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
+    }
+
+
     public void beginAskQues(final QuestionObj obj) {
         quesPb.setVisibility(View.VISIBLE);
         FirebaseFirestore.getInstance().collection("QUESTIONS")
@@ -162,7 +214,25 @@ public class LoadingPopup extends AppCompatDialog {
                 });
     }
 
-    public void pushAnswerPopup(){
-
+    public void pushAnswerPopup(AnsObj obj, final ArrayList<String> path) {
+        FirebaseFirestore.getInstance().collection("QUESTIONS").document(path.get(0))
+                .collection(path.get(1))
+                .document(path.get(2))
+                .collection("SOLUTIONS")
+                .document(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber())
+                .set(obj).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    FirebaseFirestore.getInstance().collection("QUESTIONS").document(path.get(0))
+                            .collection(path.get(1))
+                            .document(path.get(2))
+                            .update("ansCount", FieldValue.increment(1));
+                    alertDialog.dismiss();
+                } else {
+                    quesPb.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
     }
 }

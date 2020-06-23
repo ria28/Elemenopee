@@ -29,18 +29,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.airbnb.lottie.LottieAnimationView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginTop="8dp"
-                    app:lottie_autoPlay="true"
-                    app:lottie_loop="true"
-                    app:lottie_repeatMode="restart"
-                    android:layout_marginEnd="8dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:lottie_rawRes="@raw/solved_icon_animation" />
-
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/circleImageView2"
                     android:layout_width="50dp"
@@ -133,6 +121,16 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/linearLayout3"
             app:layout_constraintTop_toTopOf="@+id/linearLayout3">
+
+            <TextView
+                android:id="@+id/textView47"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:fontFamily="@font/nunito"
+                android:layout_marginEnd="4dp"
+                android:visibility="gone"
+                android:text="0" />
 
             <ImageView
                 android:layout_width="20dp"
