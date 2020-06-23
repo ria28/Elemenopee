@@ -1,9 +1,9 @@
 package org.wazir.build.elemenophee;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -18,8 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -47,7 +49,6 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
     otherAdapter otherAdapter;
     notesRecyclerAdapter notesAdapter;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private ProgressDialog progress;
     String teacher_ID;
     boolean isSubscriber = false;
     CollectionReference Sref;
@@ -104,11 +105,6 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
         FileType.setAdapter(FileTypeSpinnerViewAdapter);
 
 
-        progress = new ProgressDialog(this);
-        progress.setMessage("Retreiving data..");
-        progress.setIndeterminate(true);
-
-        progress.show();
 
         videoAdapter = new videoRecyclerAdapter(ViewTeacherProfile.this, false, videoList, this, -1);
         notesAdapter = new notesRecyclerAdapter(ViewTeacherProfile.this, pdfList);
@@ -117,6 +113,7 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
         loadData("VIDEOS");
         loadData("NOTES");
         loadData("OTHER");
+
 
         FileType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -164,6 +161,22 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
     }
 
     private void getTeacherData() {
+
+        teacherReference
+                .document(teacher_ID)
+                .collection("SUBSCRIBERS")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            connections.setText(String.valueOf(task.getResult().size()));
+                        } else {
+                            Toast.makeText(ViewTeacherProfile.this, task.getException() + "", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
         teacherReference.document(teacher_ID)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -187,6 +200,7 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
                             @Override
                             public void onFailure(@NonNull Exception e) {
                                 Toast.makeText(ViewTeacherProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                loadingPopup.dialogDismiss();
                             }
                         });
                     }
@@ -194,6 +208,7 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(ViewTeacherProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                loadingPopup.dialogDismiss();
                 onBackPressed();
             }
         });
@@ -236,7 +251,7 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
                             pdfList.add(temp);
                         notesAdapter.notifyDataSetChanged();
                     }
-                    progress.dismiss();
+
                 } else if (type == "OTHER") {
                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
                         contentModel temp = doc.toObject(contentModel.class);
@@ -247,14 +262,14 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
                             otherList.add(temp);
                         notesAdapter.notifyDataSetChanged();
                     }
-                    progress.dismiss();
                 }
+                loadingPopup.dialogDismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                progress.dismiss();
                 Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                loadingPopup.dialogDismiss();
             }
         });
     }
@@ -272,7 +287,7 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
                         teacher_ID +
                         "/SUBSCRIBERS"
         );
-        Sref.whereEqualTo("StudentId",user.getPhoneNumber())//TODO:compare with student ID to check if they subscribed
+        Sref.whereEqualTo("studentID", user.getPhoneNumber())
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override

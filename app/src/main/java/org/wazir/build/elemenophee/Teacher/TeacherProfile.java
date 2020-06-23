@@ -30,6 +30,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -38,6 +39,7 @@ import org.wazir.build.elemenophee.LoadingPopup;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.ProfilePicBottomModalSheet;
 import org.wazir.build.elemenophee.R;
+import org.wazir.build.elemenophee.ViewTeacherProfile;
 
 import java.util.Objects;
 
@@ -79,6 +81,23 @@ public class TeacherProfile extends AppCompatActivity implements ProfilePicBotto
         });
 
         loadingPopup.dialogRaise();
+
+        profileRef
+                .document(user.getPhoneNumber())
+                .collection("SUBSCRIBERS")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            subsribers.setText(String.valueOf(task.getResult().size()));
+                        } else {
+                            Toast.makeText(TeacherProfile.this, task.getException().getMessage() + "", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+
         profileRef
                 .document(Objects.requireNonNull(user.getPhoneNumber()))
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -91,12 +110,15 @@ public class TeacherProfile extends AppCompatActivity implements ProfilePicBotto
                 bio.setText(obj.getBio());
                 if (obj.getProPicURL() != null)
                     Glide.with(TeacherProfile.this).load(obj.getProPicURL()).into(TeacherProfilePic);
+                else
+                    Glide.with(TeacherProfile.this).load(getDrawable(R.drawable.profile_dummy)).into(TeacherProfilePic);
                 loadingPopup.dialogDismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                Glide.with(TeacherProfile.this).load(getDrawable(R.drawable.profile_dummy)).into(TeacherProfilePic);
             }
         });
 
