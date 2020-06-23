@@ -81,8 +81,7 @@ public class StudentSubsActivity extends AppCompatActivity {
                                                         String description_ = doc.get("experience").toString();
                                                         String picUrl = doc.get("proPicURL").toString();
                                                         ArrayList<String> subjects_ = (ArrayList<String>) doc.get("subs");
-
-                                                        list.add(new TeacherObj(name_, description_, picUrl, subjects_));
+                                                        list.add(new TeacherObj(name_, description_, picUrl, subjects_,doc.get("phone").toString()));
                                                         adapter.notifyDataSetChanged();
                                                     }
 
