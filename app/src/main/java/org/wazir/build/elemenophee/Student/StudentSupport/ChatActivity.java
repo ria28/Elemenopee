@@ -39,12 +39,12 @@ public class ChatActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     UserAdapter userAdapter;
-    List<User> mUsers = new ArrayList<>() ;
+    List<User> mUsers = new ArrayList<>();
     List<String> userList;
     FirebaseUser fuser;
     FirebaseFirestore db;
     CollectionReference reference;
-    ArrayList<String> doc_id ;
+    ArrayList<String> doc_id;
 
     FirebaseAuth mAuth;
     TeacherObj teachers;
@@ -75,7 +75,7 @@ public class ChatActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         String number = mAuth.getCurrentUser().getPhoneNumber();
 
-        doc_id=new ArrayList<>();
+        doc_id = new ArrayList<>();
 //        mUsers= new ArrayList<>();
 
         checkStuTea(number);
@@ -231,20 +231,28 @@ public class ChatActivity extends AppCompatActivity {
                         if (task.isSuccessful() && task.getResult().exists()) {
                             DocumentSnapshot doc = task.getResult();
                             doc_id.add(doc.get("Contacts").toString());
-//                            Log.d("contacts", "onComplete: " + doc_id.get(0));
+
+                            Log.d("contacts", "onComplete: " + doc_id.get(0));
                         } else
                             Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
                         getStudentContacts(doc_id);
+
                     }
                 });
 
     }
 
     private void getStudentContacts(ArrayList<String> doc_id) {
+        doc_id.add("+918130981088");
+        doc_id.add("+918750348232");
+
+        Log.d("checkk", "getStudentContacts: "+doc_id.get(0));
 
         if (doc_id != null) {
             for (String s : doc_id) {
+               final  String str= s;
+                Log.d("string", "getStudentContacts: "+str);
                 FirebaseFirestore.getInstance().collection("TEACHERS").document(s)
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -252,7 +260,8 @@ public class ChatActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 if (task.isSuccessful() && task.getResult().exists()) {
                                     DocumentSnapshot doc = task.getResult();
-                                    String id = doc.get("phone").toString();
+//                                    String id = doc.get("phone").toString();
+                                    String id = str;
                                     String username = doc.get("name").toString();
                                     String imageUrl = doc.get("proPicURL").toString();
 
@@ -297,29 +306,30 @@ public class ChatActivity extends AppCompatActivity {
 
     private void getTeacherContacts(ArrayList<String> doc_id) {
         if (doc_id != null) {
-            db.collection("Student")
-                    .whereIn("contact", Arrays.asList(doc_id))
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                                    DocumentSnapshot doc = snapshot;
-                                    String id = doc.get("contact").toString();
+            for (String s : doc_id) {
+                final String str = s;
+                FirebaseFirestore.getInstance().collection("STUDENTS").document(s)
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful() && task.getResult().exists()) {
+                                    DocumentSnapshot doc = task.getResult();
+                                    String id = str;
                                     String username = doc.get("name").toString();
                                     String imageUrl = doc.get("imageUrl").toString();
+
                                     mUsers.add(new User(id, username, imageUrl));
-                                }
-                            } else {
-                                Toast.makeText(ChatActivity.this, "No Students Found", Toast.LENGTH_SHORT).show();
+                                    userAdapter = new UserAdapter(ChatActivity.this, mUsers);
+                                    userAdapter.notifyDataSetChanged();
+                                    recyclerView.setAdapter(userAdapter);
+
+                                } else
+                                    Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+
                             }
 
-                            userAdapter = new UserAdapter(ChatActivity.this, mUsers);
-                            userAdapter.notifyDataSetChanged();
-                            recyclerView.setAdapter(userAdapter);
-                        }
-                    });
+                        });
 //                userAdapter.notifyDataSetChanged();
 //                recyclerView.setAdapter(userAdapter);
             }
@@ -330,7 +340,39 @@ public class ChatActivity extends AppCompatActivity {
         }
 
 
+//        if (doc_id != null) {
+//            db.collection("STUDENTS")
+//                    .whereIn("contact", Arrays.asList(doc_id))
+//                    .get()
+//                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                            if (task.isSuccessful()) {
+//                                for (QueryDocumentSnapshot snapshot : task.getResult()) {
+//                                    DocumentSnapshot doc = snapshot;
+//                                    String id = doc.get("contact").toString();
+//                                    String username = doc.get("name").toString();
+//                                    String imageUrl = doc.get("imageUrl").toString();
+//                                    mUsers.add(new User(id, username, imageUrl));
+//                                }
+//                            } else {
+//                                Toast.makeText(ChatActivity.this, "No Students Found", Toast.LENGTH_SHORT).show();
+//                            }
+//
+//                            userAdapter = new UserAdapter(ChatActivity.this, mUsers);
+//                            userAdapter.notifyDataSetChanged();
+//                            recyclerView.setAdapter(userAdapter);
+//                        }
+//                    });
+////                userAdapter.notifyDataSetChanged();
+////                recyclerView.setAdapter(userAdapter);
+//        }else
+//
+//        {
+//            Toast.makeText(ChatActivity.this, "No contacts", Toast.LENGTH_SHORT).show();
+//        }
     }
+
 
     private void setUpRcView() {
         recyclerView.setAdapter(userAdapter);
