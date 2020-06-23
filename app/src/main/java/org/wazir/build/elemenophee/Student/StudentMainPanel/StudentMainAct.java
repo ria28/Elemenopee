@@ -25,6 +25,7 @@ import org.wazir.build.elemenophee.SplashScreen;
 import org.wazir.build.elemenophee.Student.StudentMainPanel.Objects.SingleHorizontal;
 import org.wazir.build.elemenophee.Student.StudentMainPanel.Objects.SingleVertical;
 import org.wazir.build.elemenophee.Student.StudentMainPanel.StuAdapter.Adapters.MainAdapter;
+import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
 
 import java.util.ArrayList;
 
@@ -54,6 +55,8 @@ public class StudentMainAct extends AppCompatActivity {
                 finish();
             }
         });
+
+
 
         RecyclerView recyclerView = findViewById(R.id.recycler_View);
         MainAdapter adapter = new MainAdapter(this, getObject());
