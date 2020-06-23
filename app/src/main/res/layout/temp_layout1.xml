@@ -11,7 +11,7 @@
         android:layout_marginTop="8dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="7dp"
-        app:cardElevation="7dp"
+        app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="@+id/ProfileTeacher"
         app:layout_constraintStart_toStartOf="@+id/ProfileTeacher"
         app:layout_constraintTop_toBottomOf="@+id/ProfileTeacher">
@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@android:color/transparent"
+            android:background="@drawable/custom_ripple"
             android:orientation="horizontal">
 
             <ImageView
@@ -61,7 +61,7 @@
         android:layout_marginStart="8dp"
         android:fontFamily="sans-serif-medium"
         android:text="Akshay Rein"
-        android:textColor="@color/white"
+        android:textColor="@color/softBlue"
         app:layout_constraintStart_toEndOf="@+id/circleImageView"
         app:layout_constraintTop_toTopOf="@+id/circleImageView" />
 
@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
         android:text="Student"
-        android:textColor="@color/white"
+        android:textColor="@color/softBlue"
         app:layout_constraintBottom_toBottomOf="@+id/circleImageView"
         app:layout_constraintStart_toStartOf="@+id/textView22" />
 
@@ -81,9 +81,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:fadingEdgeLength="2dp"
-        app:cardBackgroundColor="@color/softRed"
+        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="7dp"
-        app:cardElevation="7dp"
+        app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="@+id/ProfileTeacher"
         app:layout_constraintStart_toStartOf="@+id/circleImageView"
         app:layout_constraintTop_toBottomOf="@+id/circleImageView">
@@ -110,7 +110,7 @@
                 android:layout_marginStart="8sp"
                 android:layout_marginEnd="8sp"
                 android:text="SUBCRICPTIONS"
-                android:textColor="@color/white" />
+                android:textColor="@color/color5" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
@@ -121,9 +121,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:fadingEdgeLength="2dp"
-        app:cardBackgroundColor="#D29F8C "
         app:cardCornerRadius="7dp"
-        app:cardElevation="7dp"
+        app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="@+id/ProfileTeacher"
         app:layout_constraintStart_toStartOf="@+id/circleImageView"
         app:layout_constraintTop_toBottomOf="@+id/stu_subscribe">
@@ -132,7 +131,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@android:color/transparent"
+            android:background="@drawable/custom_ripple"
             android:orientation="horizontal">
 
             <ImageView
@@ -150,7 +149,7 @@
                 android:layout_marginStart="8sp"
                 android:layout_marginEnd="8sp"
                 android:text="SEARCH TEACHERS"
-                android:textColor="@color/white" />
+                android:textColor="@color/color5" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
@@ -162,7 +161,7 @@
         android:layout_marginTop="8dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="7dp"
-        app:cardElevation="7dp"
+        app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="@+id/ProfileTeacher"
         app:layout_constraintStart_toStartOf="@+id/ProfileTeacher"
         app:layout_constraintTop_toBottomOf="@+id/message_id">
@@ -171,7 +170,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@android:color/transparent"
+            android:background="@drawable/custom_ripple"
             android:orientation="horizontal">
 
             <ImageView
@@ -203,17 +202,17 @@
         android:layout_marginEnd="16dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="7dp"
-        app:cardElevation="7dp"
+        app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/circleImageView"
         app:layout_constraintTop_toBottomOf="@+id/stu_search_teacher">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ViewProfile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@android:color/transparent"
+            android:background="@drawable/custom_ripple"
             android:orientation="horizontal">
 
             <ImageView
@@ -223,10 +222,16 @@
                 android:layout_marginStart="8sp"
                 android:layout_marginTop="8sp"
                 android:layout_marginBottom="8sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:srcCompat="@drawable/ic_profile" />
 
             <TextView
                 android:id="@+id/textView25"
+                app:layout_constraintStart_toEndOf="@id/imageView7"
+                app:layout_constraintBottom_toBottomOf="@id/imageView7"
+                app:layout_constraintTop_toTopOf="@id/imageView7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -234,7 +239,7 @@
                 android:layout_marginEnd="8sp"
                 android:text="View Profile"
                 android:textColor="@color/color5" />
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
