@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color5"
+    android:background="@color/white"
     app:layoutDescription="@xml/stu_description">
 
     <androidx.cardview.widget.CardView
@@ -75,7 +75,7 @@
 
                     <Spinner
                         android:id="@+id/viewClassSpinner"
-                        android:layout_width="80dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
@@ -83,23 +83,16 @@
                         app:layout_constraintEnd_toEndOf="@+id/textView26"
                         app:layout_constraintTop_toBottomOf="@+id/Comm_pro_image" />
 
-                    <TextView
-                        android:id="@+id/to_view_class"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@+id/viewClassSpinner"
-                        android:layout_toStartOf="@+id/viewClassSpinner"
-                        android:text="Class 6"
-                        app:layout_constraintBottom_toBottomOf="@+id/viewClassSpinner"
-                        app:layout_constraintStart_toEndOf="@+id/viewClassSpinner"
-                        app:layout_constraintTop_toTopOf="@+id/viewClassSpinner" />
-
                     <androidx.cardview.widget.CardView
                         android:id="@+id/search_cv"
-                        android:layout_width="match_parent"
+                        android:layout_width="0sp"
                         android:layout_height="match_parent"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
                         android:padding="8dp"
                         app:cardCornerRadius="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/viewClassSpinner">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -109,21 +102,21 @@
 
                             <EditText
                                 android:id="@+id/searchEdit"
-                                android:layout_width="match_parent"
+                                android:layout_width="0sp"
                                 android:layout_height="wrap_content"
                                 android:background="@android:color/transparent"
                                 android:hint="Search here..."
                                 app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent" />
+                                app:layout_constraintEnd_toStartOf="@+id/searchChap"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <ImageView
                                 android:id="@+id/searchChap"
                                 android:layout_width="20dp"
                                 android:layout_height="30dp"
-                                android:layout_marginTop="4dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="1.0"
-                                app:layout_constraintStart_toEndOf="@+id/searchEdit"
                                 app:layout_constraintTop_toTopOf="parent" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </androidx.cardview.widget.CardView>
@@ -138,6 +131,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
                         android:orientation="horizontal"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"

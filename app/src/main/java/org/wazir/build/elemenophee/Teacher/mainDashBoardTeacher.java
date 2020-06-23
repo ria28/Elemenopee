@@ -114,8 +114,8 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
 
         init();
         getTeacherInfo();
-        Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(profilePic);
-        Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(proPic2);
+        Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl().toString()).into(profilePic);
+        Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl().toString()).into(proPic2);
 
         content.add("VIDEOS");
         content.add("NOTES");
