@@ -65,7 +65,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ReceiverViewHolder) {
-            ((ReceiverViewHolder) holder).name.setText(messages.get(position).getSendName());
+//            ((ReceiverViewHolder) holder).name.setText(messages.get(position).getSendName());
             ((ReceiverViewHolder) holder).message.setText(messages.get(position).getMessage());
             if (!messages.get(position).getImageUrl().equals("")) {
                 Picasso.get()
@@ -95,7 +95,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         ReceiverViewHolder(@NonNull View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.textView78);
+//            name = itemView.findViewById(R.id.textView78);
             message = itemView.findViewById(R.id.textView79);
             imageView = itemView.findViewById(R.id.imageView3);
         }

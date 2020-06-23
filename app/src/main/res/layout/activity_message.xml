@@ -14,6 +14,7 @@
             android:id="@+id/toolbar_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#7C4DFF"
             android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
             >
             <de.hdodenhof.circleimageview.CircleImageView
