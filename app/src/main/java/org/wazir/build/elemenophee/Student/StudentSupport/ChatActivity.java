@@ -32,6 +32,8 @@ import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.UserAdapter;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
@@ -231,7 +233,6 @@ public class ChatActivity extends AppCompatActivity {
                         if (task.isSuccessful() && task.getResult().exists()) {
                             DocumentSnapshot doc = task.getResult();
                             doc_id.add(doc.get("Contacts").toString());
-
                             Log.d("contacts", "onComplete: " + doc_id.get(0));
                         } else
                             Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -246,6 +247,7 @@ public class ChatActivity extends AppCompatActivity {
     private void getStudentContacts(ArrayList<String> doc_id) {
         doc_id.add("+918130981088");
         doc_id.add("+918750348232");
+        doc_id.add("+917011974679");
 
         Log.d("checkk", "getStudentContacts: "+doc_id.get(0));
 
@@ -263,6 +265,7 @@ public class ChatActivity extends AppCompatActivity {
 //                                    String id = doc.get("phone").toString();
                                     String id = str;
                                     String username = doc.get("name").toString();
+
                                     String imageUrl = doc.get("proPicURL").toString();
 
                                     mUsers.add(new User(id, username, imageUrl));

@@ -222,7 +222,7 @@ public class MessageActivity extends AppCompatActivity {
                                             .document(saveDocId).set(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            finish();
+//                                            finish();
                                         }
                                     });
 
@@ -243,7 +243,7 @@ public class MessageActivity extends AppCompatActivity {
                                             .document(saveDocId).set(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            finish();
+//                                            finish();
                                         }
                                     });
                                     db.collection("STUDENTS").document(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber())

@@ -95,6 +95,42 @@
                         app:layout_constraintStart_toEndOf="@+id/viewClassSpinner"
                         app:layout_constraintTop_toTopOf="@+id/viewClassSpinner" />
 
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/search_cv"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:layout_constraintTop_toBottomOf="@+id/viewClassSpinner"
+                        android:padding="8dp"
+                        app:cardCornerRadius="20dp">
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="8dp">
+
+                        <EditText
+                            android:id="@+id/searchEdit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:hint="Search here..."
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            />
+
+                            <ImageView
+                                android:id="@+id/searchChap"
+                                android:layout_width="20dp"
+                                android:layout_height="30dp"
+                                android:layout_marginTop="4dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="1.0"
+                                app:layout_constraintStart_toEndOf="@+id/searchEdit"
+                                app:layout_constraintTop_toTopOf="parent"
+                                />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/first_recycler_view"
                         android:layout_width="0sp"
@@ -102,14 +138,13 @@
                         android:layout_below="@+id/Comm_pro_image"
                         android:layout_alignParentStart="true"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="8dp"
                         android:orientation="horizontal"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/Comm_pro_image"
-                        app:layout_constraintTop_toBottomOf="@+id/viewClassSpinner" />
+                        app:layout_constraintTop_toBottomOf="@+id/search_cv"
+                        android:layout_marginTop="10dp"/>
 
                     <TextView
                         android:id="@+id/textView26"

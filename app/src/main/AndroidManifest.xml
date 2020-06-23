@@ -58,6 +58,7 @@
 
         <activity android:name=".Student.StudentSubscription.StudentSubsActivity" />
         <activity android:name=".Student.StuProfile.EditStuProfileActivity" />
+
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
