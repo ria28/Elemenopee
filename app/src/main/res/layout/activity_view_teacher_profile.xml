@@ -164,9 +164,9 @@
                         android:id="@+id/viewTeacherProfileConnections"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="465"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="parent" />
+                        android:textSize="20sp"
+                        android:text="0"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/textView27"

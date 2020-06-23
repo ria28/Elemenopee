@@ -40,6 +40,7 @@ import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.Chapters;
 import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.SubComm;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.ChapterAdapter;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.SubjectAdapter;
+import org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct;
 import org.wazir.build.elemenophee.Student.StudentProfile.StudentProfileActivity;
 import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
 import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
@@ -76,7 +77,7 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     CardView profileLayout;
     CardView cardLogout;
     CardView Subscribe;
-    CardView messages;
+    CardView messages,search_teach;
 
     CollectionReference isSubs = FirebaseFirestore.getInstance().collection("/TEACHERS/");
 
@@ -97,7 +98,18 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         name = findViewById(R.id.textView26);
         messages = findViewById(R.id.message_id);
         view_class_tv = findViewById(R.id.to_view_class);
+        search_teach = findViewById(R.id.stu_search_teacher);
+
         getProfilePic();
+
+        search_teach.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Stu_main_comm_screen.this, StudentSubsActivity.class);
+                intent.putExtra("FROM_SEARCH_STUDENT",true);
+                startActivity(intent);
+            }
+        });
 
         profileLayout.setOnClickListener(new View.OnClickListener() {
             @Override
