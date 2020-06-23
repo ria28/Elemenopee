@@ -12,7 +12,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="32dp"
         android:src="@color/color6"
         app:civ_border_color="@color/softBlue"
         app:civ_border_width="2dp"
@@ -43,6 +43,7 @@
         app:layout_constraintTop_toBottomOf="@+id/circleImageView4" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/sol_rcview_id"
         android:layout_width="0sp"
         android:layout_height="0sp"
         android:layout_marginStart="8dp"
@@ -66,4 +67,32 @@
         app:layout_constraintStart_toStartOf="@+id/textView51"
         app:layout_constraintTop_toBottomOf="@+id/textView51" />
 
+    <TextView
+        android:id="@+id/textView55"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/circleImageView4"
+        app:layout_constraintStart_toStartOf="@+id/textView50" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/id_raise_ques"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:fadingEdgeLength="5dp"
+        android:onClick="postSol"
+        app:cardBackgroundColor="@color/softGreen"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="7dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_solution" />
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package org.wazir.build.elemenophee.CommunitySection;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -188,7 +189,11 @@ public class ComPanActivity extends AppCompatActivity implements QuesInteract {
 
     @Override
     public void viewQuestion(String quesId, int pos) {
-
+        Intent intent = new Intent(ComPanActivity.this, SolutionDisplayActivity.class);
+        intent.putExtra("QUESTION_ID", quesId);
+        intent.putExtra("QUESTION_CLASS", claSpiMainStr);
+        intent.putExtra("QUESTION_SUB", subSpiMainStr);
+        startActivity(intent);
     }
 
     public void filterQuestions(View view) {

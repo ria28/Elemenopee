@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +34,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.wazir.build.elemenophee.CommunitySection.ComPanActivity;
@@ -44,7 +42,6 @@ import org.wazir.build.elemenophee.ModelObj.SubscribersModel;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
-
 import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
@@ -144,7 +141,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         loadData("VIDEOS");
         loadData("NOTES");
         loadData("OTHER");
-        loadSubscriber();
+//        loadSubscriber();
 
         FileType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

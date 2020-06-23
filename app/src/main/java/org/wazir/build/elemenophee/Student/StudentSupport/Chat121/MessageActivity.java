@@ -218,11 +218,15 @@ public class MessageActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 if (task.isSuccessful() && task.getResult().exists()) {
 
-                                    db.collection("ChatRoom").document(sender).collection("Chats").document(receiver).collection("Chats")
+                                    db.collection("ChatRoom")
+                                            .document(sender)
+                                            .collection("Chats")
+                                            .document(receiver)
+                                            .collection("Chats")
                                             .document(saveDocId).set(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            finish();
+//                                            finish();
                                         }
                                     });
 
@@ -243,7 +247,7 @@ public class MessageActivity extends AppCompatActivity {
                                             .document(saveDocId).set(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            finish();
+//                                            finish();
                                         }
                                     });
                                     db.collection("STUDENTS").document(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber())
