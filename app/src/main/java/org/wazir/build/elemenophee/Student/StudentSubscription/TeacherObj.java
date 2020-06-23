@@ -8,6 +8,7 @@ public class TeacherObj {
     String Description;
     String picURL;
     ArrayList<String>subjects;
+    String tID;
 
     public String getPicURL() {
         return picURL;
@@ -17,11 +18,20 @@ public class TeacherObj {
         this.picURL = picURL;
     }
 
-    public TeacherObj(String teacherName, String description, String picURL, ArrayList<String> subjects) {
+    public String gettID() {
+        return tID;
+    }
+
+    public void settID(String tID) {
+        this.tID = tID;
+    }
+
+    public TeacherObj(String teacherName, String description, String picURL, ArrayList<String> subjects, String tID) {
         TeacherName = teacherName;
         Description = description;
         this.picURL = picURL;
         this.subjects = subjects;
+        this.tID = tID;
     }
 
     public String getTeacherName() {

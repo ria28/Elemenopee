@@ -1,19 +1,23 @@
 package org.wazir.build.elemenophee.Student.StudentSubscription;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
 import org.wazir.build.elemenophee.R;
+import org.wazir.build.elemenophee.ViewTeacherProfile;
 
 import java.util.ArrayList;
 
@@ -33,12 +37,20 @@ public class StuTeacherAdapter extends RecyclerView.Adapter<StuTeacherAdapter.My
         return evh;
     }
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
 ;
         TeacherObj currentItem = TeacherList.get(position);;
         holder.name.setText(currentItem.getTeacherName());
         holder.description.setText(currentItem.getDescription());
         Glide.with(context).load(currentItem.picURL).into(holder.profileImage);
+        holder.view_Profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ViewTeacherProfile.class);
+                intent.putExtra("TEACHER_ID",TeacherList.get(position).tID);
+                context.startActivity(intent);
+            }
+        });
 
     }
 
@@ -49,13 +61,15 @@ public class StuTeacherAdapter extends RecyclerView.Adapter<StuTeacherAdapter.My
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public ImageView profileImage;
-        public TextView name;
+        public TextView name, view_Profile;
         public TextView description;
         public MyViewHolder(View itemView) {
             super(itemView);
             profileImage = itemView.findViewById(R.id.teacherPic);
             name = itemView.findViewById(R.id.teacher_name);
             description = itemView.findViewById(R.id.teacher_description);
+            view_Profile = itemView.findViewById(R.id.viewProfileText);
+
         }
     }
 }
