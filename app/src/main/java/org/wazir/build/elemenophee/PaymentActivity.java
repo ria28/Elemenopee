@@ -13,18 +13,23 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 import org.json.JSONObject;
 import org.wazir.build.elemenophee.ModelObj.SubscribedTOmodel;
 import org.wazir.build.elemenophee.ModelObj.SubscribersModel;
+import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 
 
 public class PaymentActivity extends AppCompatActivity implements PaymentResultListener {
 
     Button payBtn;
     String tID;
+
+    TeacherObj obj;
+
     CollectionReference TeacherRef = FirebaseFirestore.getInstance().collection("TEACHERS");
     CollectionReference StudentRef = FirebaseFirestore.getInstance().collection("STUDENTS");
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -37,6 +42,20 @@ public class PaymentActivity extends AppCompatActivity implements PaymentResultL
         setContentView(R.layout.activity_payment);
 
         tID = getIntent().getStringExtra("TEACHER_ID");
+        TeacherRef
+                .document(tID)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                obj = documentSnapshot.toObject(TeacherObj.class);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(PaymentActivity.this,  e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         payBtn = findViewById(R.id.PayBtnPaymentScreen);
 
@@ -57,7 +76,7 @@ public class PaymentActivity extends AppCompatActivity implements PaymentResultL
         final Checkout co = new Checkout();
         try {
             JSONObject options = new JSONObject();
-            options.put("name", "Amit Dubey");
+            options.put("name", obj.getName());
             options.put("description", "App Payment");
             //You can omit the image option to fetch the image from dashboard
             options.put("image", "https://rzp-mobile.s3.amazonaws.com/images/rzp.png");
@@ -69,8 +88,7 @@ public class PaymentActivity extends AppCompatActivity implements PaymentResultL
             total = total * 100;
             options.put("amount", total);
             JSONObject preFill = new JSONObject();
-            preFill.put("email", "amitkd2018@gmail.com");
-            preFill.put("contact", "8750348232");
+            preFill.put("contact", tID);
             options.put("prefill", preFill);
             co.open(activity, options);
         } catch (Exception e) {

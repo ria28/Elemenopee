@@ -1,25 +1,25 @@
 package org.wazir.build.elemenophee.ModelObj;
 
 public class AnsObj {
-    String teaId, Answer, time;
-    boolean satisfied;
-
-    public AnsObj(String teaId, String answer, String time, boolean satisfied) {
-        this.teaId = teaId;
-        Answer = answer;
-        this.time = time;
-        this.satisfied = satisfied;
-    }
+    String userName, userProPic, Answer, time;
 
     public AnsObj() {
     }
 
-    public String getTeaId() {
-        return teaId;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setTeaId(String teaId) {
-        this.teaId = teaId;
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserProPic() {
+        return userProPic;
+    }
+
+    public void setUserProPic(String userProPic) {
+        this.userProPic = userProPic;
     }
 
     public String getAnswer() {
@@ -36,13 +36,5 @@ public class AnsObj {
 
     public void setTime(String time) {
         this.time = time;
-    }
-
-    public boolean isSatisfied() {
-        return satisfied;
-    }
-
-    public void setSatisfied(boolean satisfied) {
-        this.satisfied = satisfied;
     }
 }
