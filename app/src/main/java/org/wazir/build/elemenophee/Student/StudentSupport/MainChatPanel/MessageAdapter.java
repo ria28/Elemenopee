@@ -41,6 +41,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return messages;
     }
 
+
     @Override
     public int getItemViewType(int position) {
         if (messages.get(position).getSenderId().equals(mAuth.getCurrentUser().getPhoneNumber())) {
@@ -49,6 +50,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return 1;
         }
     }
+
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
+
+    }
+
 
     @NonNull
     @Override
