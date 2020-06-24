@@ -4,7 +4,7 @@
     <Transition
         motion:constraintSetEnd="@id/set_end"
         motion:constraintSetStart="@id/set_start"
-        motion:duration="500"
+        motion:duration="300"
         motion:motionInterpolator="easeIn">
         <OnClick
             motion:clickAction="toggle"

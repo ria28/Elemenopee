@@ -3,12 +3,9 @@ package org.wazir.build.elemenophee.Student.StuCommPanel;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +28,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.angmarch.views.NiceSpinner;
+import org.angmarch.views.OnSpinnerItemSelectedListener;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
@@ -59,7 +58,7 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     ArrayAdapter<String> classSpinnerViewAdapter;
 
 
-    Spinner viewClass;
+    NiceSpinner viewClass;
     Context context;
     String subject;
 
@@ -79,12 +78,8 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     CardView cardLogout;
     CardView Subscribe;
     CardView messages, search_teach;
-
     FirebaseFirestore db;
-
-
     CollectionReference isSubs = FirebaseFirestore.getInstance().collection("/TEACHERS/");
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,108 +103,9 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         name.setText(user.getDisplayName());
     }
 
-    public void loadSubject() {
-        reference = FirebaseFirestore.getInstance()
-                .collection("CLASSES")
-                .document( viewClass.getSelectedItem().toString())
-                .collection("SUBJECT");
-        reference.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            list1.clear();
-                            if (!task.getResult().isEmpty()) {
-
-                                for (QueryDocumentSnapshot doc : task.getResult()) {
-                                    for (int i = 0; i < 1; i++) {
-                                        System.out.println(i);
-                                    }
-                                    subject = doc.getData().toString();
-                                    list1 = getList1(list1, subject);
-//                                    list1=getList2_modified();
-                                    Log.d("subject name", "onComplete: "+ subject);
-
-                                }
-
-                                adapter1.notifyDataSetChanged();
-
-                            } else {
-                                list1.add(new SubComm("No Subject"));
-                                adapter1.notifyDataSetChanged();
-                            }
-                        } else
-                            Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-
-    }
-
-
-    ArrayList<SubComm> getList1(ArrayList<SubComm> list1, String sub) {
-
-        switch (sub) {
-            case "{Maths=}":
-                list1.add(new SubComm(R.drawable.ic_maths, "Maths"));
-                break;
-            case "{English=}":
-                list1.add(new SubComm(R.drawable.ic_english, "English"));
-                break;
-            case "{Science=}":
-                list1.add(new SubComm(R.drawable.ic_sci, "Science"));
-                break;
-            case "{SST=}":
-                list1.add(new SubComm(R.drawable.ic_sst, "S.ST"));
-                break;
-            case "{EVS=}":
-                list1.add(new SubComm(R.drawable.ic_evs, "EVS"));
-                break;
-            case "{GK=}":
-                list1.add(new SubComm(R.drawable.ic_gk, "G.K"));
-                break;
-            case "{Chemistry=}":
-                list1.add(new SubComm(R.drawable.ic_chem, "CHEMISTRY"));
-                break;
-            case "{Physics=}":
-                list1.add(new SubComm(R.drawable.ic_physics, "PHYSICS"));
-                break;
-            case "{Biology=}":
-                list1.add(new SubComm(R.drawable.ic_bio, "BIOLOGY"));
-                break;
-            case "{History=}":
-                list1.add(new SubComm(R.drawable.ic_history, "HISTORY"));
-                break;
-            case "{Geography=}":
-                list1.add(new SubComm(R.drawable.ic_geo, "GEOGRAPHY"));
-                break;
-            case "{Political Science=}":
-                list1.add(new SubComm(R.drawable.ic_polsci, "POL.SCI"));
-                break;
-            case "{Accounts=}":
-                list1.add(new SubComm(R.drawable.ic_accounts, "ACCOUNTS"));
-                break;
-            case "{Economics=}":
-                list1.add(new SubComm(R.drawable.ic_eco, "ECONOMICS"));
-                break;
-            case "{Business Studies=}":
-                list1.add(new SubComm(R.drawable.ic_business, "Business Stu"));
-                break;
-
-//                                        default:
-//                                            Toast.makeText(context, "Nothing Found", Toast.LENGTH_SHORT).show();
-//                                            list1.add(new SubComm("Nothing found"));
-//                                            adapter1.notifyDataSetChanged();
-//                                            Log.d("size", "onComplete: " + list1.size());
-        }
-        return list1;
-    }
-
     @Override
     public void onSubjClick(int position) {
-
         final String SubName = list1.get(position).getSubName();
-
         if(SubName!=null) {
             reference = FirebaseFirestore.getInstance().collection("CLASSES")
                     .document(viewClass.getSelectedItem().toString())
@@ -335,6 +231,7 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
                             for (int i : obj.getClasses()) {
                                 classes.add("Class " + i);
                             }
+
                             spinnerSetup(classes);
                         }
                     }
@@ -343,6 +240,10 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
 
     private void spinnerSetup(ArrayList<String> standards) {
         classes.addAll(standards);
+        // initial Classes setup
+        list1 = getIconsForClass(standards.get(0));
+        adapter1 = new SubjectAdapter(Stu_main_comm_screen.this, list1, Stu_main_comm_screen.this);
+        setUpRecyclerView();
 
         classSpinnerViewAdapter = new ArrayAdapter<String>(
                 Stu_main_comm_screen.this,
@@ -356,18 +257,12 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
 
         second_rv.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         second_rv.hasFixedSize();
-        viewClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        viewClass.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                loadSubject();
-                list1.clear();
+            public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
                 list1 = getIconsForClass(parent.getItemAtPosition(position).toString());
                 adapter1 = new SubjectAdapter(Stu_main_comm_screen.this, list1, Stu_main_comm_screen.this);
                 setUpRecyclerView();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
         adapter1 = new SubjectAdapter(this, list1, this);
