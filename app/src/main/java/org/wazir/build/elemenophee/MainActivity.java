@@ -91,10 +91,6 @@ public class MainActivity extends AppCompatActivity {
         signUpUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (otpSu.getText().toString().equals("")) {
-                    Toast.makeText(MainActivity.this, "Where is the OTP ??????", Toast.LENGTH_SHORT).show();
-                    return;
-                }
                 signUpUser();
                 loadingPopup.dialogRaise();
             }

@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,18 +38,21 @@ import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.Chapters;
 import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.SubComm;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.ChapterAdapter;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.SubjectAdapter;
-import org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct;
 import org.wazir.build.elemenophee.Student.StudentProfile.StudentProfileActivity;
 import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
 import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static org.wazir.build.elemenophee.ConstantsRet.getIconsForClass;
+
+
 public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAdapter.OnSubjListener {
 
-    ArrayList<String> Class = new ArrayList<>();
+    ArrayList<String> classes = new ArrayList<>();
     ArrayList<SubComm> list1 = new ArrayList<>();
     ArrayList<SubComm> list2 = new ArrayList<>();
     ArrayList<Chapters> chapList = new ArrayList<>();
@@ -77,7 +78,10 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     CardView profileLayout;
     CardView cardLogout;
     CardView Subscribe;
-    CardView messages,search_teach;
+    CardView messages, search_teach;
+
+    FirebaseFirestore db;
+
 
     CollectionReference isSubs = FirebaseFirestore.getInstance().collection("/TEACHERS/");
 
@@ -88,108 +92,12 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         setContentView(R.layout.activity_stu_main_comm_screen);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        mAuth = FirebaseAuth.getInstance();
-        profilePic = findViewById(R.id.circleImageView);
-        Intro_pic = findViewById(R.id.Comm_pro_image);
-        StudentName = findViewById(R.id.textView22);
-        profileLayout = findViewById(R.id.ProfileTeacher);
-        cardLogout = findViewById(R.id.logout);
-        Subscribe = findViewById(R.id.stu_subscribe);
-        name = findViewById(R.id.textView26);
-        messages = findViewById(R.id.message_id);
-        view_class_tv = findViewById(R.id.to_view_class);
-        search_teach = findViewById(R.id.stu_search_teacher);
-
+        initUi();
         getProfilePic();
-
-        search_teach.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Stu_main_comm_screen.this, StudentSubsActivity.class);
-                intent.putExtra("FROM_SEARCH_STUDENT",true);
-                startActivity(intent);
-            }
-        });
-
-        profileLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Stu_main_comm_screen.this, StudentProfileActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        cardLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAuth.signOut();
-                startActivity(new Intent(Stu_main_comm_screen.this, SplashScreen.class));
-                finish();
-            }
-        });
-
-        Subscribe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent= new Intent(Stu_main_comm_screen.this, StudentSubsActivity.class);
-                startActivity(intent);
-            }
-        });
-        messages.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent= new Intent(Stu_main_comm_screen.this, ChatActivity.class);
-                startActivity(intent);
-                // TODO: 6/21/2020 nav to Messages
-            }
-        });
-        Class.add("Class 5");
-        Class.add("Class 6");
-        Class.add("Class 7");
-        Class.add("Class 8");
-        Class.add("Class 9");
-
-
-        first_rv = findViewById(R.id.first_recycler_view);
-        second_rv = findViewById(R.id.second_recycler_view);
-        viewClass = findViewById(R.id.viewClassSpinner);
-
-        classSpinnerViewAdapter = new ArrayAdapter<String>(Stu_main_comm_screen.this,
-                android.R.layout.simple_spinner_dropdown_item, Class);
-        viewClass.setAdapter(classSpinnerViewAdapter);
-
-        first_rv.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        first_rv.hasFixedSize();
-
-        second_rv.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-        second_rv.hasFixedSize();
-
-        viewClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                view_class_tv.setText( viewClass.getSelectedItem().toString());
-//                loadSubject();
-                list1.clear();
-                list1 = getList2_modified();
-
-                adapter1 = new SubjectAdapter(Stu_main_comm_screen.this, list1, Stu_main_comm_screen.this);
-                setUpRecyclerView();
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        adapter1 = new SubjectAdapter(this, list1, this);
-        adapter2 = new ChapterAdapter(this, chapList);
+        onClickEvents();
+        getClasses();
 
         setUpRecyclerView();
-
-
     }
 
     private void getProfilePic() {
@@ -236,58 +144,6 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
                     }
                 });
 
-    }
-
-    ArrayList<SubComm> getList2_modified(){
-        Log.d("class", "getList2_modified: "+ viewClass.getSelectedItem().toString());
-        if(viewClass.getSelectedItem().toString().equals("Class 5")){
-            list2.add(new SubComm(R.drawable.ic_maths, "Maths"));
-            list2.add(new SubComm(R.drawable.ic_english, "English"));
-            list2.add(new SubComm(R.drawable.ic_sci, "Science"));
-            list2.add(new SubComm(R.drawable.ic_sst, "S.ST"));
-            list2.add(new SubComm(R.drawable.ic_evs, "EVS"));
-        }
-        if(viewClass.getSelectedItem().toString().equals("Class 6")){
-            list2.add(new SubComm(R.drawable.ic_maths, "Maths"));
-            list2.add(new SubComm(R.drawable.ic_english, "English"));
-            list2.add(new SubComm(R.drawable.ic_sci, "Science"));
-            list2.add(new SubComm(R.drawable.ic_sst, "S.ST"));
-            list2.add(new SubComm(R.drawable.ic_evs, "EVS"));
-            list2.add(new SubComm(R.drawable.ic_gk, "G.K"));
-        }
-        if(viewClass.getSelectedItem().toString().equals("Class 7")){
-            list2.add(new SubComm(R.drawable.ic_maths, "Maths"));
-            list2.add(new SubComm(R.drawable.ic_english, "English"));
-            list2.add(new SubComm(R.drawable.ic_sci, "Science"));
-            list2.add(new SubComm(R.drawable.ic_sst, "S.ST"));
-            list2.add(new SubComm(R.drawable.ic_evs, "EVS"));
-            list2.add(new SubComm(R.drawable.ic_gk, "G.K"));
-        }
-        if(viewClass.getSelectedItem().toString().equals("Class 8")){
-            list2.add(new SubComm(R.drawable.ic_maths, "Maths"));
-            list2.add(new SubComm(R.drawable.ic_english, "English"));
-            list2.add(new SubComm(R.drawable.ic_sci, "Science"));
-            list2.add(new SubComm(R.drawable.ic_sst, "S.ST"));
-            list2.add(new SubComm(R.drawable.ic_evs, "EVS"));
-            list2.add(new SubComm(R.drawable.ic_gk, "G.K"));
-        }
-        if(viewClass.getSelectedItem().toString().equals("Class 9")){
-            list2.add(new SubComm(R.drawable.ic_maths, "Maths"));
-            list2.add(new SubComm(R.drawable.ic_english, "English"));
-            list2.add(new SubComm(R.drawable.ic_sst, "S.ST"));
-            list2.add(new SubComm(R.drawable.ic_bio, "Biology"));
-            list2.add(new SubComm(R.drawable.ic_physics, "Physics"));
-            list2.add(new SubComm(R.drawable.ic_chem, "Chemistry"));
-        }
-        if(viewClass.getSelectedItem().toString().equals("Class 10")){
-            list2.add(new SubComm(R.drawable.ic_maths, "Maths"));
-            list2.add(new SubComm(R.drawable.ic_english, "English"));
-            list2.add(new SubComm(R.drawable.ic_sst, "S.ST"));
-            list2.add(new SubComm(R.drawable.ic_bio, "Biology"));
-            list2.add(new SubComm(R.drawable.ic_physics, "Physics"));
-            list2.add(new SubComm(R.drawable.ic_chem, "Chemistry"));
-        }
-        return list2;
     }
 
 
@@ -396,13 +252,126 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
                         }
                     });
 
-        }else
-            Toast.makeText(this,"No Subjects",Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(this, "No Subjects", Toast.LENGTH_SHORT).show();
 
     }
 
     private void setUpRecyclerView() {
         first_rv.setAdapter(adapter1);
         second_rv.setAdapter(adapter2);
+    }
+
+    private void initUi() {
+        mAuth = FirebaseAuth.getInstance();
+        profilePic = findViewById(R.id.circleImageView);
+        Intro_pic = findViewById(R.id.Comm_pro_image);
+        StudentName = findViewById(R.id.textView22);
+        profileLayout = findViewById(R.id.ProfileTeacher);
+        cardLogout = findViewById(R.id.logout);
+        Subscribe = findViewById(R.id.stu_subscribe);
+        name = findViewById(R.id.textView26);
+        messages = findViewById(R.id.message_id);
+        search_teach = findViewById(R.id.stu_search_teacher);
+        first_rv = findViewById(R.id.first_recycler_view);
+        second_rv = findViewById(R.id.second_recycler_view);
+        viewClass = findViewById(R.id.viewClassSpinner);
+        db = FirebaseFirestore.getInstance();
+    }
+
+    private void onClickEvents() {
+        search_teach.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Stu_main_comm_screen.this, StudentSubsActivity.class);
+                intent.putExtra("FROM_SEARCH_STUDENT", true);
+                startActivity(intent);
+            }
+        });
+
+        profileLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Stu_main_comm_screen.this, StudentProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        cardLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.signOut();
+                startActivity(new Intent(Stu_main_comm_screen.this, SplashScreen.class));
+                finish();
+            }
+        });
+
+        Subscribe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Stu_main_comm_screen.this, StudentSubsActivity.class);
+                startActivity(intent);
+            }
+        });
+        messages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Stu_main_comm_screen.this, ChatActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void getClasses() {
+        db.collection("STUDENTS").document(mAuth.getCurrentUser().getPhoneNumber())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful() && task.getResult().exists()) {
+                            StudentObj obj = task.getResult().toObject(StudentObj.class);
+                            Collections.sort(obj.getClasses());
+                            ArrayList<String> classes = new ArrayList<>();
+                            for (int i : obj.getClasses()) {
+                                classes.add("Class " + i);
+                            }
+                            spinnerSetup(classes);
+                        }
+                    }
+                });
+    }
+
+    private void spinnerSetup(ArrayList<String> standards) {
+        classes.addAll(standards);
+
+        classSpinnerViewAdapter = new ArrayAdapter<String>(
+                Stu_main_comm_screen.this,
+                android.R.layout.simple_spinner_dropdown_item,
+                classes
+        );
+        viewClass.setAdapter(classSpinnerViewAdapter);
+
+        first_rv.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        first_rv.hasFixedSize();
+
+        second_rv.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        second_rv.hasFixedSize();
+        viewClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                loadSubject();
+                list1.clear();
+                list1 = getIconsForClass(parent.getItemAtPosition(position).toString());
+                adapter1 = new SubjectAdapter(Stu_main_comm_screen.this, list1, Stu_main_comm_screen.this);
+                setUpRecyclerView();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        adapter1 = new SubjectAdapter(this, list1, this);
+        adapter2 = new ChapterAdapter(this, chapList);
+
     }
 }
