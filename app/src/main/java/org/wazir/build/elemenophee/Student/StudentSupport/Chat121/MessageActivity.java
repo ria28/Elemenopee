@@ -146,18 +146,17 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String message = text_send.getText().toString();
-                if (!message.equals("")) {
+//                if (!message.equals("")) {
                     sendMessage(fuser.getPhoneNumber(), userId, message, fuser.getDisplayName());
-                } else if (tempImage.getVisibility() == View.VISIBLE) {
-                    uploadFile();
-                } else
-                    Toast.makeText(MessageActivity.this, "YOU CAN'T SEND EMPTY MESSAGE", Toast.LENGTH_SHORT).show();
-                text_send.setText("");
+//                }
+//                else
+//                    Toast.makeText(MessageActivity.this, "YOU CAN'T SEND EMPTY MESSAGE", Toast.LENGTH_SHORT).show();
+//                text_send.setText("");
 
             }
         });
 
-        readMessage(fuser.getPhoneNumber(), userId, "");
+        readMessage(fuser.getPhoneNumber(), userId);
 
     }
 
@@ -202,67 +201,73 @@ public class MessageActivity extends AppCompatActivity {
             text_send.setText("");
         } else {
 
-            final MessObj obj = new MessObj(msg, sender, receiver, name);
-            mchats = messageAdapter.getMessages();
-            mchats.add(0, obj);
-            messageAdapter.setMessages(mchats);
-            messageAdapter.notifyDataSetChanged();
-            recyclerView.setAdapter(messageAdapter);
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-//            String doc_id = sdf.format(new Date());
-//            saveDocId = doc_id;
-            if (receiver != null) {
-                db.collection("STUDENTS").document(receiver).get()                        // teacher's account chat with students
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful() && task.getResult().exists()) {
+            if(!msg.equals("")) {
+                final MessObj obj = new MessObj(msg, sender, receiver, name);
+                mchats = messageAdapter.getMessages();
+                mchats.add(0, obj);
+                messageAdapter.setMessages(mchats);
+                messageAdapter.notifyDataSetChanged();
+                recyclerView.setAdapter(messageAdapter);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                String doc_id = sdf.format(new Date());
+                saveDocId = doc_id;
+                if (receiver != null) {
+                    db.collection("STUDENTS").document(receiver).get()                        // teacher's account chat with students
+                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful() && task.getResult().exists()) {
 
-                                    db.collection("ChatRoom")
-                                            .document(sender)
-                                            .collection("Chats")
-                                            .document(receiver)
-                                            .collection("Chats")
-                                            .document(saveDocId).set(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
+                                        db.collection("ChatRoom")
+                                                .document(sender)
+                                                .collection("Chats")
+                                                .document(receiver)
+                                                .collection("Chats")
+                                                .document(saveDocId).set(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
 //                                            finish();
-                                        }
-                                    });
+                                            }
+                                        });
 
-                                    String number = mAuth.getCurrentUser().getPhoneNumber();
-                                    db.collection("STUDENTS").document(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber()).collection("Contacts")
-                                            .document("list").update("Contacts", FieldValue.arrayUnion(userId));
+                                        String number = mAuth.getCurrentUser().getPhoneNumber();
+                                        db.collection("STUDENTS").document(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber()).collection("Contacts")
+                                                .document("list").update("Contacts", FieldValue.arrayUnion(userId));
+                                    }
                                 }
-                            }
-                        });
+                            });
 
-                db.collection("TEACHERS").document(receiver).get()                        // student's account chat with teacher
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful() && task.getResult().exists()) {
+                    db.collection("TEACHERS").document(receiver).get()                        // student's account chat with teacher
+                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful() && task.getResult().exists()) {
 
-                                    db.collection("ChatRoom").document(receiver).collection("Chats").document(sender).collection("Chats")
-                                            .document(saveDocId).set(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
+                                        db.collection("ChatRoom").document(receiver).collection("Chats").document(sender).collection("Chats")
+                                                .document(saveDocId).set(obj).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
 //                                            finish();
-                                        }
-                                    });
-                                    db.collection("STUDENTS").document(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber())
-                                            .collection("Contacts").document("list").update("Contacts", FieldValue.arrayUnion(receiver));
+                                            }
+                                        });
+                                        db.collection("STUDENTS").document(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber())
+                                                .collection("Contacts").document("list").update("Contacts", FieldValue.arrayUnion(receiver));
 
+                                    }
                                 }
-                            }
-                        });
+                            });
+                }
+            }else {
+
+                Toast.makeText(MessageActivity.this, "YOU CAN'T SEND EMPTY MESSAGE", Toast.LENGTH_SHORT).show();
+
             }
-
         }
+        text_send.setText("");
     }
 
 
-    private void readMessage(final String myid, final String userid, String imageUrl) {
+    private void readMessage(final String myid, final String userid) {
 
         if (userid != null) {
             db.collection("STUDENTS").document(userid).get()                         // as a teacher chat with student
@@ -281,7 +286,7 @@ public class MessageActivity extends AppCompatActivity {
                                         for (DocumentSnapshot snapshot : queryDocumentSnapshots) {
                                             mchats.add(snapshot.toObject(MessObj.class));
                                         }
-                                        //Collections.reverse(mchats);
+                                        Collections.reverse(mchats);
                                         messageAdapter.setMessages(mchats);
                                     }
                                 });
@@ -353,8 +358,9 @@ public class MessageActivity extends AppCompatActivity {
                                     mchats.add(0, object);
                                     messageAdapter.setMessages(mchats);
 
-//                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-//                                    String doc_id = sdf.format(new Date());
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                                    String doc_id = sdf.format(new Date());
+                                    saveDocId=doc_id;
 
                                     if (mAuth.getCurrentUser() != null) {
                                         db.collection("STUDENTS").document(userId).get()
@@ -372,6 +378,8 @@ public class MessageActivity extends AppCompatActivity {
                                                                         public void onComplete(@NonNull Task<Void> task) {
                                                                             if (task.isSuccessful()) {
                                                                                 imageUri = null;
+                                                                                tempImage.setVisibility(View.INVISIBLE);
+                                                                                tempImage.setImageBitmap(null);
                                                                                 Toast.makeText(MessageActivity.this, "Message Posted", Toast.LENGTH_SHORT).show();
                                                                             }
                                                                         }
@@ -395,6 +403,8 @@ public class MessageActivity extends AppCompatActivity {
                                                                         public void onComplete(@NonNull Task<Void> task) {
                                                                             if (task.isSuccessful()) {
                                                                                 imageUri = null;
+                                                                                tempImage.setVisibility(View.INVISIBLE);
+                                                                                tempImage.setImageBitmap(null);
                                                                                 Toast.makeText(MessageActivity.this, "Message Posted", Toast.LENGTH_SHORT).show();
                                                                             }
                                                                         }
@@ -418,6 +428,10 @@ public class MessageActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
         }
+
+        tempImage.setVisibility(View.INVISIBLE);
+        tempImage.setImageBitmap(null);
+        imageUri=null;
     }
 
     @Override

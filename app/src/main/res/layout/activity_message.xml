@@ -73,7 +73,8 @@
             android:id="@+id/send"
             android:src="@drawable/ic_send"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            />
 
         <ImageView
             android:id="@+id/sendImage"

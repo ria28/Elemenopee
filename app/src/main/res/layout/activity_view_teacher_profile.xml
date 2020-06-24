@@ -55,7 +55,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/notificaion_viewTeacherProfile"
+                android:id="@+id/message_imageView"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginTop="40dp"
@@ -63,7 +63,7 @@
                 android:elevation="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/notification_icon" />
+                app:srcCompat="@drawable/ic_email" />
 
             <ImageView
                 android:layout_width="wrap_content"
