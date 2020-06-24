@@ -183,6 +183,7 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         Class.add("Class 7");
         Class.add("Class 8");
         Class.add("Class 9");
+        Class.add("Class 10");
 
 
         first_rv = findViewById(R.id.first_recycler_view);

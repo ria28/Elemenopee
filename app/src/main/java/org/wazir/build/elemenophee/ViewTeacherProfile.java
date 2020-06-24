@@ -79,7 +79,7 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
         setContentView(R.layout.activity_view_teacher_profile);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        message.findViewById(R.id.message_imageView);
+        message=findViewById(R.id.message_imageView);
 
         teacher_ID = getIntent().getStringExtra("TEACHER_ID");
 

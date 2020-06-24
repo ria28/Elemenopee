@@ -5,23 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Student.StudentSupport.Chat121.MessageActivity">
+
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/bar_layout">
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#7C4DFF"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
-            >
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
+
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
                 android:id="@+id/profile_image_message"
-                />
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
             <TextView
                 android:id="@+id/username_message"
                 android:layout_width="wrap_content"
@@ -31,32 +32,26 @@
                 android:layout_toEndOf="@+id/profile_image_message"
                 android:layout_toRightOf="@+id/profile_image_message"
                 android:text="Username"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/message_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/bar_layout"
         android:layout_above="@+id/bottom_message"
-        android:id="@+id/message_rv"
-        />
+        android:layout_below="@+id/bar_layout"
+        >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
     <RelativeLayout
+        android:id="@+id/bottom_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:padding="5dp"
-        android:id="@+id/bottom_message">
-
-        <ImageView
-            android:id="@+id/attach"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignEnd="@+id/text_send"
-            android:layout_marginEnd="-49dp"
-            app:srcCompat="@drawable/ic_baseline_attach_file_24"
-            android:onClick="getMedia_"/>
+        android:padding="5dp">
 
         <EditText
             android:id="@+id/text_send"
@@ -67,25 +62,14 @@
             android:layout_toLeftOf="@+id/send"
             android:background="@android:color/transparent"
             android:hint="Type a message here..." />
+
         <ImageView
+            android:id="@+id/send"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:id="@+id/send"
-            android:src="@drawable/ic_send"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            />
-
-        <ImageView
-            android:id="@+id/sendImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/ic_launcher_background" />
-
+            android:src="@drawable/ic_send" />
 
     </RelativeLayout>
-
-
 </RelativeLayout>
