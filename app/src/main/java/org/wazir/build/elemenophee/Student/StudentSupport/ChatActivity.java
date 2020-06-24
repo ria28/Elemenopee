@@ -247,7 +247,7 @@ public class ChatActivity extends AppCompatActivity {
     private void getStudentContacts(ArrayList<String> doc_id) {
         doc_id.add("+918130981088");
         doc_id.add("+918750348232");
-        doc_id.add("+917011974679");
+//        doc_id.add("+917011974679");
 
         Log.d("checkk", "getStudentContacts: "+doc_id.get(0));
 
