@@ -81,7 +81,7 @@
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="8dp"
-                        app:layout_constraintEnd_toEndOf="@+id/textView26"
+                        app:layout_constraintEnd_toEndOf="@+id/textView26k"
                         app:layout_constraintTop_toBottomOf="@+id/Comm_pro_image" />
 
                     <TextView
@@ -112,7 +112,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/viewClassSpinner" />
 
                     <TextView
-                        android:id="@+id/textView26"
+                        android:id="@+id/textView26k"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"

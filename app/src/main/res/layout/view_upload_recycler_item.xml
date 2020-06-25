@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent">
@@ -46,7 +47,7 @@
                 android:text="TextView"
                 android:textColor="@color/color6"
                 android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/video_options"
                 app:layout_constraintStart_toEndOf="@+id/viewUploaditemImage"
                 app:layout_constraintTop_toTopOf="@+id/viewUploaditemImage" />
 
@@ -58,6 +59,20 @@
                 app:layout_constraintEnd_toEndOf="@+id/viewUploaditemTitle"
                 app:layout_constraintStart_toStartOf="@+id/viewUploaditemTitle"
                 app:layout_constraintTop_toBottomOf="@+id/viewUploaditemTitle" />
+
+            <ImageView
+                android:id="@+id/video_options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:clickable="true"
+                android:elevation="0dp"
+                android:focusable="auto"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/video_option_ic" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

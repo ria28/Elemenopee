@@ -186,7 +186,8 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
                         teacherName.setText(teacherObj.getName());
                         schoolName.setText(teacherObj.getSchool());
                         Glide.with(ViewTeacherProfile.this).load(teacherObj.getProPicURL()).into(profilePic);
-                        SubsRef.whereEqualTo("studentId", user.getPhoneNumber())
+                        SubsRef.whereEqualTo("studentID" +
+                                "", user.getPhoneNumber())
                                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                             @Override
                             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {

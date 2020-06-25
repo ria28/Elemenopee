@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,19 +26,17 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.wazir.build.elemenophee.ModelObj.StudentObj;
+import org.wazir.build.elemenophee.Downloads;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
 import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.Chapters;
 import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.SubComm;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.ChapterAdapter;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.SubjectAdapter;
-import org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct;
 import org.wazir.build.elemenophee.Student.StudentProfile.StudentProfileActivity;
 import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
 import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
@@ -77,7 +73,7 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     CardView profileLayout;
     CardView cardLogout;
     CardView Subscribe;
-    CardView messages,search_teach;
+    CardView messages,search_teach, downloads;
 
     CollectionReference isSubs = FirebaseFirestore.getInstance().collection("/TEACHERS/");
 
@@ -95,12 +91,21 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         profileLayout = findViewById(R.id.ProfileTeacher);
         cardLogout = findViewById(R.id.logout);
         Subscribe = findViewById(R.id.stu_subscribe);
-        name = findViewById(R.id.textView26);
+        name = findViewById(R.id.textView26k);
         messages = findViewById(R.id.message_id);
         view_class_tv = findViewById(R.id.to_view_class);
         search_teach = findViewById(R.id.stu_search_teacher);
+        downloads = findViewById(R.id.downloads);
 
         getProfilePic();
+
+        downloads.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Stu_main_comm_screen.this, Downloads.class);
+                startActivity(intent);
+            }
+        });
 
         search_teach.setOnClickListener(new View.OnClickListener() {
             @Override
