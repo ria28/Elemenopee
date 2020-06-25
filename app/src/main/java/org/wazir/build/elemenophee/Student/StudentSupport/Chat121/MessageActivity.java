@@ -1,14 +1,14 @@
 package org.wazir.build.elemenophee.Student.StudentSupport.Chat121;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
-
 import android.widget.ScrollView;
-
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +36,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.StudentSupport.MainChatPanel.MessObj;
@@ -206,7 +209,9 @@ public class MessageActivity extends AppCompatActivity {
             String doc_id = sdf.format(new Date());
             saveDocId = doc_id;
             if (receiver != null) {
-                db.collection("STUDENTS").document(receiver).get()                        // teacher's account chat with students
+                db.collection("STUDENTS")
+                        .document(receiver)
+                        .get()                        // teacher's account chat with students
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -224,10 +229,12 @@ public class MessageActivity extends AppCompatActivity {
                                         }
                                     });
 
-                                    db.collection("STUDENTS").document(receiver).collection("Contacts")
-                                            .document("list").update("Contacts", FieldValue.arrayUnion(userId));
-                                    db.collection("TEACHERS").document(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber()).collection("Contacts")
-                                            .document("list").update("Contacts", FieldValue.arrayUnion(receiver));
+                                    db.collection("STUDENTS")
+                                            .document(receiver).collection("Contacts")
+                                            .document("list").update("contacts", FieldValue.arrayUnion(userId));
+                                    db.collection("TEACHERS")
+                                            .document(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber()).collection("Contacts")
+                                            .document("list").update("contacts", FieldValue.arrayUnion(receiver));
                                 }
                             }
                         });
@@ -246,10 +253,10 @@ public class MessageActivity extends AppCompatActivity {
                                         }
                                     });
                                     db.collection("STUDENTS").document(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber())
-                                            .collection("Contacts").document("list").update("Contacts", FieldValue.arrayUnion(receiver));
+                                            .collection("Contacts").document("list").update("contacts", FieldValue.arrayUnion(receiver));
 
                                     db.collection("TEACHERS").document(receiver).collection("Contacts")
-                                            .document("list").update("Contacts", FieldValue.arrayUnion(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber()));
+                                            .document("list").update("contacts", FieldValue.arrayUnion(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber()));
 
                                 }
                             }
@@ -319,14 +326,10 @@ public class MessageActivity extends AppCompatActivity {
                             Collections.reverse(mchats);
                             messageAdapter.setMessages(mchats);
                         }
-                    }
                 });
             }
         }
 
-    }
-
-    }
 
     public void getMedia_(View view) {
         Intent intent = new Intent();

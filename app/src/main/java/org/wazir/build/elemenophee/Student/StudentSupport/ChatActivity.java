@@ -16,10 +16,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
+import org.wazir.build.elemenophee.ModelObj.TempObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.User;
 import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.UserAdapter;
@@ -100,7 +99,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void Student(String number) {
-        FirebaseFirestore.getInstance().collection("STUDENTS")
+        FirebaseFirestore.getInstance()
+                .collection("STUDENTS")
                 .document(number)
                 .collection("Contacts")
                 .document("list")
@@ -109,18 +109,13 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful() && task.getResult().exists()) {
-                            DocumentSnapshot doc = task.getResult();
-                            ArrayList<String> res = (ArrayList<String>) doc.get("Contacts");
-                            doc_id.addAll(res);
-
+                            TempObj doc = task.getResult().toObject(TempObj.class);
+                            doc_id.addAll(doc.getContacts());
                         } else
-
-                            Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
                         getStudentContacts(doc_id);
-
                     }
                 });
+
     }
 
     private void getStudentContacts(ArrayList<String> doc_id) {
@@ -158,48 +153,32 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-
     private void Teacher(String number) {
-
-        FirebaseFirestore.getInstance().collection("TEACHERS").document(number)
-                .collection("Contacts").document("list")
+        FirebaseFirestore.getInstance()
+                .collection("TEACHERS")
+                .document(number)
+                .collection("Contacts")
+                .document("list")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful() && task.getResult().exists()) {
-                            DocumentSnapshot doc = task.getResult();
-                            ArrayList<String> res = (ArrayList<String>) doc.get("Contacts");
-                            doc_id.addAll(res);
-                        } else
-                            Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-
+                            TempObj doc = task.getResult().toObject(TempObj.class);
+                            doc_id.addAll(doc.getContacts());
+                        }
                         getTeacherContacts(doc_id);
-
                     }
                 });
-//        CollectionReference reference = db.collection("ChatRoom").document(number).collection("Chats");
-//        reference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
-//                        doc_id.add(snapshot.getId());
-//                    }
-//                } else {
-//                    Toast.makeText(ChatActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-//                }
-//
-//                getTeacherContacts(doc_id);
-//            }
-//        });
     }
 
     private void getTeacherContacts(ArrayList<String> doc_id) {
         if (doc_id != null) {
             for (String s : doc_id) {
                 final String str = s;
-                FirebaseFirestore.getInstance().collection("STUDENTS").document(s)
+                FirebaseFirestore.getInstance()
+                        .collection("STUDENTS")
+                        .document(s)
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
