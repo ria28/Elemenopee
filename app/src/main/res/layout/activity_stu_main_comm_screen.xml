@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FCFCFC"
@@ -13,8 +12,8 @@
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="25dp"
-        app:cardElevation="7dp"
         android:layout_marginTop="32dp"
+
         android:layout_marginStart="16sp"
         app:layout_constraintTop_toTopOf="@id/main_layout_stu"
         app:layout_constraintStart_toStartOf="@id/main_layout_stu">
@@ -190,7 +189,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView34" />
 
-
+            <com.ismaeldivita.chipnavigation.ChipNavigationBar
+                android:id="@+id/chip_nav_bar"
+                android:layout_width="0sp"
+                android:layout_height="50dp"
+                android:background="@drawable/bn_background"
+                app:cnb_backgroundColor="@color/blue"
+                app:cnb_menuResource="@menu/bottom_nav_sheet"
+                app:cnb_unselectedColor="@color/color6"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 

@@ -27,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 import org.angmarch.views.NiceSpinner;
 import org.angmarch.views.OnSpinnerItemSelectedListener;
@@ -81,18 +82,51 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     FirebaseFirestore db;
     CollectionReference isSubs = FirebaseFirestore.getInstance().collection("/TEACHERS/");
 
+    // activity Specific
+    ChipNavigationBar navigationBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stu_main_comm_screen);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-
+        initActiUi();
         initUi();
         getProfilePic();
         onClickEvents();
         getClasses();
 
         setUpRecyclerView();
+    }
+
+    private void initActiUi() {
+        navigationBar = findViewById(R.id.chip_nav_bar);
+        actClickEvents();
+    }
+
+    private void actClickEvents() {
+        navigationBar.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(int i) {
+                switch (i) {
+                    case R.id.id_bn_dashboard:
+                        // TODO: 6/25/2020 navigate To Dashboard
+                        break;
+                    case R.id.id_bn_community:
+                        // TODO: 6/25/2020 navigate to Community
+                        break;
+                    case R.id.id_bn_teacher:
+                        // TODO: 6/25/2020 navigate to teacher
+                        break;
+                    case R.id.id_bn_videos:
+                        // TODO: 6/25/2020 navigate to video
+                        break;
+                    case R.id.id_bn_chat:
+                        // TODO: 6/25/2020  navigate to chat
+                        break;
+                }
+            }
+        });
     }
 
     private void getProfilePic() {
