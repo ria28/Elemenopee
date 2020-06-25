@@ -112,7 +112,9 @@ public class ChatActivity extends AppCompatActivity {
                             DocumentSnapshot doc = task.getResult();
                             ArrayList<String> res = (ArrayList<String>) doc.get("Contacts");
                             doc_id.addAll(res);
-                        } else {
+
+                        } else
+
                             Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                         getStudentContacts(doc_id);
@@ -132,11 +134,13 @@ public class ChatActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 if (task.isSuccessful() && task.getResult().exists()) {
                                     DocumentSnapshot doc = task.getResult();
-//                                    String id = doc.get("phone").toString();
                                     String id = str;
                                     String username = doc.get("name").toString();
-
-                                    String imageUrl = doc.get("proPicURL").toString();
+                                    String imageUrl;
+                                    if(!doc.get("proPicURL").toString().equals("")) {
+                                        imageUrl = doc.get("proPicURL").toString();
+                                    }else
+                                        imageUrl="";
 
                                     mUsers.add(new User(id, username, imageUrl));
                                     userAdapter = new UserAdapter(ChatActivity.this, mUsers);
@@ -156,21 +160,39 @@ public class ChatActivity extends AppCompatActivity {
 
 
     private void Teacher(String number) {
-        CollectionReference reference = db.collection("ChatRoom").document(number).collection("Chats");
-        reference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                        doc_id.add(snapshot.getId());
-                    }
-                } else {
-                    Toast.makeText(ChatActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                }
 
-                getTeacherContacts(doc_id);
-            }
-        });
+        FirebaseFirestore.getInstance().collection("TEACHERS").document(number)
+                .collection("Contacts").document("list")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful() && task.getResult().exists()) {
+                            DocumentSnapshot doc = task.getResult();
+                            ArrayList<String> res = (ArrayList<String>) doc.get("Contacts");
+                            doc_id.addAll(res);
+                        } else
+                            Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+
+                        getTeacherContacts(doc_id);
+
+                    }
+                });
+//        CollectionReference reference = db.collection("ChatRoom").document(number).collection("Chats");
+//        reference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    for (QueryDocumentSnapshot snapshot : task.getResult()) {
+//                        doc_id.add(snapshot.getId());
+//                    }
+//                } else {
+//                    Toast.makeText(ChatActivity.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//                }
+//
+//                getTeacherContacts(doc_id);
+//            }
+//        });
     }
 
     private void getTeacherContacts(ArrayList<String> doc_id) {
@@ -186,7 +208,12 @@ public class ChatActivity extends AppCompatActivity {
                                     DocumentSnapshot doc = task.getResult();
                                     String id = str;
                                     String username = doc.get("name").toString();
-                                    String imageUrl = doc.get("imageUrl").toString();
+                                    String imageUrl;
+
+                                    if(!doc.get("imageUrl").toString().equals("")) {
+                                        imageUrl = doc.get("imageUrl").toString();
+                                    }else
+                                        imageUrl="";
 
                                     mUsers.add(new User(id, username, imageUrl));
                                     userAdapter = new UserAdapter(ChatActivity.this, mUsers);
