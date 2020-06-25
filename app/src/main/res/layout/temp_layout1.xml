@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/message_id"
@@ -11,7 +12,7 @@
         android:layout_marginTop="8dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="7dp"
-        app:cardElevation="7dp"
+        app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="@+id/ProfileTeacher"
         app:layout_constraintStart_toStartOf="@+id/ProfileTeacher"
         app:layout_constraintTop_toBottomOf="@+id/ProfileTeacher">
@@ -20,16 +21,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@android:color/transparent"
+            android:background="@drawable/custom_ripple"
             android:orientation="horizontal">
 
-            <ImageView
+            <com.airbnb.lottie.LottieAnimationView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="8sp"
                 android:layout_marginTop="8sp"
                 android:layout_marginBottom="8sp"
-                app:srcCompat="@drawable/ic_conversation" />
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/setting_animation" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -37,8 +40,9 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="8sp"
                 android:layout_marginEnd="8sp"
-                android:text="Messages"
-                android:textColor="@color/color5" />
+                android:fontFamily="@font/nunito"
+                android:text="SETTINGS"
+                android:textColor="@color/color6" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -47,21 +51,22 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginBottom="8dp"
         android:src="@color/color5"
         app:civ_border_color="@color/white"
         app:civ_border_width="2dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView22"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:fontFamily="sans-serif-medium"
+        android:fontFamily="@font/nunito"
         android:text="Akshay Rein"
-        android:textColor="@color/white"
+        android:textColor="@color/softBlue"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/circleImageView"
         app:layout_constraintTop_toTopOf="@+id/circleImageView" />
 
@@ -69,9 +74,9 @@
         android:id="@+id/textView23"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-light"
+        android:fontFamily="@font/nunito"
         android:text="Student"
-        android:textColor="@color/white"
+        android:textColor="@color/softBlue"
         app:layout_constraintBottom_toBottomOf="@+id/circleImageView"
         app:layout_constraintStart_toStartOf="@+id/textView22" />
 
@@ -79,29 +84,32 @@
         android:id="@+id/stu_subscribe"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fadingEdgeLength="2dp"
-        app:cardBackgroundColor="@color/softRed"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="7dp"
-        app:cardElevation="7dp"
-        app:layout_constraintEnd_toEndOf="@+id/ProfileTeacher"
-        app:layout_constraintStart_toStartOf="@+id/circleImageView"
-        app:layout_constraintTop_toBottomOf="@+id/circleImageView">
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@android:color/transparent"
+            android:background="@drawable/custom_ripple"
             android:orientation="horizontal">
 
-            <ImageView
+            <com.airbnb.lottie.LottieAnimationView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="8sp"
                 android:layout_marginTop="8sp"
                 android:layout_marginBottom="8sp"
-                app:srcCompat="@drawable/ic_sub" />
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/dashboard_animation" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -109,8 +117,9 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="8sp"
                 android:layout_marginEnd="8sp"
-                android:text="SUBCRICPTIONS"
-                android:textColor="@color/white" />
+                android:fontFamily="@font/nunito"
+                android:text="DASHBOARD"
+                android:textColor="@color/color6" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
@@ -120,10 +129,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:fadingEdgeLength="2dp"
-        app:cardBackgroundColor="#D29F8C "
+        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="7dp"
-        app:cardElevation="7dp"
+        app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="@+id/ProfileTeacher"
         app:layout_constraintStart_toStartOf="@+id/circleImageView"
         app:layout_constraintTop_toBottomOf="@+id/stu_subscribe">
@@ -133,16 +141,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@android:color/transparent"
+            android:background="@drawable/custom_ripple"
             android:orientation="horizontal">
 
-            <ImageView
+            <com.airbnb.lottie.LottieAnimationView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="8sp"
                 android:layout_marginTop="8sp"
                 android:layout_marginBottom="8sp"
-                app:srcCompat="@drawable/ic_teacher_subs" />
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/download_animation" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -150,8 +160,9 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="8sp"
                 android:layout_marginEnd="8sp"
-                android:text="SEARCH TEACHERS"
-                android:textColor="@color/white" />
+                android:fontFamily="@font/nunito"
+                android:text="DOWNLOADS"
+                android:textColor="@color/color6" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
@@ -163,7 +174,7 @@
         android:layout_marginTop="8dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="7dp"
-        app:cardElevation="7dp"
+        app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="@+id/ProfileTeacher"
         app:layout_constraintStart_toStartOf="@+id/ProfileTeacher"
         app:layout_constraintTop_toBottomOf="@+id/message_id">
@@ -172,17 +183,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@android:color/transparent"
+            android:background="@drawable/custom_ripple"
             android:orientation="horizontal">
 
-            <ImageView
+            <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/imageView6"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="8sp"
                 android:layout_marginTop="8sp"
                 android:layout_marginBottom="8sp"
-                app:srcCompat="@drawable/ic_logout" />
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/logout_animation" />
 
             <TextView
                 android:id="@+id/textView24"
@@ -191,8 +204,9 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="8sp"
                 android:layout_marginEnd="8sp"
-                android:text="Logout"
-                android:textColor="@color/color5" />
+                android:fontFamily="@font/nunito"
+                android:text="LOGOUT"
+                android:textColor="@color/color6" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -204,27 +218,32 @@
         android:layout_marginEnd="16dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="7dp"
-        app:cardElevation="7dp"
+        app:cardElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/circleImageView"
         app:layout_constraintTop_toBottomOf="@+id/stu_search_teacher">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ViewProfile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@android:color/transparent"
+            android:background="@drawable/custom_ripple"
             android:orientation="horizontal">
 
-            <ImageView
+            <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/imageView7"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginStart="8sp"
                 android:layout_marginTop="8sp"
                 android:layout_marginBottom="8sp"
-                app:srcCompat="@drawable/ic_profile" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/sub_animation" />
 
             <TextView
                 android:id="@+id/textView25"
@@ -232,10 +251,13 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="8sp"
-                android:layout_marginEnd="8sp"
-                android:text="View Profile"
-                android:textColor="@color/color5" />
-        </LinearLayout>
+                android:fontFamily="@font/nunito"
+                android:text="SUBSCRIPTIONS"
+                android:textColor="@color/color6"
+                app:layout_constraintBottom_toBottomOf="@id/imageView7"
+                app:layout_constraintStart_toEndOf="@id/imageView7"
+                app:layout_constraintTop_toTopOf="@id/imageView7" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

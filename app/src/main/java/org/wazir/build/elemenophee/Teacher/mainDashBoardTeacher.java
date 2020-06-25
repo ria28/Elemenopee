@@ -51,6 +51,7 @@ import org.wazir.build.elemenophee.Teacher.model.contentModel;
 import org.wazir.build.elemenophee.Utils.PermissionUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -106,23 +107,24 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         setContentView(R.layout.activity_main_dash_board_teacher);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        reference = FirebaseFirestore.getInstance().collection(
-                "/TEACHERS/" +
-                        user.getPhoneNumber() + //TODO:ADD Teacher id in Student View
-                        "/RECENT_UPLOADS"
-        );
+        reference = FirebaseFirestore.getInstance().collection("/TEACHERS/" + user.getPhoneNumber() + "/RECENT_UPLOADS");
 
         init();
         getTeacherInfo();
-        Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(profilePic);
-        Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(proPic2);
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        Uri pictureUrl = user.getPhotoUrl();
+
+        if (user.getPhotoUrl() != null) {
+            Glide.with(this).load(pictureUrl).into(profilePic);
+            Glide.with(this).load(pictureUrl).into(proPic2);
+        }
 
         content.add("VIDEOS");
         content.add("NOTES");
         content.add("OTHER");
 
-        FileTypeSpinnerViewAdapter = new ArrayAdapter<>(mainDashBoardTeacher.this,
-                android.R.layout.simple_spinner_dropdown_item, content);
+        FileTypeSpinnerViewAdapter = new ArrayAdapter<>(mainDashBoardTeacher.this, android.R.layout.simple_spinner_dropdown_item, content);
 
         FileType.setAdapter(FileTypeSpinnerViewAdapter);
 
@@ -141,16 +143,16 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         loadData("VIDEOS");
         loadData("NOTES");
         loadData("OTHER");
-//        loadSubscriber();
+        loadSubscriber();
 
         FileType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(videoList.size()<=0){
-                    Toast.makeText(getApplicationContext(),"No Recent Video Uploaded",Toast.LENGTH_SHORT).show();
+                if (videoList.size() <= 0) {
+                    Toast.makeText(getApplicationContext(), "No Recent Video Uploaded", Toast.LENGTH_SHORT).show();
                 }
-                if(pdfList.size()<=0){
-                    Toast.makeText(getApplicationContext(),"No Recent Notes Uploaded",Toast.LENGTH_SHORT).show();
+                if (pdfList.size() <= 0) {
+                    Toast.makeText(getApplicationContext(), "No Recent Notes Uploaded", Toast.LENGTH_SHORT).show();
                 }
                 setUpRecyclerView();
             }
@@ -198,7 +200,6 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                 Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 getIntent.setType("application/pdf");
 
-
                 @SuppressLint("IntentReset")
                 Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 pickIntent.setType("application/pdf");
@@ -209,10 +210,10 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                 startActivityForResult(chooserIntent, PICK_PDF);
             }
         });
+
         uploadFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 UploadType = "OTHER";
                 Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 getIntent.setType("*/*");
@@ -255,20 +256,17 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     }
 
     private void loadSubscriber() {
-        subsRef
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        subsList = new ArrayList<>();
-                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                            SubscribersModel model = doc.toObject(SubscribersModel.class);
-                            subsList.add(model.getStudentID());
-                        }
-                        if (subsList.size() > 0) {
-                            Log.d("TAG", "onSuccess: "+ subsList);
-                            studentRef
-                                    .whereIn("contact", subsList)
+        subsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                subsList = new ArrayList<>();
+                for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                    SubscribersModel model = doc.toObject(SubscribersModel.class);
+                    subsList.add(model.getStudentID());
+                }
+                if (subsList.size() > 0) {
+
+                    studentRef.whereIn("contact",subsList )
                                     .limit(10)
                                     .get()
                                     .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -439,7 +437,6 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
             public void onClick(View v) {
                 Intent intent= new Intent(mainDashBoardTeacher.this, ChatActivity.class);
                 startActivity(intent);
-                // TODO: 6/21/2020 navigate To messages activity
             }
         });
     }

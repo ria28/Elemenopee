@@ -1,7 +1,6 @@
 package org.wazir.build.elemenophee.Student.StudentSupport;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -9,10 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -29,11 +24,7 @@ import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.User;
 import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.UserAdapter;
 
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
@@ -76,8 +67,8 @@ public class ChatActivity extends AppCompatActivity {
         reference = db.collection("ChatRoom");
         mAuth = FirebaseAuth.getInstance();
         String number = mAuth.getCurrentUser().getPhoneNumber();
-
         doc_id = new ArrayList<>();
+
         checkStuTea(number);
         setUpRcView();
     }
@@ -109,8 +100,10 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void Student(String number) {
-        FirebaseFirestore.getInstance().collection("STUDENTS").document(number)
-                .collection("Contacts").document("list")
+        FirebaseFirestore.getInstance().collection("STUDENTS")
+                .document(number)
+                .collection("Contacts")
+                .document("list")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -119,18 +112,18 @@ public class ChatActivity extends AppCompatActivity {
                             DocumentSnapshot doc = task.getResult();
                             ArrayList<String> res = (ArrayList<String>) doc.get("Contacts");
                             doc_id.addAll(res);
-                        } else
-                            Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
+                        } else
+
+                            Toast.makeText(ChatActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                         getStudentContacts(doc_id);
 
                     }
                 });
-
     }
 
     private void getStudentContacts(ArrayList<String> doc_id) {
-
         if (doc_id != null) {
             for (String s : doc_id) {
                final  String str= s;
@@ -158,10 +151,7 @@ public class ChatActivity extends AppCompatActivity {
                             }
 
                         });
-
             }
-
-
         } else {
             Toast.makeText(ChatActivity.this, "No contacts", Toast.LENGTH_SHORT).show();
         }
@@ -237,14 +227,10 @@ public class ChatActivity extends AppCompatActivity {
 
                         });
             }
-
-
         } else {
             Toast.makeText(ChatActivity.this, "No contacts", Toast.LENGTH_SHORT).show();
         }
-
     }
-
 
     private void setUpRcView() {
         recyclerView.setAdapter(userAdapter);
