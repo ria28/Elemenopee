@@ -30,6 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 import org.wazir.build.elemenophee.CommunitySection.Adapters.AdapterQuestion;
 import org.wazir.build.elemenophee.Interfaces.QuesInteract;
@@ -38,6 +39,8 @@ import org.wazir.build.elemenophee.ModelObj.LikeObject;
 import org.wazir.build.elemenophee.ModelObj.QuesDispObj;
 import org.wazir.build.elemenophee.ModelObj.QuestionObj;
 import org.wazir.build.elemenophee.R;
+import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
+import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 
 import java.util.ArrayList;
 
@@ -52,6 +55,7 @@ public class ComPanActivity extends AppCompatActivity implements QuesInteract {
     ArrayList<QuesDispObj> questions;
     Context context;
     FirebaseAuth mAuth;
+    ChipNavigationBar navigationBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +65,7 @@ public class ComPanActivity extends AppCompatActivity implements QuesInteract {
         context = this;
         initLayout();
         initiateRcView();
+        initActiUi();
     }
 
     void initLayout() {
@@ -198,5 +203,35 @@ public class ComPanActivity extends AppCompatActivity implements QuesInteract {
 
     public void filterQuestions(View view) {
         fetchData(claSpiMainStr, subSpiMainStr);
+    }
+
+    private void initActiUi() {
+        navigationBar = findViewById(R.id.chip_nav_bar);
+        navigationBar.setItemSelected(R.id.id_bn_community, true);
+        navigationBar.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(int i) {
+                switch (i) {
+                    case R.id.id_bn_dashboard:
+                        onBackPressed();
+                        break;
+                    case R.id.id_bn_teacher:
+                        Intent intent = new Intent(ComPanActivity.this, StudentSubsActivity.class);
+                        intent.putExtra("FROM_SEARCH_STUDENT", true);
+                        startActivity(intent);
+                        break;
+                    case R.id.id_bn_chat:
+                        startActivity(new Intent(ComPanActivity.this, ChatActivity.class));
+                        finish();
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        navigationBar.setItemSelected(R.id.id_bn_community, true);
     }
 }

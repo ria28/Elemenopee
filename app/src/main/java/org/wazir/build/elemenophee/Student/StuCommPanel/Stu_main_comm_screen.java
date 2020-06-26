@@ -31,6 +31,7 @@ import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 import org.angmarch.views.NiceSpinner;
 import org.angmarch.views.OnSpinnerItemSelectedListener;
+import org.wazir.build.elemenophee.CommunitySection.ComPanActivity;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
@@ -38,7 +39,6 @@ import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.Chapters;
 import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.SubComm;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.ChapterAdapter;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.SubjectAdapter;
-import org.wazir.build.elemenophee.Student.StudentProfile.StudentProfileActivity;
 import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
 import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 
@@ -61,7 +61,6 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
 
     NiceSpinner viewClass;
     Context context;
-    String subject;
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -75,10 +74,10 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
 
     CircleImageView profilePic, Intro_pic;
     TextView StudentName, name, view_class_tv;
-    CardView profileLayout;
-    CardView cardLogout;
-    CardView Subscribe;
-    CardView messages, search_teach;
+    CardView navToSubs;
+    CardView logOutUser;
+    CardView navToDashboard;
+    CardView navToSettings, navToDownloads;
     FirebaseFirestore db;
     CollectionReference isSubs = FirebaseFirestore.getInstance().collection("/TEACHERS/");
 
@@ -101,32 +100,31 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
 
     private void initActiUi() {
         navigationBar = findViewById(R.id.chip_nav_bar);
-        actClickEvents();
-    }
-
-    private void actClickEvents() {
+        navigationBar.setItemSelected(R.id.id_bn_dashboard, true);
         navigationBar.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
             @Override
             public void onItemSelected(int i) {
                 switch (i) {
-                    case R.id.id_bn_dashboard:
-                        // TODO: 6/25/2020 navigate To Dashboard
-                        break;
                     case R.id.id_bn_community:
-                        // TODO: 6/25/2020 navigate to Community
+                        startActivity(new Intent(Stu_main_comm_screen.this, ComPanActivity.class));
                         break;
                     case R.id.id_bn_teacher:
-                        // TODO: 6/25/2020 navigate to teacher
-                        break;
-                    case R.id.id_bn_videos:
-                        // TODO: 6/25/2020 navigate to video
+                        Intent intent = new Intent(Stu_main_comm_screen.this, StudentSubsActivity.class);
+                        intent.putExtra("FROM_SEARCH_STUDENT", true);
+                        startActivity(intent);
                         break;
                     case R.id.id_bn_chat:
-                        // TODO: 6/25/2020  navigate to chat
+                        startActivity(new Intent(Stu_main_comm_screen.this, ChatActivity.class));
                         break;
                 }
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        navigationBar.setItemSelected(R.id.id_bn_dashboard, true);
     }
 
     private void getProfilePic() {
@@ -197,12 +195,11 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         profilePic = findViewById(R.id.circleImageView);
         Intro_pic = findViewById(R.id.Comm_pro_image);
         StudentName = findViewById(R.id.textView22);
-        profileLayout = findViewById(R.id.ProfileTeacher);
-        cardLogout = findViewById(R.id.logout);
-        Subscribe = findViewById(R.id.stu_subscribe);
+        navToSubs = findViewById(R.id.to_subscriptions);
+        logOutUser = findViewById(R.id.to_logout);
         name = findViewById(R.id.textView26);
-        messages = findViewById(R.id.message_id);
-        search_teach = findViewById(R.id.stu_search_teacher);
+        navToSettings = findViewById(R.id.to_settings);
+        navToDownloads = findViewById(R.id.to_downloads);
         first_rv = findViewById(R.id.first_recycler_view);
         second_rv = findViewById(R.id.second_recycler_view);
         viewClass = findViewById(R.id.viewClassSpinner);
@@ -210,24 +207,22 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     }
 
     private void onClickEvents() {
-        search_teach.setOnClickListener(new View.OnClickListener() {
+        navToDownloads.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: 6/25/2020 navigate to downloads
+            }
+        });
+
+        navToSubs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Stu_main_comm_screen.this, StudentSubsActivity.class);
-                intent.putExtra("FROM_SEARCH_STUDENT", true);
                 startActivity(intent);
             }
         });
 
-        profileLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Stu_main_comm_screen.this, StudentProfileActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        cardLogout.setOnClickListener(new View.OnClickListener() {
+        logOutUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mAuth.signOut();
@@ -236,18 +231,10 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
             }
         });
 
-        Subscribe.setOnClickListener(new View.OnClickListener() {
+        navToSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Stu_main_comm_screen.this, StudentSubsActivity.class);
-                startActivity(intent);
-            }
-        });
-        messages.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Stu_main_comm_screen.this, ChatActivity.class);
-                startActivity(intent);
+                // TODO: 6/25/2020 nav to Settings
             }
         });
     }

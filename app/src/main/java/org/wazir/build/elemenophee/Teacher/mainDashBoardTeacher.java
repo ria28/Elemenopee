@@ -36,12 +36,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.w3c.dom.Text;
 import org.wazir.build.elemenophee.CommunitySection.ComPanActivity;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.ModelObj.SubscribersModel;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
+import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.MessageActivity;
 import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
@@ -51,7 +53,6 @@ import org.wazir.build.elemenophee.Teacher.model.contentModel;
 import org.wazir.build.elemenophee.Utils.PermissionUtil;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -71,7 +72,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     FirebaseAuth mAuth;
     RecyclerView recentContent, recentSubs;
     CircleImageView profilePic, proPic2;
-    CardView messages;
+    CardView editProfile;
 
     videoRecyclerAdapter videoAdapter;
     otherAdapter otherAdapter;
@@ -250,7 +251,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         viewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mainDashBoardTeacher.this, TeacherProfile.class));
+                startActivity(new Intent(mainDashBoardTeacher.this, ChatActivity.class));
             }
         });
     }
@@ -304,7 +305,6 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         else
             recentContent.setAdapter(notesAdapter);
     }
-
 
     private void loadData(final String type) {
         reference.document("UPLOADS")
@@ -397,12 +397,17 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     }
 
     void init() {
-        sub_btn = findViewById(R.id.stu_subscribe);
-        sub_btn.setVisibility(View.GONE);
-        messages = findViewById(R.id.message_id);
+
+        TextView editProfileTv = findViewById(R.id.id_setting123);
+        editProfileTv.setText("EDIT PROFILE");
+
+        TextView messages = findViewById(R.id.textView25);
+        messages.setText("MESSAGES");
+
+        editProfile = findViewById(R.id.to_settings);
         mainPageName = findViewById(R.id.mainDashBoardTeacherName);
-        logoutUser = findViewById(R.id.logout);
-        viewProfile = findViewById(R.id.ProfileTeacher);
+        logoutUser = findViewById(R.id.to_logout);
+        viewProfile = findViewById(R.id.to_subscriptions);
         name = findViewById(R.id.textView22);
         designation = findViewById(R.id.textView23);
         mAuth = FirebaseAuth.getInstance();
@@ -417,8 +422,9 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         profilePic = findViewById(R.id.id_user_profile);
         proPic2 = findViewById(R.id.circleImageView);
         communityCard = findViewById(R.id.community_card);
-        search_teach = findViewById(R.id.stu_search_teacher);
+        search_teach = findViewById(R.id.to_downloads);
         search_teach.setVisibility(View.GONE);
+
         communityCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -432,10 +438,10 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         subsRef = FirebaseFirestore.getInstance().collection("TEACHERS")
                 .document(user.getPhoneNumber()).collection("SUBSCRIBERS");
 
-        messages.setOnClickListener(new View.OnClickListener() {
+        editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= new Intent(mainDashBoardTeacher.this, ChatActivity.class);
+                Intent intent = new Intent(mainDashBoardTeacher.this, TeacherProfile.class);
                 startActivity(intent);
             }
         });

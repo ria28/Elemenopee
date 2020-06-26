@@ -3,7 +3,6 @@ package org.wazir.build.elemenophee;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -40,11 +39,9 @@ import org.wazir.build.elemenophee.Teacher.videoPlayingActivity;
 
 import java.util.ArrayList;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class ViewTeacherProfile extends AppCompatActivity implements videoRecyclerAdapter.onLayoutClick {
 
-    CircleImageView profilePic;
+    ImageView profilePic;
     TextView teacherName, schoolName, connections, subscribe;
     RecyclerView recyclerView;
     videoRecyclerAdapter videoAdapter;
@@ -80,7 +77,7 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
 
-        message=findViewById(R.id.message_imageView);
+        message = findViewById(R.id.message_imageView);
 
 
         teacher_ID = getIntent().getStringExtra("TEACHER_ID");

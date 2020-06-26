@@ -8,11 +8,6 @@
         android:title="DASHBOARD" />
 
     <item
-        android:id="@+id/id_bn_videos"
-        android:icon="@drawable/bn_videos"
-        android:iconTint="@color/softBlue"
-        android:title="VIDEOS" />
-    <item
         android:id="@+id/id_bn_teacher"
         android:icon="@drawable/bn_teacher"
         android:iconTint="@color/softRed"
@@ -21,10 +16,10 @@
         android:id="@+id/id_bn_community"
         android:icon="@drawable/bn_community"
         android:iconTint="@color/color5"
-        android:title="VIDEOS" />
+        android:title="COMMUNITY" />
     <item
         android:id="@+id/id_bn_chat"
-        android:icon="@drawable/bn_videos"
+        android:icon="@drawable/bn_chat"
         android:iconTint="@color/softGreen"
         android:title="Chat" />
 </menu>

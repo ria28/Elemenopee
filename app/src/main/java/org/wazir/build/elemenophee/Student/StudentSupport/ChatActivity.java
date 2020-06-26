@@ -1,6 +1,7 @@
 package org.wazir.build.elemenophee.Student.StudentSupport;
 
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,28 +33,18 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     UserAdapter userAdapter;
     List<User> mUsers = new ArrayList<>();
-    List<String> userList;
     FirebaseUser fuser;
     FirebaseFirestore db;
     CollectionReference reference;
     ArrayList<String> doc_id;
 
     FirebaseAuth mAuth;
-    TeacherObj teachers;
-    Toolbar mToolbar;
-    Integer person;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-
         doc_id = new ArrayList<>();
-        mToolbar = findViewById(R.id.main_page_toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("Student Support");
-
-
         userAdapter = new UserAdapter(this, mUsers);
         recyclerView = findViewById(R.id.chats_list_rv_);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

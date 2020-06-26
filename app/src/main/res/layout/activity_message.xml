@@ -6,43 +6,50 @@
     android:layout_height="match_parent"
     tools:context=".Student.StudentSupport.Chat121.MessageActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/bar_layout"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/top_bar"
+        app:cardCornerRadius="7dp"
+        app:cardElevation="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_message"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bar_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#7C4DFF"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
+            android:layout_height="wrap_content">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile_image_message"
-                android:layout_width="30dp"
-                android:layout_height="30dp" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/username_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="45dp"
-                android:layout_marginLeft="45dp"
                 android:layout_toEndOf="@+id/profile_image_message"
                 android:layout_toRightOf="@+id/profile_image_message"
                 android:text="Username"
-                android:textSize="18sp" />
-        </androidx.appcompat.widget.Toolbar>
-    </com.google.android.material.appbar.AppBarLayout>
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/nunito"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/profile_image_message"
+                app:layout_constraintStart_toEndOf="@+id/profile_image_message"
+                app:layout_constraintTop_toTopOf="@+id/profile_image_message" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/message_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottom_message"
-        android:layout_below="@+id/bar_layout"
-        >
+        android:layout_below="@id/top_bar">
 
     </androidx.recyclerview.widget.RecyclerView>
 

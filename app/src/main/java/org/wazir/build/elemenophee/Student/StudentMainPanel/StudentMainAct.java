@@ -25,7 +25,6 @@ import org.wazir.build.elemenophee.SplashScreen;
 import org.wazir.build.elemenophee.Student.StudentMainPanel.Objects.SingleHorizontal;
 import org.wazir.build.elemenophee.Student.StudentMainPanel.Objects.SingleVertical;
 import org.wazir.build.elemenophee.Student.StudentMainPanel.StuAdapter.Adapters.MainAdapter;
-import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
 
 import java.util.ArrayList;
 
@@ -42,7 +41,7 @@ public class StudentMainAct extends AppCompatActivity {
         setContentView(R.layout.activity_main_stu);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        cardLogout = findViewById(R.id.logout);
+        cardLogout = findViewById(R.id.to_logout);
         name = findViewById(R.id.textView22);
         designation = findViewById(R.id.textView23);
         mAuth = FirebaseAuth.getInstance();

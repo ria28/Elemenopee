@@ -33,7 +33,9 @@
         <activity android:name=".Student.Lecture.Subject.ViewVideosChapActivity" />
         <activity android:name=".Student.StudentSupport.MainChatPanel.ChatMainActivity" />
         <activity android:name=".Student.Community.ViewNotesActivity" />
-        <activity android:name=".Student.StudentSupport.Chat121.MessageActivity" />
+        <activity
+            android:name=".Student.StudentSupport.Chat121.MessageActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
