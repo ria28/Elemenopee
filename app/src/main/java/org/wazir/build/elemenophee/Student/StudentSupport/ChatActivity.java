@@ -1,5 +1,6 @@
 package org.wazir.build.elemenophee.Student.StudentSupport;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -17,10 +18,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
+import org.wazir.build.elemenophee.CommunitySection.ComPanActivity;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.ModelObj.TempObj;
 import org.wazir.build.elemenophee.R;
+import org.wazir.build.elemenophee.Student.StuCommPanel.Stu_main_comm_screen;
+import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
 import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.User;
 import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.UserAdapter;
 
@@ -39,6 +44,7 @@ public class ChatActivity extends AppCompatActivity {
     ArrayList<String> doc_id;
 
     FirebaseAuth mAuth;
+    ChipNavigationBar navigationBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +57,6 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(userAdapter);
 
-
         db = FirebaseFirestore.getInstance();
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         reference = db.collection("ChatRoom");
@@ -61,6 +66,7 @@ public class ChatActivity extends AppCompatActivity {
 
         checkStuTea(number);
         setUpRcView();
+        initActiUi();
     }
 
     private void checkStuTea(final String number) {
@@ -204,6 +210,31 @@ public class ChatActivity extends AppCompatActivity {
 
     private void setUpRcView() {
         recyclerView.setAdapter(userAdapter);
+    }
+
+    private void initActiUi() {
+        navigationBar = findViewById(R.id.chip_nav_bar);
+        navigationBar.setItemSelected(R.id.id_bn_chat, true);
+        navigationBar.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(int i) {
+                switch (i) {
+                    case R.id.id_bn_dashboard:
+                        onBackPressed();
+                        break;
+                    case R.id.id_bn_community:
+                        startActivity(new Intent(ChatActivity.this, ComPanActivity.class));
+                        finish();
+                        break;
+                    case R.id.id_bn_teacher:
+                        Intent intent = new Intent(ChatActivity.this, StudentSubsActivity.class);
+                        intent.putExtra("FROM_SEARCH_STUDENT", true);
+                        startActivity(intent);
+                        finish();
+                        break;
+                }
+            }
+        });
     }
 }
 

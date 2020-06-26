@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="4dp">
+    android:layout_margin="8dp"
+    app:cardCornerRadius="7dp"
+    app:cardElevation="5dp">
 
     <RelativeLayout
         android:id="@+id/single_Teacher_item"
@@ -15,12 +17,14 @@
             android:id="@+id/teacherPic"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentBottom="false"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="7dp"
             android:src="@color/softBlue"
-            app:civ_border_color="#FFFFFF"
+            app:civ_border_color="@color/blue"
             app:civ_border_width="2dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -29,22 +33,22 @@
             android:id="@+id/teacher_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="33dp"
-            android:layout_marginTop="8dp"
+            android:layout_alignTop="@+id/teacherPic"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="0dp"
             android:layout_toEndOf="@+id/teacherPic"
+            android:fontFamily="@font/nunito"
             android:hint="Teacher"
-            android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/teacher_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/teacher_name"
-            android:layout_marginStart="38dp"
-            android:layout_marginTop="5dp"
-            android:layout_toEndOf="@+id/teacherPic"
+            android:layout_alignStart="@+id/teacher_name"
             android:text="Description"
             android:textSize="15sp" />
 
