@@ -199,6 +199,7 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         logOutUser = findViewById(R.id.to_logout);
         name = findViewById(R.id.textView26);
         navToSettings = findViewById(R.id.to_settings);
+        navToSettings.setVisibility(View.GONE);
         navToDownloads = findViewById(R.id.to_downloads);
         first_rv = findViewById(R.id.first_recycler_view);
         second_rv = findViewById(R.id.second_recycler_view);

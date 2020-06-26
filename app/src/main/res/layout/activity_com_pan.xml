@@ -11,13 +11,13 @@
         android:id="@+id/community_main_screen_ID"
         android:layout_width="0sp"
         android:layout_height="0sp"
-        tools:listitem="@layout/ques_layout"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/chip_nav_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView14" />
+        app:layout_constraintTop_toBottomOf="@+id/cardView14"
+        tools:listitem="@layout/ques_layout" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView14"
