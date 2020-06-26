@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,22 +25,25 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
+import org.wazir.build.elemenophee.Downloads;
 
 import org.angmarch.views.NiceSpinner;
 import org.angmarch.views.OnSpinnerItemSelectedListener;
 import org.wazir.build.elemenophee.CommunitySection.ComPanActivity;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
+
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
 import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.Chapters;
 import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.SubComm;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.ChapterAdapter;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.SubjectAdapter;
+import org.wazir.build.elemenophee.Student.StudentProfile.StudentProfileActivity;
+
 import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
 import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 
@@ -74,11 +79,19 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
 
     CircleImageView profilePic, Intro_pic;
     TextView StudentName, name, view_class_tv;
+
+    CardView profileLayout;
+    CardView cardLogout;
+    CardView Subscribe;
+    CardView messages,search_teach, downloads;
+
+
     CardView navToSubs;
     CardView logOutUser;
     CardView navToDashboard;
     CardView navToSettings, navToDownloads;
     FirebaseFirestore db;
+
     CollectionReference isSubs = FirebaseFirestore.getInstance().collection("/TEACHERS/");
 
     // activity Specific
@@ -91,12 +104,14 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         initActiUi();
         initUi();
+
         getProfilePic();
         onClickEvents();
         getClasses();
 
         setUpRecyclerView();
     }
+
 
     private void initActiUi() {
         navigationBar = findViewById(R.id.chip_nav_bar);

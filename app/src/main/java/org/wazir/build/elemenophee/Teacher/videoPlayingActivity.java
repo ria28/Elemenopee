@@ -41,6 +41,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -57,6 +58,7 @@ import org.wazir.build.elemenophee.Teacher.adapter.playActivity_ViewPagerAdapter
 import org.wazir.build.elemenophee.Teacher.model.contentModel;
 import org.wazir.build.elemenophee.ViewTeacherProfile;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -83,10 +85,12 @@ public class videoPlayingActivity extends AppCompatActivity {
     CardView viewProfileCard;
     int playingVideoPosition = -1;
 
-    public String notes_link;
-    public ArrayList<contentModel> videoList;
-    public ArrayList<contentModel> pdfList;
-    public ArrayList<contentModel> otherList;
+    public String video_link;
+    public ArrayList<contentModel> videoList = new ArrayList<>();
+    public ArrayList<contentModel> pdfList = new ArrayList<>();
+    public ArrayList<contentModel> otherList = new ArrayList<>();
+    public ArrayList<File> downVideoList = new ArrayList<>();
+    private boolean fromDownloads = false;
 
 
     @Override
@@ -96,8 +100,23 @@ public class videoPlayingActivity extends AppCompatActivity {
 
         setupIntentData();
         init();
-        loadTeacherData();
-        initVideoPlayer();
+        if (!fromDownloads) {
+            if (videoList.size() > 0) {
+                initVideoPlayer();
+                loadTeacherData();
+            }
+            else{
+                viewProfileCard.setVisibility(View.GONE);
+                playerview.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
+                fullScreen.setVisibility(View.GONE);
+            }
+        } else {
+            viewProfileCard.setVisibility(View.GONE);
+            video_link = String.valueOf(Uri.fromFile(new File(video_link)));
+            initVideoPlayer();
+        }
+
 
         viewPager = findViewById(R.id.playActivityViewPager);
         tabLayout = findViewById(R.id.playActivityTabLayout);
@@ -109,7 +128,9 @@ public class videoPlayingActivity extends AppCompatActivity {
     }
 
     void setupIntentData() {
-        notes_link = getIntent().getStringExtra("VIDEO_LINK");
+        fromDownloads = getIntent().getBooleanExtra("FROM_DOWNLOADS", false);
+        downVideoList = (ArrayList<File>) getIntent().getSerializableExtra("DOWNLOADED_VIDEO_LIST");
+        video_link = getIntent().getStringExtra("VIDEO_LINK");
         videoList = getIntent().getParcelableArrayListExtra("VIDEO_LIST");
         otherList = getIntent().getParcelableArrayListExtra("OTHER_LIST");
         pdfList = getIntent().getParcelableArrayListExtra("PDF_LIST");
@@ -120,6 +141,13 @@ public class videoPlayingActivity extends AppCompatActivity {
     }
 
     private void loadTeacherData() {
+
+        if (isTeacher) {
+            viewProfileCard.setVisibility(View.GONE);
+        } else {
+            viewProfileCard.setVisibility(View.VISIBLE);
+        }
+
         CollectionReference reference = FirebaseFirestore.getInstance().collection("/TEACHERS/");
         reference
                 .document(videoList.get(playingVideoPosition).getTeacherID())
@@ -145,10 +173,6 @@ public class videoPlayingActivity extends AppCompatActivity {
     }
 
     void initVideoPlayer() {
-        playerview = findViewById(R.id.exo_videoPlayer);
-        progressBar = findViewById(R.id.exo_progressBar);
-        fullScreen = findViewById(R.id.bt_fullscreen);
-
 
         //fullScreen Mode
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -169,18 +193,26 @@ public class videoPlayingActivity extends AppCompatActivity {
 
         simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(videoPlayingActivity.this, trackSelector, loadControl);
 
-        //initialse data source factory
 
-        DefaultHttpDataSourceFactory factory = new DefaultHttpDataSourceFactory("elemonphee");
+        if (!fromDownloads) {
 
-        //initialise extractors factory
-        ExtractorsFactory exoPlayerFactory = new DefaultExtractorsFactory();
+            //initialse data source factory
 
-        //initialise media source
+            DefaultHttpDataSourceFactory factory = new DefaultHttpDataSourceFactory("elemonphee");
 
-        mediaSource = new ExtractorMediaSource(
-                Uri.parse(notes_link), factory, exoPlayerFactory, null, null
-        );
+            //initialise extractors factory
+            ExtractorsFactory exoPlayerFactory = new DefaultExtractorsFactory();
+
+            //initialise media source
+
+            mediaSource = new ExtractorMediaSource(
+                    Uri.parse(video_link), factory, exoPlayerFactory, null, null
+            );
+        } else {
+            mediaSource = new ExtractorMediaSource.Factory(
+                    new DefaultDataSourceFactory(videoPlayingActivity.this, "Exoplayer-local")).
+                    createMediaSource(Uri.parse(video_link));
+        }
 
 
         //set player
@@ -213,10 +245,10 @@ public class videoPlayingActivity extends AppCompatActivity {
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                 //check condition
-                if(playbackState == Player.STATE_BUFFERING){
+                if (playbackState == Player.STATE_BUFFERING) {
                     //when buffering add progressBar
                     progressBar.setVisibility(View.VISIBLE);
-                }else if(playbackState == Player.STATE_READY){
+                } else if (playbackState == Player.STATE_READY) {
                     //when ready hide progressBar
                     progressBar.setVisibility(View.GONE);
                 }
@@ -258,7 +290,7 @@ public class videoPlayingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //check Condition
-                if(fScreen){
+                if (fScreen) {
                     //when flag is true
                     //set enter full screen image
                     fullScreen.setImageDrawable(
@@ -293,15 +325,26 @@ public class videoPlayingActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
 
     private void setUpViewPager(ViewPager Pager) {
         playActivity_ViewPagerAdapter adapter = new playActivity_ViewPagerAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        adapter.addFragment(new videoFrag(playingVideoPosition, videoList, pdfList, otherList, isTeacher), "Videos");
-        adapter.addFragment(new notesFrag(fromRecent, pdfList), "Notes");
-        adapter.addFragment(new otherFrag(fromRecent, otherList), "Other");
-        Pager.setAdapter(adapter);
+        if (fromDownloads) {
+            if (downVideoList.size() > 0) {
+                adapter.addFragment(new videoFrag(playingVideoPosition, downVideoList, true, isTeacher), "Downloded Videos");
+                Pager.setAdapter(adapter);
+            }
+        } else {
+            if (videoList.size() > 0)
+                adapter.addFragment(new videoFrag(playingVideoPosition, videoList, pdfList, otherList, isTeacher), "Videos");
+            if (pdfList.size() > 0)
+                adapter.addFragment(new notesFrag(fromRecent, pdfList), "Notes");
+            if (otherList.size() > 0)
+                adapter.addFragment(new otherFrag(fromRecent, otherList), "Other");
+            Pager.setAdapter(adapter);
+        }
     }
 
 
@@ -333,12 +376,9 @@ public class videoPlayingActivity extends AppCompatActivity {
         proPic = findViewById(R.id.teacherPicVideoPlay);
         TeacherName = findViewById(R.id.teacherNameVideoPlay);
         viewProfileCard = findViewById(R.id.cardViewProfileVideoPlay);
-
-        if (isTeacher) {
-            viewProfileCard.setVisibility(View.GONE);
-        } else {
-            viewProfileCard.setVisibility(View.VISIBLE);
-        }
+        playerview = findViewById(R.id.exo_videoPlayer);
+        progressBar = findViewById(R.id.exo_progressBar);
+        fullScreen = findViewById(R.id.bt_fullscreen);
     }
 
     public void navToTeacProfile(View view) {

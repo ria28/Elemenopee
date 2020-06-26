@@ -37,7 +37,7 @@ public class downloadAndStoreNotes {
     }
 
 
-    public void openFILE(File outputFile, String link, String Title,String mime) {
+    public void openFILE(File outputFile, String link, String Title,String mime,String FolderType) {
 
 
         if (!outputFile.exists()) {
@@ -45,7 +45,7 @@ public class downloadAndStoreNotes {
                 Toast.makeText(context, "File will be downloded when network connection avialable..", Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(context, "Downloading...", Toast.LENGTH_SHORT).show();
-            downloadFile(link, Title,mime);
+            downloadFile(link, Title,mime,FolderType);
 
 
         }
@@ -77,13 +77,13 @@ public class downloadAndStoreNotes {
     }
 
 
-    private void downloadFile(String download_url, String Title,String mime) {
+    private void downloadFile(String download_url, String Title,String mime,String FolderType) {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(download_url));
         request.setTitle(Title)
                 .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE
                         | DownloadManager.Request.NETWORK_WIFI);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir("/Elemenophee/Notes",Title +"."+mime.substring(mime.lastIndexOf("/") + 1) );
+        request.setDestinationInExternalPublicDir("/Elemenophee/" + FolderType,Title +"."+mime.substring(mime.lastIndexOf("/") + 1) );
 
         DownloadManager manager = (DownloadManager) context
                 .getSystemService(Context.DOWNLOAD_SERVICE);
