@@ -21,7 +21,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <activity android:name=".Downloads"></activity>
+
         <activity android:name=".CommunitySection.SolutionDisplayActivity"></activity>
+
         <activity android:name=".Student.StudentSupport.ChatActivity" />
         <activity android:name=".CommunitySection.ComPanActivity" />
         <activity android:name=".PaymentActivity" />
@@ -57,6 +61,7 @@
         <activity android:name=".Student.Lecture.Subject.LectureActivity" />
         <activity android:name=".Student.StudentActivity.ClassRoomActivity" />
         <activity android:name=".Student.Videos.VideoActivity" />
+        <activity android:name=".Student.StuCommPanel.Stu_main_comm_screen" />
         <activity android:name=".Student.StuCommPanel.Stu_main_comm_screen"
             android:screenOrientation="portrait"/>
         <activity android:name=".Student.StudentSubscription.StudentSubsActivity" />

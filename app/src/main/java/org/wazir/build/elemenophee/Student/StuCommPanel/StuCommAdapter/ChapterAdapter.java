@@ -25,7 +25,6 @@ import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.Chapters;
 import org.wazir.build.elemenophee.Teacher.model.contentModel;
 import org.wazir.build.elemenophee.Teacher.videoPlayingActivity;
-import org.wazir.build.elemenophee.Teacher.viewUploadActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +102,7 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHo
                                         }
                                         for (QueryDocumentSnapshot doc : task.getResult()) {
                                             if (doc.get("NOTES") != null) {
-                                                for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("VIDEOS")) {
+                                                for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("NOTES")) {
                                                     if (obj.get("privacy").toString().equalsIgnoreCase("private")) {
                                                         if (data.get(position).getIsSubscriber())
                                                             pdfList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
@@ -116,7 +115,7 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHo
                                         }
                                         for (QueryDocumentSnapshot doc : task.getResult()) {
                                             if (doc.get("OTHER") != null) {
-                                                for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("VIDEOS")) {
+                                                for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("OTHERS")) {
                                                     if (obj.get("privacy").toString().equalsIgnoreCase("private")) {
                                                         if (data.get(position).getIsSubscriber())
                                                             otherList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
@@ -129,7 +128,8 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHo
                                         }
 
                                         Intent intent = new Intent(mContext, videoPlayingActivity.class);
-                                        intent.putExtra("VIDEO_LINK", videoList.get(position).getFileUrl());
+                                        if (videoList.size() > 0)
+                                            intent.putExtra("VIDEO_LINK", videoList.get(position).getFileUrl());
                                         intent.putExtra("VIDEO_LIST", videoList);
                                         intent.putExtra("OTHER_LIST", otherList);
                                         intent.putExtra("PDF_LIST", pdfList);

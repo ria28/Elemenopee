@@ -77,7 +77,7 @@ public class otherAdapter extends RecyclerView.Adapter<otherAdapter.ViewHolder> 
                     downloadAndStoreNotes downloadAndStore = downloadAndStoreNotes.getInstance(context);
 
                     downloadAndStore.openFILE(outputFile, otherList.get(position).getFileUrl()
-                            , otherList.get(position).getFileTitle(),otherList.get(position).getMime());
+                            , otherList.get(position).getFileTitle(),otherList.get(position).getMime(),"Other");
                 }
             });
         }

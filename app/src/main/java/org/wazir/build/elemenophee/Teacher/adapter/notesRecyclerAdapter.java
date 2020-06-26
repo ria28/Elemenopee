@@ -77,7 +77,7 @@ public class notesRecyclerAdapter extends RecyclerView.Adapter<notesRecyclerAdap
                     downloadAndStoreNotes downloadAndStore = downloadAndStoreNotes.getInstance(context);
 
                     downloadAndStore.openFILE(outputFile, pdfList.get(position).getFileUrl()
-                            , pdfList.get(position).getFileTitle(),pdfList.get(position).getMime());
+                            , pdfList.get(position).getFileTitle(),pdfList.get(position).getMime(),"Notes");
                 }
             });
         }
