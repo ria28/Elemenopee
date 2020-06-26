@@ -91,97 +91,88 @@ class uploadDialog {
 
         title.setText("Upload " + UploadType);
 
-        uploadBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (selectedFilePath != null && !selectedFilePath.toString().isEmpty()) {
-                    Data data;
-                    if (!fileTitle.getText().toString().isEmpty() && !SELECTED_CHAPTER.isEmpty()) {
-                        data = new Data.Builder()
-                                .putString("fileURI", selectedFilePath.toString())
-                                .putBoolean("ADD_TO_EXISTING", addToExisting)//add to existing
-                                .putString("USER_PHONE", user.getPhoneNumber())
-                                .putStringArray("FILE_INFO", new String[]{
-                                        selectClass.getSelectedItem() + "",
-                                        selectSubject.getSelectedItem() + "",
-                                        SELECTED_CHAPTER,
-                                        fileTitle.getText() + "",
-                                        UploadType,
-                                        SELECTED_TEACHER_ID,
-                                        privacy.isChecked() ? "private" : "public"
-                                })
-                                .build();
-                        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(UploadUtil.class)
-                                .setInputData(data)
-                                .build();
+        uploadBtn.setOnClickListener(v -> {
+            if (selectedFilePath != null && !selectedFilePath.toString().isEmpty()) {
+                Data data;
+                if (!fileTitle.getText().toString().isEmpty() && !SELECTED_CHAPTER.isEmpty()) {
+                    data = new Data.Builder()
+                            .putString("fileURI", selectedFilePath.toString())
+                            .putBoolean("ADD_TO_EXISTING", addToExisting)//add to existing
+                            .putString("USER_PHONE", user.getPhoneNumber())
+                            .putStringArray("FILE_INFO", new String[]{
+                                    selectClass.getSelectedItem() + "",
+                                    selectSubject.getSelectedItem() + "",
+                                    SELECTED_CHAPTER,
+                                    fileTitle.getText() + "",
+                                    UploadType,
+                                    SELECTED_TEACHER_ID,
+                                    privacy.isChecked() ? "private" : "public"
+                            })
+                            .build();
+                    OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(UploadUtil.class)
+                            .setInputData(data)
+                            .build();
 
-                        WorkManager.getInstance().enqueue(request);
-
-                    } else
-                        Toast.makeText(context, "Check Title and Chapter of VIDEO", Toast.LENGTH_SHORT).show();
+                    WorkManager.getInstance().enqueue(request);
 
                 } else
-                    Toast.makeText(context, "SELECT FILE..", Toast.LENGTH_SHORT).show();
-                uploadDialog.dismiss();
-            }
+                    Toast.makeText(context, "Check Title and Chapter of VIDEO", Toast.LENGTH_SHORT).show();
+
+            } else
+                Toast.makeText(context, "SELECT FILE..", Toast.LENGTH_SHORT).show();
+            uploadDialog.dismiss();
         });
-        addExisting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addToExisting = true;
-                AlertDialog.Builder alt = new AlertDialog.Builder(context);
-                LayoutInflater inflater = LayoutInflater.from(context);
-                View view = inflater.inflate(R.layout.show_chapter_dialog, null);
-                RecyclerView recyclerView = view.findViewById(R.id.show_chapter_recycler);
-                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext());
-                ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);
-                recyclerView.setLayoutManager(layoutManager);
-                recyclerView.hasFixedSize();
-                recyclerView.setAdapter(fileAdapter);
+        addExisting.setOnClickListener(v -> {
+            addToExisting = true;
+            AlertDialog.Builder alt = new AlertDialog.Builder(context);
+            LayoutInflater inflater = LayoutInflater.from(context);
+            View view = inflater.inflate(R.layout.show_chapter_dialog, null);
+            RecyclerView recyclerView = view.findViewById(R.id.show_chapter_recycler);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+            ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.hasFixedSize();
+            recyclerView.setAdapter(fileAdapter);
 
 
-                alt.setView(view);
-                showChapterDialog = alt.create();
+            alt.setView(view);
+            showChapterDialog = alt.create();
 
-                showChapterDialog.show();
-            }
+            showChapterDialog.show();
         });
-        createNew.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        createNew.setOnClickListener(v -> {
 
-                addToExisting = false;
+            addToExisting = false;
 
-                AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            AlertDialog.Builder alert1 = new AlertDialog.Builder(context);
 
-                alert.setTitle("Add New Chapter");
-                alert.setMessage("Enter the Name of new Chapter");
+            alert1.setTitle("Add New Chapter");
+            alert1.setMessage("Enter the Name of new Chapter");
 
-                final EditText input = new EditText(context);
-                alert.setView(input);
+            final EditText input = new EditText(context);
+            alert1.setView(input);
 
-                alert.setPositiveButton("Create", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        if (!input.getText().toString().isEmpty())
-                            for (addExistingModel m : dataList)
-                                if (m.Chapter.equalsIgnoreCase(input.getText().toString())) {
-                                    Toast.makeText(context, "Chapter Already Exists", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                        SELECTED_CHAPTER = input.getText().toString();
+            alert1.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    if (!input.getText().toString().isEmpty())
+                        for (addExistingModel m : dataList)
+                            if (m.Chapter.equalsIgnoreCase(input.getText().toString())) {
+                                Toast.makeText(context, "Chapter Already Exists", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                    SELECTED_CHAPTER = input.getText().toString();
 
 
-                    }
-                });
+                }
+            });
 
-                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // Canceled.
-                    }
-                });
+            alert1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    // Canceled.
+                }
+            });
 
-                alert.show();
-            }
+            alert1.show();
         });
         uploadDialog = alert.create();
         uploadDialog.setCanceledOnTouchOutside(false);
@@ -244,13 +235,10 @@ class uploadDialog {
         @Override
         public void onBindViewHolder(@NonNull uploadDialog.showChapterAdpater.ViewHolder holder, final int position) {
             holder.setTitle(data.get(position).Chapter);
-            holder.layout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    SELECTED_CHAPTER = data.get(position).Chapter;
-                    SELECTED_TEACHER_ID = data.get(position).DOCUMENT_PATH;
-                    showChapterDialog.dismiss();
-                }
+            holder.layout.setOnClickListener(v -> {
+                SELECTED_CHAPTER = data.get(position).Chapter;
+                SELECTED_TEACHER_ID = data.get(position).DOCUMENT_PATH;
+                showChapterDialog.dismiss();
             });
         }
 
