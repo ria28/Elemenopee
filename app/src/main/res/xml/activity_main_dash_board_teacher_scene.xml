@@ -4,9 +4,17 @@
     <Transition
         app:constraintSetEnd="@id/end"
         app:constraintSetStart="@id/start"
-        app:duration="1000">
+        app:duration="300">
         <OnClick app:targetId="@id/lottieAnimationView" />
     </Transition>
+
+    <Transition
+        app:constraintSetEnd="@id/start"
+        app:constraintSetStart="@id/end"
+        app:duration="300">
+        <OnClick app:targetId="@id/teach_main" />
+    </Transition>
+
 
     <ConstraintSet android:id="@+id/start">
         <Constraint

@@ -8,16 +8,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,11 +23,8 @@ import org.wazir.build.elemenophee.IntLogSigScreens.ChooseMoObj;
 import org.wazir.build.elemenophee.Interfaces.ChooseEveHandler;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
-
 import org.wazir.build.elemenophee.ModelObj.TempObj;
-import org.wazir.build.elemenophee.Student.Community.MainCommScreen;
 import org.wazir.build.elemenophee.Student.StuCommPanel.Stu_main_comm_screen;
-import org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct;
 import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 
 import java.util.ArrayList;
@@ -55,7 +48,6 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_user);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-
         teachSchool = findViewById(R.id.textInputLayout4);
         teachBio = findViewById(R.id.textInputLayout6);
         teachExperience = findViewById(R.id.textInputLayout7);
@@ -101,6 +93,13 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
         te = teachExperience.getEditText().getText().toString();
         tn = teachName.getEditText().getText().toString();
 
+        if (ts.equals("") || tb.equals("") || te.equals("") || tn.equals("")){
+            Toast.makeText(this, "Some Fields are missing", Toast.LENGTH_SHORT).show();
+            updateUi(false);
+            return;
+
+        }
+
         ArrayList<String> subject_string = new ArrayList<>();
         for (ChooseMoObj obj : subjects) {
             subject_string.add(obj.getText());
@@ -130,12 +129,9 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
                         updateUi(false);
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(SignUpUserActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-                        updateUi(false);
-                    }
+                .addOnFailureListener(e -> {
+                    Toast.makeText(SignUpUserActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                    updateUi(false);
                 });
         TempObj obj = new TempObj();
         db.collection("TEACHERS")
@@ -166,16 +162,13 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
         obj.setName(sn);
 
         db.collection("STUDENTS").document(phoneNumber).set(obj)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            navigate(TO_STUDENT);
-                        } else {
-                            Toast.makeText(SignUpUserActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-                        }
-                        updateUi(false);
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        navigate(TO_STUDENT);
+                    } else {
+                        Toast.makeText(SignUpUserActivity.this, "Failed", Toast.LENGTH_SHORT).show();
                     }
+                    updateUi(false);
                 });
         db.collection("STUDENTS")
                 .document(phoneNumber)
