@@ -151,6 +151,7 @@
                         android:layout_marginEnd="8dp"
                         android:fontFamily="@font/poiret_one"
                         android:text="Akshay Rein"
+                        android:textStyle="bold"
                         android:textColor="@color/softBlue"
                         android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="@+id/Comm_pro_image"

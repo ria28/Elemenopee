@@ -26,13 +26,13 @@
             android:id="@+id/mainDashBoardTeacherName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
             android:fontFamily="@font/poiret_one"
             android:text="Teacher's Panel"
             android:textColor="@color/color5"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/id_user_profile"
             app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
         <HorizontalScrollView
@@ -45,7 +45,7 @@
             android:scrollbars="none"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView">
+            app:layout_constraintTop_toBottomOf="@+id/mainDashBoardTeacherName">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -364,17 +364,27 @@
             </LinearLayout>
         </HorizontalScrollView>
 
-        <com.airbnb.lottie.LottieAnimationView
+        <androidx.cardview.widget.CardView
             android:id="@+id/lottieAnimationView"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="16dp"
-            android:rotation="-90"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16sp"
+            android:layout_marginTop="30dp"
+
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="25dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mainDashBoardTeacherName"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/slide_arrow" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imageView17"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                app:srcCompat="@drawable/ic_hamburger" />
+        </androidx.cardview.widget.CardView>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recent_subscriber_recycler"
@@ -462,7 +472,7 @@
             android:fontFamily="@font/nunito"
             android:text="Welcome"
             android:textColor="@color/color6"
-            app:layout_constraintStart_toStartOf="@+id/mainDashBoardTeacherName"
+            app:layout_constraintEnd_toEndOf="@+id/mainDashBoardTeacherName"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
