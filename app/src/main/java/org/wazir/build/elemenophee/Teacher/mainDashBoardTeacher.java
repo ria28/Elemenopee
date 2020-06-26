@@ -25,25 +25,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Text;
 import org.wazir.build.elemenophee.CommunitySection.ComPanActivity;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.ModelObj.SubscribersModel;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
-import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.MessageActivity;
 import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
@@ -149,12 +142,6 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         FileType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (videoList.size() <= 0) {
-                    Toast.makeText(getApplicationContext(), "No Recent Video Uploaded", Toast.LENGTH_SHORT).show();
-                }
-                if (pdfList.size() <= 0) {
-                    Toast.makeText(getApplicationContext(), "No Recent Notes Uploaded", Toast.LENGTH_SHORT).show();
-                }
                 setUpRecyclerView();
             }
 
@@ -171,130 +158,94 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         recentContent.hasFixedSize();
         setUpRecyclerView();
 
-        recentSubs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
+        recentSubs.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recentSubs.hasFixedSize();
         recentSubs.setAdapter(recentSubscriberAdapter);
 
 
-        uploadVideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UploadType = "VIDEOS";
-                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                getIntent.setType("video/*");
+        uploadVideo.setOnClickListener(v -> {
+            UploadType = "VIDEOS";
+            Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            getIntent.setType("video/*");
 
 
-                @SuppressLint("IntentReset")
-                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                pickIntent.setType("video/*");
+            @SuppressLint("IntentReset")
+            Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            pickIntent.setType("video/*");
 
-                Intent chooserIntent = Intent.createChooser(getIntent, "Select Video");
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+            Intent chooserIntent = Intent.createChooser(getIntent, "Select Video");
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
 
-                startActivityForResult(chooserIntent, PICK_VIDEO);
-            }
+            startActivityForResult(chooserIntent, PICK_VIDEO);
         });
-        uploadPdf.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UploadType = "NOTES";
-                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                getIntent.setType("application/pdf");
+        uploadPdf.setOnClickListener(v -> {
+            UploadType = "NOTES";
+            Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            getIntent.setType("application/pdf");
 
-                @SuppressLint("IntentReset")
-                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                pickIntent.setType("application/pdf");
+            @SuppressLint("IntentReset")
+            Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            pickIntent.setType("application/pdf");
 
-                Intent chooserIntent = Intent.createChooser(getIntent, "Select PDF");
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+            Intent chooserIntent = Intent.createChooser(getIntent, "Select PDF");
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
 
-                startActivityForResult(chooserIntent, PICK_PDF);
-            }
+            startActivityForResult(chooserIntent, PICK_PDF);
         });
 
-        uploadFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UploadType = "OTHER";
-                Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                getIntent.setType("*/*");
+        uploadFile.setOnClickListener(v -> {
+            UploadType = "OTHER";
+            Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            getIntent.setType("*/*");
 
 
-                @SuppressLint("IntentReset")
-                Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                pickIntent.setType("*/*");
+            @SuppressLint("IntentReset")
+            Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            pickIntent.setType("*/*");
 
-                Intent chooserIntent = Intent.createChooser(getIntent, "Select PDF");
-                chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+            Intent chooserIntent = Intent.createChooser(getIntent, "Select PDF");
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
 
-                startActivityForResult(chooserIntent, PICK_FILE);
-            }
+            startActivityForResult(chooserIntent, PICK_FILE);
         });
 
-        view_upload_card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mainDashBoardTeacher.this, viewUploadActivity.class);
-                intent.putExtra("CLASSES", classes);
-                intent.putExtra("SUBS", subjects);
-                startActivity(intent);
-            }
+        view_upload_card.setOnClickListener(v -> {
+            Intent intent = new Intent(mainDashBoardTeacher.this, viewUploadActivity.class);
+            intent.putExtra("CLASSES", classes);
+            intent.putExtra("SUBS", subjects);
+            startActivity(intent);
         });
-        logoutUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(mainDashBoardTeacher.this, SplashScreen.class));
-                finish();
-            }
+        logoutUser.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(mainDashBoardTeacher.this, SplashScreen.class));
+            finish();
         });
-        viewProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(mainDashBoardTeacher.this, ChatActivity.class));
-            }
-        });
+        viewProfile.setOnClickListener(v -> startActivity(new Intent(mainDashBoardTeacher.this, ChatActivity.class)));
     }
 
     private void loadSubscriber() {
-        subsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                subsList = new ArrayList<>();
-                for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                    SubscribersModel model = doc.toObject(SubscribersModel.class);
-                    subsList.add(model.getStudentID());
-                }
-                if (subsList.size() > 0) {
-
-                    studentRef.whereIn("contact",subsList )
-                                    .limit(10)
-                                    .get()
-                                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                            if (queryDocumentSnapshots.size() > 0) {
-                                                for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                                                    StudentObj model = doc.toObject(StudentObj.class);
-                                                    subsribersList.add(model);
-                                                    recentSubscriberAdapter.notifyDataSetChanged();
-                                                }
-                                            }
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(mainDashBoardTeacher.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(mainDashBoardTeacher.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        subsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            subsList = new ArrayList<>();
+            for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                SubscribersModel model = doc.toObject(SubscribersModel.class);
+                subsList.add(model.getStudentID());
             }
-        });
+            if (subsList.size() > 0) {
+
+                studentRef.whereIn("contact", subsList)
+                        .limit(10)
+                        .get()
+                        .addOnSuccessListener(queryDocumentSnapshots1 -> {
+                            if (queryDocumentSnapshots1.size() > 0) {
+                                for (DocumentSnapshot doc : queryDocumentSnapshots1) {
+                                    StudentObj model = doc.toObject(StudentObj.class);
+                                    subsribersList.add(model);
+                                    recentSubscriberAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        }).addOnFailureListener(e -> Toast.makeText(mainDashBoardTeacher.this, e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
+        }).addOnFailureListener(e -> Toast.makeText(mainDashBoardTeacher.this, e.getMessage(), Toast.LENGTH_SHORT).show());
 
     }
 
@@ -309,41 +260,35 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     private void loadData(final String type) {
         reference.document("UPLOADS")
                 .collection(type)
-                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                switch (type) {
-                    case "VIDEOS":
-                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                            contentModel temp = doc.toObject(contentModel.class);
-                            videoList.add(temp);
-                            videoAdapter.notifyDataSetChanged();
-                        }
-                        break;
-                    case "NOTES":
-                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                            contentModel temp = doc.toObject(contentModel.class);
-                            pdfList.add(temp);
-                            notesAdapter.notifyDataSetChanged();
-                        }
-                        progress.dismiss();
-                        break;
-                    case "OTHER":
-                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                            contentModel temp = doc.toObject(contentModel.class);
-                            otherList.add(temp);
-                            otherAdapter.notifyDataSetChanged();
-                        }
-                        progress.dismiss();
-                        break;
-                }
+                .get().addOnSuccessListener(queryDocumentSnapshots -> {
+            switch (type) {
+                case "VIDEOS":
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        contentModel temp = doc.toObject(contentModel.class);
+                        videoList.add(temp);
+                        videoAdapter.notifyDataSetChanged();
+                    }
+                    break;
+                case "NOTES":
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        contentModel temp = doc.toObject(contentModel.class);
+                        pdfList.add(temp);
+                        notesAdapter.notifyDataSetChanged();
+                    }
+                    progress.dismiss();
+                    break;
+                case "OTHER":
+                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                        contentModel temp = doc.toObject(contentModel.class);
+                        otherList.add(temp);
+                        otherAdapter.notifyDataSetChanged();
+                    }
+                    progress.dismiss();
+                    break;
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                progress.dismiss();
-                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
+        }).addOnFailureListener(e -> {
+            progress.dismiss();
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -425,12 +370,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         search_teach = findViewById(R.id.to_downloads);
         search_teach.setVisibility(View.GONE);
 
-        communityCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(mainDashBoardTeacher.this, ComPanActivity.class));
-            }
-        });
+        communityCard.setOnClickListener(v -> startActivity(new Intent(mainDashBoardTeacher.this, ComPanActivity.class)));
 
 
         studentRef = FirebaseFirestore.getInstance()
@@ -458,22 +398,19 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                 .collection("TEACHERS")
                 .document(number)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful() && task.getResult().exists()) {
-                            TeacherObj obj = task.getResult().toObject(TeacherObj.class);
-                            // TODO: 6/7/2020 Here just Take the Classes and Subjects
-                            mainPageName.setText(obj.getName());
-                            name.setText(obj.getName());
-                            designation.setText("TEACHER");
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult().exists()) {
+                        TeacherObj obj = task.getResult().toObject(TeacherObj.class);
+                        // TODO: 6/7/2020 Here just Take the Classes and Subjects
+                        mainPageName.setText(obj.getName());
+                        name.setText(obj.getName());
+                        designation.setText("TEACHER");
 
-                            classes = new ArrayList<>();
-                            for (int i : obj.getClasses()) {
-                                classes.add("Class " + Integer.toString(i));
-                            }
-                            subjects = obj.getSubs();
+                        classes = new ArrayList<>();
+                        for (int i : obj.getClasses()) {
+                            classes.add("Class " + Integer.toString(i));
                         }
+                        subjects = obj.getSubs();
                     }
                 });
     }

@@ -7,10 +7,20 @@ public class TeacherObj {
     ArrayList<String> subs;
     ArrayList<Integer> classes;
     String proPicURL;
-
+    int videoCount;
 
     public TeacherObj() {
     }
+
+
+    public int getVideoCount() {
+        return videoCount;
+    }
+
+    public void setVideoCount(int videoCount) {
+        this.videoCount = videoCount;
+    }
+
 
     public String getProPicURL() {
         return proPicURL;

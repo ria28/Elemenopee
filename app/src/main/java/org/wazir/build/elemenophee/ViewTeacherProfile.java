@@ -12,22 +12,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.MessageActivity;
@@ -42,7 +36,7 @@ import java.util.ArrayList;
 public class ViewTeacherProfile extends AppCompatActivity implements videoRecyclerAdapter.onLayoutClick {
 
     ImageView profilePic;
-    TextView teacherName, schoolName, connections, subscribe;
+    TextView teacherName, schoolName, connections, subscribe, videoCount;
     RecyclerView recyclerView;
     videoRecyclerAdapter videoAdapter;
     otherAdapter otherAdapter;
@@ -121,15 +115,6 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
         FileType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (videoList.size() <= 0) {
-                    Toast.makeText(getApplicationContext(), "No Recent Video Uploaded", Toast.LENGTH_SHORT).show();
-                }
-                if (pdfList.size() <= 0) {
-                    Toast.makeText(getApplicationContext(), "No Recent PDF Uploaded", Toast.LENGTH_SHORT).show();
-                }
-                if (otherList.size() <= 0) {
-                    Toast.makeText(getApplicationContext(), "No Recent Note Uploaded", Toast.LENGTH_SHORT).show();
-                }
                 setUpRecyclerView();
             }
 
@@ -147,15 +132,12 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
         setUpRecyclerView();
 
 
-        subscribe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (subscribe.getText().toString().equalsIgnoreCase("SUBSCRIBE")) {
-                    Intent intent = new Intent(ViewTeacherProfile.this, PaymentActivity.class);
-                    if (!teacher_ID.isEmpty()) {
-                        intent.putExtra("TEACHER_ID", teacher_ID);
-                        startActivity(intent);
-                    }
+        subscribe.setOnClickListener(v -> {
+            if (subscribe.getText().toString().equalsIgnoreCase("SUBSCRIBE")) {
+                Intent intent = new Intent(ViewTeacherProfile.this, PaymentActivity.class);
+                if (!teacher_ID.isEmpty()) {
+                    intent.putExtra("TEACHER_ID", teacher_ID);
+                    startActivity(intent);
                 }
             }
         });
@@ -181,52 +163,38 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
                 .document(teacher_ID)
                 .collection("SUBSCRIBERS")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            connections.setText(String.valueOf(task.getResult().size()));
-                        } else {
-                            Toast.makeText(ViewTeacherProfile.this, task.getException() + "", Toast.LENGTH_SHORT).show();
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        connections.setText(String.valueOf(task.getResult().size()));
+                    } else {
+                        Toast.makeText(ViewTeacherProfile.this, task.getException() + "", Toast.LENGTH_SHORT).show();
                     }
                 });
 
         teacherReference.document(teacher_ID)
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        teacherObj = documentSnapshot.toObject(TeacherObj.class);
-                        teacherName.setText(teacherObj.getName());
-                        schoolName.setText(teacherObj.getSchool());
-                        Glide.with(ViewTeacherProfile.this).load(teacherObj.getProPicURL()).into(profilePic);
-                        SubsRef.whereEqualTo("studentID" +
-                                "", user.getPhoneNumber())
-                                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                            @Override
-                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                if (queryDocumentSnapshots.size() == 1) {
-                                    subscribe.setText("SUBSCRIBED");
-                                    subscribe.setTextColor(Color.parseColor("#eac7c7"));
-                                    loadingPopup.dialogDismiss();
-                                }
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(ViewTeacherProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                loadingPopup.dialogDismiss();
-                            }
-                        });
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ViewTeacherProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                loadingPopup.dialogDismiss();
-                onBackPressed();
-            }
+                .addOnSuccessListener(documentSnapshot -> {
+                    teacherObj = documentSnapshot.toObject(TeacherObj.class);
+                    videoCount.setText(String.valueOf(teacherObj.getVideoCount()));
+                    teacherName.setText(teacherObj.getName());
+                    schoolName.setText(teacherObj.getSchool());
+                    Glide.with(ViewTeacherProfile.this).load(teacherObj.getProPicURL()).into(profilePic);
+                    SubsRef.whereEqualTo("studentID" +
+                            "", user.getPhoneNumber())
+                            .get().addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (queryDocumentSnapshots.size() == 1) {
+                            subscribe.setText("SUBSCRIBED");
+                            subscribe.setTextColor(Color.parseColor("#eac7c7"));
+                            loadingPopup.dialogDismiss();
+                        }
+                    }).addOnFailureListener(e -> {
+                        Toast.makeText(ViewTeacherProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        loadingPopup.dialogDismiss();
+                    });
+                }).addOnFailureListener(e -> {
+            Toast.makeText(ViewTeacherProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            loadingPopup.dialogDismiss();
+            onBackPressed();
         });
     }
 
@@ -244,49 +212,43 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
     private void loadData(final String type) {
         reference.document("UPLOADS")
                 .collection(type)
-                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if (type == "VIDEOS") {
-                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        contentModel temp = doc.toObject(contentModel.class);
-                        if (temp.getPrivacy().equalsIgnoreCase("private")) {
-                            if (isSubscriber)
-                                videoList.add(temp);
-                        } else
+                .get().addOnSuccessListener(queryDocumentSnapshots -> {
+            if (type == "VIDEOS") {
+                for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                    contentModel temp = doc.toObject(contentModel.class);
+                    if (temp.getPrivacy().equalsIgnoreCase("private")) {
+                        if (isSubscriber)
                             videoList.add(temp);
-                        videoAdapter.notifyDataSetChanged();
-                    }
-                } else if (type == "NOTES") {
-                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        contentModel temp = doc.toObject(contentModel.class);
-                        if (temp.getPrivacy().equalsIgnoreCase("private")) {
-                            if (isSubscriber)
-                                pdfList.add(temp);
-                        } else
-                            pdfList.add(temp);
-                        notesAdapter.notifyDataSetChanged();
-                    }
-
-                } else if (type == "OTHER") {
-                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        contentModel temp = doc.toObject(contentModel.class);
-                        if (temp.getPrivacy().equalsIgnoreCase("private")) {
-                            if (isSubscriber)
-                                otherList.add(temp);
-                        } else
-                            otherList.add(temp);
-                        notesAdapter.notifyDataSetChanged();
-                    }
+                    } else
+                        videoList.add(temp);
+                    videoAdapter.notifyDataSetChanged();
                 }
-                loadingPopup.dialogDismiss();
+            } else if (type == "NOTES") {
+                for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                    contentModel temp = doc.toObject(contentModel.class);
+                    if (temp.getPrivacy().equalsIgnoreCase("private")) {
+                        if (isSubscriber)
+                            pdfList.add(temp);
+                    } else
+                        pdfList.add(temp);
+                    notesAdapter.notifyDataSetChanged();
+                }
+
+            } else if (type == "OTHER") {
+                for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                    contentModel temp = doc.toObject(contentModel.class);
+                    if (temp.getPrivacy().equalsIgnoreCase("private")) {
+                        if (isSubscriber)
+                            otherList.add(temp);
+                    } else
+                        otherList.add(temp);
+                    notesAdapter.notifyDataSetChanged();
+                }
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                loadingPopup.dialogDismiss();
-            }
+            loadingPopup.dialogDismiss();
+        }).addOnFailureListener(e -> {
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            loadingPopup.dialogDismiss();
         });
     }
 
@@ -298,6 +260,7 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
         subscribe = findViewById(R.id.viewTeacherProfileSubscribe);
         recyclerView = findViewById(R.id.viewTeacherProfile_VideoRecycler);
         FileType = findViewById(R.id.TeacherProfileRecentSpinner);
+        videoCount = findViewById(R.id.id_view_video_count);
         Sref = FirebaseFirestore.getInstance().collection(
                 "/TEACHERS/" +
                         teacher_ID +
@@ -305,19 +268,11 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
         );
         Sref.whereEqualTo("studentID", user.getPhoneNumber())
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if (queryDocumentSnapshots.size() == 1) {
-                            isSubscriber = true;
-                        }
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (queryDocumentSnapshots.size() == 1) {
+                        isSubscriber = true;
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ViewTeacherProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+                }).addOnFailureListener(e -> Toast.makeText(ViewTeacherProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     @Override
