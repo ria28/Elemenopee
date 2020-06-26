@@ -37,8 +37,6 @@ public class recentSubscriberAdapter extends RecyclerView.Adapter<recentSubscrib
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Log.d("TAG", "recentSubscriberAdapter: "+list.get(position).getmImageUrl());
-
         if (list.get(position).getmImageUrl() != null && list.get(position).getmImageUrl() !="")
             Glide.with(context).load(list.get(position).getmImageUrl()).into(holder.image);
         else

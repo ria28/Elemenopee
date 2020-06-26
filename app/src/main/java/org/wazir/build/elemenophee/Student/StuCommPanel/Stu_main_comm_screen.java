@@ -226,35 +226,24 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     }
 
     private void onClickEvents() {
-        navToDownloads.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Stu_main_comm_screen.this, Downloads.class));
-            }
+        navToDownloads.setOnClickListener(v -> {
+            Intent intent = new Intent(Stu_main_comm_screen.this, Downloads.class);
+            intent.putExtra("SHOWBN", false);
+            startActivity(intent);
         });
 
-        navToSubs.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Stu_main_comm_screen.this, StudentSubsActivity.class);
-                startActivity(intent);
-            }
+        navToSubs.setOnClickListener(v -> {
+            Intent intent = new Intent(Stu_main_comm_screen.this, StudentSubsActivity.class);
+            intent.putExtra("SHOWBN", false);
+            startActivity(intent);
         });
 
-        logOutUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAuth.signOut();
-                startActivity(new Intent(Stu_main_comm_screen.this, SplashScreen.class));
-                finish();
-            }
-        });
-
-        navToSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: 6/25/2020 nav to Settings
-            }
+        logOutUser.setOnClickListener(v -> {
+            mAuth.signOut();
+            Intent intent = new Intent(Stu_main_comm_screen.this, SplashScreen.class);
+            intent.putExtra("SHOWBN", false);
+            startActivity(intent);
+            finish();
         });
     }
 

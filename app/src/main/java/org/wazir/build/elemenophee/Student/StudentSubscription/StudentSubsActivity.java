@@ -8,22 +8,18 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.paging.FirestorePagingOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 import org.wazir.build.elemenophee.CommunitySection.ComPanActivity;
@@ -64,20 +60,21 @@ public class StudentSubsActivity extends AppCompatActivity {
 
         reference = FirebaseFirestore.getInstance()
                 .collection("TEACHERS");
-        subTea = FirebaseFirestore.getInstance().collection("STUDENTS")
-                .document(user.getPhoneNumber()).collection("SUBSCRIBED_TO");
+        subTea = FirebaseFirestore.getInstance()
+                .collection("STUDENTS")
+                .document(user.getPhoneNumber())
+                .collection("SUBSCRIBED_TO");
 
 
         searchView = findViewById(R.id.teacherSearch);
 
-        if(!fromSearch){
+        if (!fromSearch) {
             searchView.setVisibility(View.GONE);
             title.setText("Subscriptions");
         }
         recyclerView = findViewById(R.id.teachers_rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -146,31 +143,30 @@ public class StudentSubsActivity extends AppCompatActivity {
         } else {
             subTea
                     .get()
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                            for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                                SubscribedTOmodel model = doc.toObject(SubscribedTOmodel.class);
-                                subsList.add(model.getTeacherID());
-                            }
-                            if (subsList.size() > 0) {
-                                query = reference.whereIn("phone", subsList);
-                                FirestorePagingOptions<TeacherObj> pagingOptions = new FirestorePagingOptions.Builder<TeacherObj>()
-                                        .setQuery(query, config, TeacherObj.class)
-                                        .build();
-
-                                adapter = new StuTeacherAdapter(pagingOptions, StudentSubsActivity.this);
-                                adapter.startListening();
-                                recyclerView.setAdapter(adapter);
-                                loadingPopup.dialogDismiss();
-                            }
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (queryDocumentSnapshots.isEmpty()) {
+                            loadingPopup.dismiss();
+                            return;
                         }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(StudentSubsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    loadingPopup.dialogDismiss();
-                }
+                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                            SubscribedTOmodel model = doc.toObject(SubscribedTOmodel.class);
+                            subsList.add(model.getTeacherID());
+                        }
+                        if (subsList.size() > 0) {
+                            query = reference.whereIn("phone", subsList);
+                            FirestorePagingOptions<TeacherObj> pagingOptions = new FirestorePagingOptions.Builder<TeacherObj>()
+                                    .setQuery(query, config, TeacherObj.class)
+                                    .build();
+
+                            adapter = new StuTeacherAdapter(pagingOptions, StudentSubsActivity.this);
+                            adapter.startListening();
+                            recyclerView.setAdapter(adapter);
+
+                        }
+                        loadingPopup.dismiss();
+                    }).addOnFailureListener(e -> {
+                Toast.makeText(StudentSubsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                loadingPopup.dialogDismiss();
             });
         }
     }
@@ -182,11 +178,11 @@ public class StudentSubsActivity extends AppCompatActivity {
     }
 
     private void initActiUi() {
+        Boolean showOrNot = getIntent().getBooleanExtra("SHOWBN", true);
         navigationBar = findViewById(R.id.chip_nav_bar);
-        navigationBar.setItemSelected(R.id.id_bn_teacher, true);
-        navigationBar.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(int i) {
+        if (showOrNot) {
+            navigationBar.setItemSelected(R.id.id_bn_teacher, true);
+            navigationBar.setOnItemSelectedListener(i -> {
                 switch (i) {
                     case R.id.id_bn_dashboard:
                         onBackPressed();
@@ -200,7 +196,9 @@ public class StudentSubsActivity extends AppCompatActivity {
                         finish();
                         break;
                 }
-            }
-        });
+            });
+        } else {
+            navigationBar.setVisibility(View.GONE);
+        }
     }
 }

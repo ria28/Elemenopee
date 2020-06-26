@@ -207,26 +207,31 @@ public class ComPanActivity extends AppCompatActivity implements QuesInteract {
 
     private void initActiUi() {
         navigationBar = findViewById(R.id.chip_nav_bar);
-        navigationBar.setItemSelected(R.id.id_bn_community, true);
-        navigationBar.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(int i) {
-                switch (i) {
-                    case R.id.id_bn_dashboard:
-                        onBackPressed();
-                        break;
-                    case R.id.id_bn_teacher:
-                        Intent intent = new Intent(ComPanActivity.this, StudentSubsActivity.class);
-                        intent.putExtra("FROM_SEARCH_STUDENT", true);
-                        startActivity(intent);
-                        break;
-                    case R.id.id_bn_chat:
-                        startActivity(new Intent(ComPanActivity.this, ChatActivity.class));
-                        finish();
-                        break;
+        Boolean bool = getIntent().getBooleanExtra("SHOWBN", true);
+        if (bool) {
+            navigationBar.setItemSelected(R.id.id_bn_community, true);
+            navigationBar.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(int i) {
+                    switch (i) {
+                        case R.id.id_bn_dashboard:
+                            onBackPressed();
+                            break;
+                        case R.id.id_bn_teacher:
+                            Intent intent = new Intent(ComPanActivity.this, StudentSubsActivity.class);
+                            intent.putExtra("FROM_SEARCH_STUDENT", true);
+                            startActivity(intent);
+                            break;
+                        case R.id.id_bn_chat:
+                            startActivity(new Intent(ComPanActivity.this, ChatActivity.class));
+                            finish();
+                            break;
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            navigationBar.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

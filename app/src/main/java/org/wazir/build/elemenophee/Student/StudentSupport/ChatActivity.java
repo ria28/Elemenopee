@@ -2,6 +2,7 @@ package org.wazir.build.elemenophee.Student.StudentSupport;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -211,27 +212,32 @@ public class ChatActivity extends AppCompatActivity {
 
     private void initActiUi() {
         navigationBar = findViewById(R.id.chip_nav_bar);
-        navigationBar.setItemSelected(R.id.id_bn_chat, true);
-        navigationBar.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(int i) {
-                switch (i) {
-                    case R.id.id_bn_dashboard:
-                        onBackPressed();
-                        break;
-                    case R.id.id_bn_community:
-                        startActivity(new Intent(ChatActivity.this, ComPanActivity.class));
-                        finish();
-                        break;
-                    case R.id.id_bn_teacher:
-                        Intent intent = new Intent(ChatActivity.this, StudentSubsActivity.class);
-                        intent.putExtra("FROM_SEARCH_STUDENT", true);
-                        startActivity(intent);
-                        finish();
-                        break;
+        Boolean bool = getIntent().getBooleanExtra("SHOWBN",true);
+        if (bool) {
+            navigationBar.setItemSelected(R.id.id_bn_chat, true);
+            navigationBar.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(int i) {
+                    switch (i) {
+                        case R.id.id_bn_dashboard:
+                            onBackPressed();
+                            break;
+                        case R.id.id_bn_community:
+                            startActivity(new Intent(ChatActivity.this, ComPanActivity.class));
+                            finish();
+                            break;
+                        case R.id.id_bn_teacher:
+                            Intent intent = new Intent(ChatActivity.this, StudentSubsActivity.class);
+                            intent.putExtra("FROM_SEARCH_STUDENT", true);
+                            startActivity(intent);
+                            finish();
+                            break;
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            navigationBar.setVisibility(View.GONE);
+        }
     }
 }
 

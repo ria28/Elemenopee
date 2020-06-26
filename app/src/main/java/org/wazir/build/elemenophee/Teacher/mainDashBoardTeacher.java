@@ -220,7 +220,14 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
             startActivity(new Intent(mainDashBoardTeacher.this, SplashScreen.class));
             finish();
         });
-        viewProfile.setOnClickListener(v -> startActivity(new Intent(mainDashBoardTeacher.this, ChatActivity.class)));
+        viewProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mainDashBoardTeacher.this, ChatActivity.class);
+                intent.putExtra("SHOWBN", false);
+                startActivity(intent);
+            }
+        });
     }
 
     private void loadSubscriber() {
@@ -370,7 +377,14 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         search_teach = findViewById(R.id.to_downloads);
         search_teach.setVisibility(View.GONE);
 
-        communityCard.setOnClickListener(v -> startActivity(new Intent(mainDashBoardTeacher.this, ComPanActivity.class)));
+        communityCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mainDashBoardTeacher.this, ComPanActivity.class);
+                intent.putExtra("SHOWBN", false);
+                startActivity(intent);
+            }
+        });
 
 
         studentRef = FirebaseFirestore.getInstance()
