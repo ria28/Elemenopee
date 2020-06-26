@@ -159,7 +159,7 @@ public class videoRecyclerAdapter extends RecyclerView.Adapter<videoRecyclerAdap
             timeStamp = itemView.findViewById(R.id.viewUploaditemTimeStamp);
             title = itemView.findViewById(R.id.viewUploaditemTitle);
             image = itemView.findViewById(R.id.viewUploaditemImage);
-            options = itemView.findViewById(R.id.video_options);
+            options = itemView.findViewById(R.id.imageView10);
             this.onLayoutClick = onLayoutClick;
 
             itemView.setOnClickListener(this);

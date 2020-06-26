@@ -45,6 +45,9 @@ public class Downloads extends AppCompatActivity {
 
     private void getVideos(File directory) {
         File files[] = directory.listFiles();
+        if (files == null){
+            return;
+        }
         for (File file : files) {
             String name = file.getName().toLowerCase();
             for (String extension : videoExtensions) {
