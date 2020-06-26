@@ -3,11 +3,11 @@ package org.wazir.build.elemenophee;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
+import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.MessageActivity;
 import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.videoRecyclerAdapter;
@@ -38,11 +39,9 @@ import org.wazir.build.elemenophee.Teacher.videoPlayingActivity;
 
 import java.util.ArrayList;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class ViewTeacherProfile extends AppCompatActivity implements videoRecyclerAdapter.onLayoutClick {
 
-    CircleImageView profilePic;
+    ImageView profilePic;
     TextView teacherName, schoolName, connections, subscribe;
     RecyclerView recyclerView;
     videoRecyclerAdapter videoAdapter;
@@ -54,6 +53,7 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
     CollectionReference Sref;
     TeacherObj teacherObj;
     LoadingPopup loadingPopup;
+    ImageView message;
 
     Spinner FileType;
 
@@ -75,6 +75,10 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_teacher_profile);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
+
+        message = findViewById(R.id.message_imageView);
+
 
         teacher_ID = getIntent().getStringExtra("TEACHER_ID");
 
@@ -103,7 +107,6 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
                 android.R.layout.simple_spinner_dropdown_item, content);
 
         FileType.setAdapter(FileTypeSpinnerViewAdapter);
-
 
 
         videoAdapter = new videoRecyclerAdapter(ViewTeacherProfile.this, false, videoList, this, -1);
@@ -137,7 +140,6 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
         });
 
 
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
@@ -157,6 +159,19 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
                 }
             }
         });
+
+
+        message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewTeacherProfile.this, MessageActivity.class);
+                if (!teacher_ID.isEmpty()) {
+                    intent.putExtra("user_id", teacher_ID);
+                    startActivity(intent);
+                }
+            }
+        });
+
 
     }
 
@@ -191,7 +206,7 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
                                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                             @Override
                             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                if(queryDocumentSnapshots.size() == 1){
+                                if (queryDocumentSnapshots.size() == 1) {
                                     subscribe.setText("SUBSCRIBED");
                                     subscribe.setTextColor(Color.parseColor("#eac7c7"));
                                     loadingPopup.dialogDismiss();
@@ -293,14 +308,14 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        if(queryDocumentSnapshots.size() == 1){
+                        if (queryDocumentSnapshots.size() == 1) {
                             isSubscriber = true;
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ViewTeacherProfile.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(ViewTeacherProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

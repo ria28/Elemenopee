@@ -1,9 +1,11 @@
 package org.wazir.build.elemenophee.Student.StudentSubscription;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,11 +24,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
+import org.wazir.build.elemenophee.CommunitySection.ComPanActivity;
 import org.wazir.build.elemenophee.LoadingPopup;
 import org.wazir.build.elemenophee.ModelObj.SubscribedTOmodel;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
+import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 
 import java.util.ArrayList;
 
@@ -43,6 +48,9 @@ public class StudentSubsActivity extends AppCompatActivity {
     StuTeacherAdapter adapter;
     StuTeacherAdapter searchAdapter;
 
+    TextView title;
+    ChipNavigationBar navigationBar;
+
     boolean fromSearch = false;
     private ArrayList<String> subsList = new ArrayList<>();
 
@@ -52,6 +60,7 @@ public class StudentSubsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_student_subs);
         fromSearch = getIntent().getBooleanExtra("FROM_SEARCH_STUDENT", false);
         loadingPopup = new LoadingPopup(StudentSubsActivity.this);
+        title = findViewById(R.id.textView59);
 
         reference = FirebaseFirestore.getInstance()
                 .collection("TEACHERS");
@@ -63,6 +72,7 @@ public class StudentSubsActivity extends AppCompatActivity {
 
         if(!fromSearch){
             searchView.setVisibility(View.GONE);
+            title.setText("Subscriptions");
         }
         recyclerView = findViewById(R.id.teachers_rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -93,7 +103,7 @@ public class StudentSubsActivity extends AppCompatActivity {
         });
 
         getTeacherList();
-
+        initActiUi();
     }
 
     private void changeQuery(String q) {
@@ -169,5 +179,28 @@ public class StudentSubsActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         adapter.stopListening();
+    }
+
+    private void initActiUi() {
+        navigationBar = findViewById(R.id.chip_nav_bar);
+        navigationBar.setItemSelected(R.id.id_bn_teacher, true);
+        navigationBar.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(int i) {
+                switch (i) {
+                    case R.id.id_bn_dashboard:
+                        onBackPressed();
+                        break;
+                    case R.id.id_bn_community:
+                        startActivity(new Intent(StudentSubsActivity.this, ComPanActivity.class));
+                        finish();
+                        break;
+                    case R.id.id_bn_chat:
+                        startActivity(new Intent(StudentSubsActivity.this, ChatActivity.class));
+                        finish();
+                        break;
+                }
+            }
+        });
     }
 }

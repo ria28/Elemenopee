@@ -2,4 +2,6 @@
 <resources>
     <dimen name="card_corner_radius">2dp</dimen>
     <dimen name="card_elevation">2dp</dimen>
+    <item name="TextTitleSize" type="dimen">18dp</item>
+    <item name="TextBodySize" type="dimen">14dp</item>
 </resources>

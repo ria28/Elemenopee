@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,11 +27,13 @@ import org.wazir.build.elemenophee.Teacher.model.contentModel;
 import org.wazir.build.elemenophee.Teacher.videoPlayingActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHolder> {
+public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHolder> implements Filterable {
 
     private ArrayList<Chapters> data;
+    private ArrayList<Chapters>dataListFull;
     private Context mContext;
     String title;
     ArrayList<contentModel> videoList = new ArrayList<>();
@@ -44,6 +48,7 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHo
     public ChapterAdapter(Context mContext, ArrayList<Chapters> data) {
         this.mContext = mContext;
         this.data = data;
+        dataListFull=new ArrayList<>(data);
 
     }
 
@@ -148,6 +153,39 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHo
     public int getItemCount() {
         return data.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return dataFilter;
+    }
+    private Filter dataFilter= new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Chapters> filteredList = new ArrayList<>();
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(dataListFull);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (Chapters item : dataListFull) {
+                    if (item.getTitle().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }else {
+                        Toast.makeText(mContext,"NO such chapter",Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            data.clear();
+            data.addAll((List)results.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView title, description;

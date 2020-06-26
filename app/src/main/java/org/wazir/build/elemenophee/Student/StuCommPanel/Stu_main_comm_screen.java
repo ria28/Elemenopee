@@ -3,12 +3,11 @@ package org.wazir.build.elemenophee.Student.StuCommPanel;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,8 +28,14 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 import org.wazir.build.elemenophee.Downloads;
+
+import org.angmarch.views.NiceSpinner;
+import org.angmarch.views.OnSpinnerItemSelectedListener;
+import org.wazir.build.elemenophee.CommunitySection.ComPanActivity;
+import org.wazir.build.elemenophee.ModelObj.StudentObj;
+
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
 import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.Chapters;
@@ -38,25 +43,29 @@ import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.SubComm;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.ChapterAdapter;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.SubjectAdapter;
 import org.wazir.build.elemenophee.Student.StudentProfile.StudentProfileActivity;
+
 import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
 import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static org.wazir.build.elemenophee.ConstantsRet.getIconsForClass;
+
+
 public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAdapter.OnSubjListener {
 
-    ArrayList<String> Class = new ArrayList<>();
+    ArrayList<String> classes = new ArrayList<>();
     ArrayList<SubComm> list1 = new ArrayList<>();
     ArrayList<SubComm> list2 = new ArrayList<>();
     ArrayList<Chapters> chapList = new ArrayList<>();
     ArrayAdapter<String> classSpinnerViewAdapter;
 
 
-    Spinner viewClass;
+    NiceSpinner viewClass;
     Context context;
-    String subject;
 
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -70,131 +79,67 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
 
     CircleImageView profilePic, Intro_pic;
     TextView StudentName, name, view_class_tv;
+
     CardView profileLayout;
     CardView cardLogout;
     CardView Subscribe;
     CardView messages,search_teach, downloads;
 
+
+    CardView navToSubs;
+    CardView logOutUser;
+    CardView navToDashboard;
+    CardView navToSettings, navToDownloads;
+    FirebaseFirestore db;
+
     CollectionReference isSubs = FirebaseFirestore.getInstance().collection("/TEACHERS/");
 
+    // activity Specific
+    ChipNavigationBar navigationBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stu_main_comm_screen);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-
-        mAuth = FirebaseAuth.getInstance();
-        profilePic = findViewById(R.id.circleImageView);
-        Intro_pic = findViewById(R.id.Comm_pro_image);
-        StudentName = findViewById(R.id.textView22);
-        profileLayout = findViewById(R.id.ProfileTeacher);
-        cardLogout = findViewById(R.id.logout);
-        Subscribe = findViewById(R.id.stu_subscribe);
-        name = findViewById(R.id.textView26k);
-        messages = findViewById(R.id.message_id);
-        view_class_tv = findViewById(R.id.to_view_class);
-        search_teach = findViewById(R.id.stu_search_teacher);
-        downloads = findViewById(R.id.downloads);
+        initActiUi();
+        initUi();
 
         getProfilePic();
-
-        downloads.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Stu_main_comm_screen.this, Downloads.class);
-                startActivity(intent);
-            }
-        });
-
-        search_teach.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Stu_main_comm_screen.this, StudentSubsActivity.class);
-                intent.putExtra("FROM_SEARCH_STUDENT",true);
-                startActivity(intent);
-            }
-        });
-
-        profileLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Stu_main_comm_screen.this, StudentProfileActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        cardLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAuth.signOut();
-                startActivity(new Intent(Stu_main_comm_screen.this, SplashScreen.class));
-                finish();
-            }
-        });
-
-        Subscribe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent= new Intent(Stu_main_comm_screen.this, StudentSubsActivity.class);
-                startActivity(intent);
-            }
-        });
-        messages.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent= new Intent(Stu_main_comm_screen.this, ChatActivity.class);
-                startActivity(intent);
-                // TODO: 6/21/2020 nav to Messages
-            }
-        });
-        Class.add("Class 5");
-        Class.add("Class 6");
-        Class.add("Class 7");
-        Class.add("Class 8");
-        Class.add("Class 9");
-
-
-        first_rv = findViewById(R.id.first_recycler_view);
-        second_rv = findViewById(R.id.second_recycler_view);
-        viewClass = findViewById(R.id.viewClassSpinner);
-
-        classSpinnerViewAdapter = new ArrayAdapter<String>(Stu_main_comm_screen.this,
-                android.R.layout.simple_spinner_dropdown_item, Class);
-        viewClass.setAdapter(classSpinnerViewAdapter);
-
-        first_rv.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        first_rv.hasFixedSize();
-
-        second_rv.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-        second_rv.hasFixedSize();
-
-        viewClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                view_class_tv.setText( viewClass.getSelectedItem().toString());
-//                loadSubject();
-                list1.clear();
-                list1 = getList2_modified();
-
-                adapter1 = new SubjectAdapter(Stu_main_comm_screen.this, list1, Stu_main_comm_screen.this);
-                setUpRecyclerView();
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        adapter1 = new SubjectAdapter(this, list1, this);
-        adapter2 = new ChapterAdapter(this, chapList);
+        onClickEvents();
+        getClasses();
 
         setUpRecyclerView();
+    }
 
 
+    private void initActiUi() {
+        navigationBar = findViewById(R.id.chip_nav_bar);
+        navigationBar.setItemSelected(R.id.id_bn_dashboard, true);
+        navigationBar.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(int i) {
+                switch (i) {
+                    case R.id.id_bn_community:
+                        startActivity(new Intent(Stu_main_comm_screen.this, ComPanActivity.class));
+                        break;
+                    case R.id.id_bn_teacher:
+                        Intent intent = new Intent(Stu_main_comm_screen.this, StudentSubsActivity.class);
+                        intent.putExtra("FROM_SEARCH_STUDENT", true);
+                        startActivity(intent);
+                        break;
+                    case R.id.id_bn_chat:
+                        startActivity(new Intent(Stu_main_comm_screen.this, ChatActivity.class));
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        navigationBar.setItemSelected(R.id.id_bn_dashboard, true);
     }
 
     private void getProfilePic() {
@@ -205,160 +150,9 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         name.setText(user.getDisplayName());
     }
 
-    public void loadSubject() {
-        reference = FirebaseFirestore.getInstance()
-                .collection("CLASSES")
-                .document( viewClass.getSelectedItem().toString())
-                .collection("SUBJECT");
-        reference.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            list1.clear();
-                            if (!task.getResult().isEmpty()) {
-
-                                for (QueryDocumentSnapshot doc : task.getResult()) {
-                                    for (int i = 0; i < 1; i++) {
-                                        System.out.println(i);
-                                    }
-                                    subject = doc.getData().toString();
-                                    list1 = getList1(list1, subject);
-//                                    list1=getList2_modified();
-                                    Log.d("subject name", "onComplete: "+ subject);
-
-                                }
-
-                                adapter1.notifyDataSetChanged();
-
-                            } else {
-                                list1.add(new SubComm("No Subject"));
-                                adapter1.notifyDataSetChanged();
-                            }
-                        } else
-                            Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-
-    }
-
-    ArrayList<SubComm> getList2_modified(){
-        Log.d("class", "getList2_modified: "+ viewClass.getSelectedItem().toString());
-        if(viewClass.getSelectedItem().toString().equals("Class 5")){
-            list2.add(new SubComm(R.drawable.ic_maths, "Maths"));
-            list2.add(new SubComm(R.drawable.ic_english, "English"));
-            list2.add(new SubComm(R.drawable.ic_sci, "Science"));
-            list2.add(new SubComm(R.drawable.ic_sst, "S.ST"));
-            list2.add(new SubComm(R.drawable.ic_evs, "EVS"));
-        }
-        if(viewClass.getSelectedItem().toString().equals("Class 6")){
-            list2.add(new SubComm(R.drawable.ic_maths, "Maths"));
-            list2.add(new SubComm(R.drawable.ic_english, "English"));
-            list2.add(new SubComm(R.drawable.ic_sci, "Science"));
-            list2.add(new SubComm(R.drawable.ic_sst, "S.ST"));
-            list2.add(new SubComm(R.drawable.ic_evs, "EVS"));
-            list2.add(new SubComm(R.drawable.ic_gk, "G.K"));
-        }
-        if(viewClass.getSelectedItem().toString().equals("Class 7")){
-            list2.add(new SubComm(R.drawable.ic_maths, "Maths"));
-            list2.add(new SubComm(R.drawable.ic_english, "English"));
-            list2.add(new SubComm(R.drawable.ic_sci, "Science"));
-            list2.add(new SubComm(R.drawable.ic_sst, "S.ST"));
-            list2.add(new SubComm(R.drawable.ic_evs, "EVS"));
-            list2.add(new SubComm(R.drawable.ic_gk, "G.K"));
-        }
-        if(viewClass.getSelectedItem().toString().equals("Class 8")){
-            list2.add(new SubComm(R.drawable.ic_maths, "Maths"));
-            list2.add(new SubComm(R.drawable.ic_english, "English"));
-            list2.add(new SubComm(R.drawable.ic_sci, "Science"));
-            list2.add(new SubComm(R.drawable.ic_sst, "S.ST"));
-            list2.add(new SubComm(R.drawable.ic_evs, "EVS"));
-            list2.add(new SubComm(R.drawable.ic_gk, "G.K"));
-        }
-        if(viewClass.getSelectedItem().toString().equals("Class 9")){
-            list2.add(new SubComm(R.drawable.ic_maths, "Maths"));
-            list2.add(new SubComm(R.drawable.ic_english, "English"));
-            list2.add(new SubComm(R.drawable.ic_sst, "S.ST"));
-            list2.add(new SubComm(R.drawable.ic_bio, "Biology"));
-            list2.add(new SubComm(R.drawable.ic_physics, "Physics"));
-            list2.add(new SubComm(R.drawable.ic_chem, "Chemistry"));
-        }
-        if(viewClass.getSelectedItem().toString().equals("Class 10")){
-            list2.add(new SubComm(R.drawable.ic_maths, "Maths"));
-            list2.add(new SubComm(R.drawable.ic_english, "English"));
-            list2.add(new SubComm(R.drawable.ic_sst, "S.ST"));
-            list2.add(new SubComm(R.drawable.ic_bio, "Biology"));
-            list2.add(new SubComm(R.drawable.ic_physics, "Physics"));
-            list2.add(new SubComm(R.drawable.ic_chem, "Chemistry"));
-        }
-        return list2;
-    }
-
-
-    ArrayList<SubComm> getList1(ArrayList<SubComm> list1, String sub) {
-
-        switch (sub) {
-            case "{Maths=}":
-                list1.add(new SubComm(R.drawable.ic_maths, "Maths"));
-                break;
-            case "{English=}":
-                list1.add(new SubComm(R.drawable.ic_english, "English"));
-                break;
-            case "{Science=}":
-                list1.add(new SubComm(R.drawable.ic_sci, "Science"));
-                break;
-            case "{SST=}":
-                list1.add(new SubComm(R.drawable.ic_sst, "S.ST"));
-                break;
-            case "{EVS=}":
-                list1.add(new SubComm(R.drawable.ic_evs, "EVS"));
-                break;
-            case "{GK=}":
-                list1.add(new SubComm(R.drawable.ic_gk, "G.K"));
-                break;
-            case "{Chemistry=}":
-                list1.add(new SubComm(R.drawable.ic_chem, "CHEMISTRY"));
-                break;
-            case "{Physics=}":
-                list1.add(new SubComm(R.drawable.ic_physics, "PHYSICS"));
-                break;
-            case "{Biology=}":
-                list1.add(new SubComm(R.drawable.ic_bio, "BIOLOGY"));
-                break;
-            case "{History=}":
-                list1.add(new SubComm(R.drawable.ic_history, "HISTORY"));
-                break;
-            case "{Geography=}":
-                list1.add(new SubComm(R.drawable.ic_geo, "GEOGRAPHY"));
-                break;
-            case "{Political Science=}":
-                list1.add(new SubComm(R.drawable.ic_polsci, "POL.SCI"));
-                break;
-            case "{Accounts=}":
-                list1.add(new SubComm(R.drawable.ic_accounts, "ACCOUNTS"));
-                break;
-            case "{Economics=}":
-                list1.add(new SubComm(R.drawable.ic_eco, "ECONOMICS"));
-                break;
-            case "{Business Studies=}":
-                list1.add(new SubComm(R.drawable.ic_business, "Business Stu"));
-                break;
-
-//                                        default:
-//                                            Toast.makeText(context, "Nothing Found", Toast.LENGTH_SHORT).show();
-//                                            list1.add(new SubComm("Nothing found"));
-//                                            adapter1.notifyDataSetChanged();
-//                                            Log.d("size", "onComplete: " + list1.size());
-        }
-        return list1;
-    }
-
     @Override
     public void onSubjClick(int position) {
-
         final String SubName = list1.get(position).getSubName();
-
         if(SubName!=null) {
             reference = FirebaseFirestore.getInstance().collection("CLASSES")
                     .document(viewClass.getSelectedItem().toString())
@@ -401,13 +195,114 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
                         }
                     });
 
-        }else
-            Toast.makeText(this,"No Subjects",Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(this, "No Subjects", Toast.LENGTH_SHORT).show();
 
     }
 
     private void setUpRecyclerView() {
         first_rv.setAdapter(adapter1);
         second_rv.setAdapter(adapter2);
+    }
+
+    private void initUi() {
+        mAuth = FirebaseAuth.getInstance();
+        profilePic = findViewById(R.id.circleImageView);
+        Intro_pic = findViewById(R.id.Comm_pro_image);
+        StudentName = findViewById(R.id.textView22);
+        navToSubs = findViewById(R.id.to_subscriptions);
+        logOutUser = findViewById(R.id.to_logout);
+        name = findViewById(R.id.textView26);
+        navToSettings = findViewById(R.id.to_settings);
+        navToDownloads = findViewById(R.id.to_downloads);
+        first_rv = findViewById(R.id.first_recycler_view);
+        second_rv = findViewById(R.id.second_recycler_view);
+        viewClass = findViewById(R.id.viewClassSpinner);
+        db = FirebaseFirestore.getInstance();
+    }
+
+    private void onClickEvents() {
+        navToDownloads.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: 6/25/2020 navigate to downloads
+            }
+        });
+
+        navToSubs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Stu_main_comm_screen.this, StudentSubsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        logOutUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.signOut();
+                startActivity(new Intent(Stu_main_comm_screen.this, SplashScreen.class));
+                finish();
+            }
+        });
+
+        navToSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: 6/25/2020 nav to Settings
+            }
+        });
+    }
+
+    private void getClasses() {
+        db.collection("STUDENTS").document(mAuth.getCurrentUser().getPhoneNumber())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful() && task.getResult().exists()) {
+                            StudentObj obj = task.getResult().toObject(StudentObj.class);
+                            Collections.sort(obj.getClasses());
+                            ArrayList<String> classes = new ArrayList<>();
+                            for (int i : obj.getClasses()) {
+                                classes.add("Class " + i);
+                            }
+
+                            spinnerSetup(classes);
+                        }
+                    }
+                });
+    }
+
+    private void spinnerSetup(ArrayList<String> standards) {
+        classes.addAll(standards);
+        // initial Classes setup
+        list1 = getIconsForClass(standards.get(0));
+        adapter1 = new SubjectAdapter(Stu_main_comm_screen.this, list1, Stu_main_comm_screen.this);
+        setUpRecyclerView();
+
+        classSpinnerViewAdapter = new ArrayAdapter<String>(
+                Stu_main_comm_screen.this,
+                android.R.layout.simple_spinner_dropdown_item,
+                classes
+        );
+        viewClass.setAdapter(classSpinnerViewAdapter);
+
+        first_rv.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        first_rv.hasFixedSize();
+
+        second_rv.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        second_rv.hasFixedSize();
+        viewClass.setOnSpinnerItemSelectedListener(new OnSpinnerItemSelectedListener() {
+            @Override
+            public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
+                list1 = getIconsForClass(parent.getItemAtPosition(position).toString());
+                adapter1 = new SubjectAdapter(Stu_main_comm_screen.this, list1, Stu_main_comm_screen.this);
+                setUpRecyclerView();
+            }
+        });
+        adapter1 = new SubjectAdapter(this, list1, this);
+        adapter2 = new ChapterAdapter(this, chapList);
+
     }
 }

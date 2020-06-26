@@ -21,7 +21,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".Downloads"></activity>
+
+        <activity android:name=".CommunitySection.SolutionDisplayActivity"></activity>
+
         <activity android:name=".Student.StudentSupport.ChatActivity" />
         <activity android:name=".CommunitySection.ComPanActivity" />
         <activity android:name=".PaymentActivity" />
@@ -33,7 +37,9 @@
         <activity android:name=".Student.Lecture.Subject.ViewVideosChapActivity" />
         <activity android:name=".Student.StudentSupport.MainChatPanel.ChatMainActivity" />
         <activity android:name=".Student.Community.ViewNotesActivity" />
-        <activity android:name=".Student.StudentSupport.Chat121.MessageActivity" />
+        <activity
+            android:name=".Student.StudentSupport.Chat121.MessageActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -56,8 +62,11 @@
         <activity android:name=".Student.StudentActivity.ClassRoomActivity" />
         <activity android:name=".Student.Videos.VideoActivity" />
         <activity android:name=".Student.StuCommPanel.Stu_main_comm_screen" />
+        <activity android:name=".Student.StuCommPanel.Stu_main_comm_screen"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Student.StudentSubscription.StudentSubsActivity" />
         <activity android:name=".Student.StuProfile.EditStuProfileActivity" />
+
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />

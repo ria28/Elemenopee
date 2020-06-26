@@ -117,7 +117,6 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
 
             }
         });
-
         viewSubject.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -129,7 +128,6 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
 
             }
         });
-
         viewChapter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

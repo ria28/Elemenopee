@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
@@ -41,6 +42,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return messages;
     }
 
+
     @Override
     public int getItemViewType(int position) {
         if (messages.get(position).getSenderId().equals(mAuth.getCurrentUser().getPhoneNumber())) {
@@ -49,6 +51,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return 1;
         }
     }
+
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
+
+    }
+
 
     @NonNull
     @Override
@@ -65,20 +74,16 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ReceiverViewHolder) {
-            ((ReceiverViewHolder) holder).name.setText(messages.get(position).getSendName());
+//            ((ReceiverViewHolder) holder).name.setText(messages.get(position).getSendName());
             ((ReceiverViewHolder) holder).message.setText(messages.get(position).getMessage());
             if (!messages.get(position).getImageUrl().equals("")) {
-                Picasso.get()
-                        .load(messages.get(position).getImageUrl())
-                        .into(((ReceiverViewHolder) holder).imageView);
+                Glide.with(ctx).load(messages.get(position).getImageUrl()).into(((ReceiverViewHolder) holder).imageView);
                 ((ReceiverViewHolder) holder).imageView.setVisibility(View.VISIBLE);
             }
         } else {
             ((SenderViewHolder) holder).message.setText(messages.get(position).getMessage());
             if (!messages.get(position).getImageUrl().equals("")) {
-                Picasso.get()
-                        .load(messages.get(position).getImageUrl())
-                        .into(((SenderViewHolder) holder).image);
+                Glide.with(ctx).load(messages.get(position).getImageUrl()).into(((SenderViewHolder) holder).image);
                 ((SenderViewHolder) holder).image.setVisibility(View.VISIBLE);
             }
         }
@@ -95,7 +100,7 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         ReceiverViewHolder(@NonNull View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.textView78);
+//            name = itemView.findViewById(R.id.textView78);
             message = itemView.findViewById(R.id.textView79);
             imageView = itemView.findViewById(R.id.imageView3);
         }

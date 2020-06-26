@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,16 +34,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.w3c.dom.Text;
 import org.wazir.build.elemenophee.CommunitySection.ComPanActivity;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.ModelObj.SubscribersModel;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.SplashScreen;
-
+import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.MessageActivity;
 import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 import org.wazir.build.elemenophee.Teacher.adapter.notesRecyclerAdapter;
 import org.wazir.build.elemenophee.Teacher.adapter.otherAdapter;
@@ -73,7 +72,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     FirebaseAuth mAuth;
     RecyclerView recentContent, recentSubs;
     CircleImageView profilePic, proPic2;
-    CardView messages;
+    CardView editProfile;
 
     videoRecyclerAdapter videoAdapter;
     otherAdapter otherAdapter;
@@ -109,23 +108,24 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         setContentView(R.layout.activity_main_dash_board_teacher);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        reference = FirebaseFirestore.getInstance().collection(
-                "/TEACHERS/" +
-                        user.getPhoneNumber() + //TODO:ADD Teacher id in Student View
-                        "/RECENT_UPLOADS"
-        );
+        reference = FirebaseFirestore.getInstance().collection("/TEACHERS/" + user.getPhoneNumber() + "/RECENT_UPLOADS");
 
         init();
         getTeacherInfo();
-        Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(profilePic);
-        Glide.with(this).load(mAuth.getCurrentUser().getPhotoUrl()).into(proPic2);
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        Uri pictureUrl = user.getPhotoUrl();
+
+        if (user.getPhotoUrl() != null) {
+            Glide.with(this).load(pictureUrl).into(profilePic);
+            Glide.with(this).load(pictureUrl).into(proPic2);
+        }
 
         content.add("VIDEOS");
         content.add("NOTES");
         content.add("OTHER");
 
-        FileTypeSpinnerViewAdapter = new ArrayAdapter<>(mainDashBoardTeacher.this,
-                android.R.layout.simple_spinner_dropdown_item, content);
+        FileTypeSpinnerViewAdapter = new ArrayAdapter<>(mainDashBoardTeacher.this, android.R.layout.simple_spinner_dropdown_item, content);
 
         FileType.setAdapter(FileTypeSpinnerViewAdapter);
 
@@ -149,11 +149,11 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         FileType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(videoList.size()<=0){
-                    Toast.makeText(getApplicationContext(),"No Recent Video Uploaded",Toast.LENGTH_SHORT).show();
+                if (videoList.size() <= 0) {
+                    Toast.makeText(getApplicationContext(), "No Recent Video Uploaded", Toast.LENGTH_SHORT).show();
                 }
-                if(pdfList.size()<=0){
-                    Toast.makeText(getApplicationContext(),"No Recent Notes Uploaded",Toast.LENGTH_SHORT).show();
+                if (pdfList.size() <= 0) {
+                    Toast.makeText(getApplicationContext(), "No Recent Notes Uploaded", Toast.LENGTH_SHORT).show();
                 }
                 setUpRecyclerView();
             }
@@ -201,7 +201,6 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                 Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 getIntent.setType("application/pdf");
 
-
                 @SuppressLint("IntentReset")
                 Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 pickIntent.setType("application/pdf");
@@ -212,10 +211,10 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                 startActivityForResult(chooserIntent, PICK_PDF);
             }
         });
+
         uploadFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 UploadType = "OTHER";
                 Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 getIntent.setType("*/*");
@@ -252,26 +251,23 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         viewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mainDashBoardTeacher.this, TeacherProfile.class));
+                startActivity(new Intent(mainDashBoardTeacher.this, ChatActivity.class));
             }
         });
     }
 
     private void loadSubscriber() {
-        subsRef
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        subsList = new ArrayList<>();
-                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                            SubscribersModel model = doc.toObject(SubscribersModel.class);
-                            subsList.add(model.getStudentID());
-                        }
-                        if (subsList.size() > 0) {
-                            Log.d("TAG", "onSuccess: "+ subsList);
-                            studentRef
-                                    .whereIn("contact", subsList)
+        subsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                subsList = new ArrayList<>();
+                for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                    SubscribersModel model = doc.toObject(SubscribersModel.class);
+                    subsList.add(model.getStudentID());
+                }
+                if (subsList.size() > 0) {
+
+                    studentRef.whereIn("contact",subsList )
                                     .limit(10)
                                     .get()
                                     .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -309,7 +305,6 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         else
             recentContent.setAdapter(notesAdapter);
     }
-
 
     private void loadData(final String type) {
         reference.document("UPLOADS")
@@ -402,12 +397,17 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     }
 
     void init() {
-        sub_btn = findViewById(R.id.stu_subscribe);
-        sub_btn.setVisibility(View.GONE);
-        messages = findViewById(R.id.message_id);
+
+        TextView editProfileTv = findViewById(R.id.id_setting123);
+        editProfileTv.setText("EDIT PROFILE");
+
+        TextView messages = findViewById(R.id.textView25);
+        messages.setText("MESSAGES");
+
+        editProfile = findViewById(R.id.to_settings);
         mainPageName = findViewById(R.id.mainDashBoardTeacherName);
-        logoutUser = findViewById(R.id.logout);
-        viewProfile = findViewById(R.id.ProfileTeacher);
+        logoutUser = findViewById(R.id.to_logout);
+        viewProfile = findViewById(R.id.to_subscriptions);
         name = findViewById(R.id.textView22);
         designation = findViewById(R.id.textView23);
         mAuth = FirebaseAuth.getInstance();
@@ -422,8 +422,9 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         profilePic = findViewById(R.id.id_user_profile);
         proPic2 = findViewById(R.id.circleImageView);
         communityCard = findViewById(R.id.community_card);
-        search_teach = findViewById(R.id.stu_search_teacher);
+        search_teach = findViewById(R.id.to_downloads);
         search_teach.setVisibility(View.GONE);
+
         communityCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -437,13 +438,11 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         subsRef = FirebaseFirestore.getInstance().collection("TEACHERS")
                 .document(user.getPhoneNumber()).collection("SUBSCRIBERS");
 
-        messages.setOnClickListener(new View.OnClickListener() {
+        editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent intent= new Intent(mainDashBoardTeacher.this, ChatActivity.class);
+                Intent intent = new Intent(mainDashBoardTeacher.this, TeacherProfile.class);
                 startActivity(intent);
-                // TODO: 6/21/2020 navigate To messages activity
             }
         });
     }

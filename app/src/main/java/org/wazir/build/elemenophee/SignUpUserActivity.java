@@ -28,6 +28,7 @@ import org.wazir.build.elemenophee.Interfaces.ChooseEveHandler;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 
+import org.wazir.build.elemenophee.ModelObj.TempObj;
 import org.wazir.build.elemenophee.Student.Community.MainCommScreen;
 import org.wazir.build.elemenophee.Student.StuCommPanel.Stu_main_comm_screen;
 import org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct;
@@ -136,6 +137,12 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
                         updateUi(false);
                     }
                 });
+        TempObj obj = new TempObj();
+        db.collection("TEACHERS")
+                .document(phoneNumber)
+                .collection("Contacts")
+                .document("list")
+                .set(obj);
     }
 
     void signUpStudent() {
@@ -170,6 +177,11 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
                         updateUi(false);
                     }
                 });
+        db.collection("STUDENTS")
+                .document(phoneNumber)
+                .collection("Contacts")
+                .document("list")
+                .set(obj);
     }
 
     void setupRcviews() {
