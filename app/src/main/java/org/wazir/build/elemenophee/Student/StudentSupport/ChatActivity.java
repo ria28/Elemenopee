@@ -2,12 +2,10 @@ package org.wazir.build.elemenophee.Student.StudentSupport;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,10 +19,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 import org.wazir.build.elemenophee.CommunitySection.ComPanActivity;
+import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.ModelObj.TempObj;
 import org.wazir.build.elemenophee.R;
-import org.wazir.build.elemenophee.Student.StuCommPanel.Stu_main_comm_screen;
 import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
 import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.User;
 import org.wazir.build.elemenophee.Student.StudentSupport.Chat121.UserAdapter;
@@ -108,7 +106,7 @@ public class ChatActivity extends AppCompatActivity {
                         if (task.isSuccessful() && task.getResult().exists()) {
                             TempObj doc = task.getResult().toObject(TempObj.class);
                             doc_id.addAll(doc.getContacts());
-                        } else
+                        }
                         getStudentContacts(doc_id);
                     }
                 });
@@ -117,33 +115,27 @@ public class ChatActivity extends AppCompatActivity {
 
     private void getStudentContacts(ArrayList<String> doc_id) {
         if (doc_id != null) {
-            for (String s : doc_id) {
-               final  String str= s;
-                FirebaseFirestore.getInstance().collection("TEACHERS").document(s)
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful() && task.getResult().exists()) {
-                                    DocumentSnapshot doc = task.getResult();
-                                    String id = str;
-                                    String username = doc.get("name").toString();
-                                    String imageUrl;
-                                    if(!doc.get("proPicURL").toString().equals("")) {
-                                        imageUrl = doc.get("proPicURL").toString();
-                                    }else
-                                        imageUrl="";
-
-                                    mUsers.add(new User(id, username, imageUrl));
-                                    userAdapter = new UserAdapter(ChatActivity.this, mUsers);
-                                    userAdapter.notifyDataSetChanged();
-                                    recyclerView.setAdapter(userAdapter);
-
-                                }
+            FirebaseFirestore.getInstance().collection("TEACHERS")
+                    .whereIn("phone", doc_id)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            for (DocumentSnapshot snapshot : task.getResult()) {
+                                TeacherObj tObj = snapshot.toObject(TeacherObj.class);
+                                String id = tObj.getPhone();
+                                String username = tObj.getName();
+                                String imageUrl = "";
+                                if (tObj.getProPicURL() == null) {
+                                    imageUrl = "";
+                                } else
+                                    imageUrl = tObj.getProPicURL();
+                                mUsers.add(new User(id, username, imageUrl));
                             }
-
-                        });
-            }
+                            userAdapter = new UserAdapter(ChatActivity.this, mUsers);
+                            userAdapter.notifyDataSetChanged();
+                            recyclerView.setAdapter(userAdapter);
+                        }
+                    });
         } else {
             Toast.makeText(ChatActivity.this, "No contacts", Toast.LENGTH_SHORT).show();
         }
@@ -182,14 +174,19 @@ public class ChatActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 if (task.isSuccessful() && task.getResult().exists()) {
                                     DocumentSnapshot doc = task.getResult();
+                                    StudentObj obj1 = task.getResult().toObject(StudentObj.class);
                                     String id = str;
                                     String username = doc.get("name").toString();
                                     String imageUrl;
 
-                                    if(!doc.get("imageUrl").toString().equals("")) {
-                                        imageUrl = doc.get("imageUrl").toString();
-                                    }else
-                                        imageUrl="";
+                                    for (int i = 0; i < 1; i++) {
+                                        System.out.println(i);
+                                    }
+
+                                    if (!obj1.getmImageUrl().equals("")) {
+                                        imageUrl = obj1.getmImageUrl();
+                                    } else
+                                        imageUrl = "";
 
                                     mUsers.add(new User(id, username, imageUrl));
                                     userAdapter = new UserAdapter(ChatActivity.this, mUsers);

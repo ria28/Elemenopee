@@ -15,10 +15,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -35,6 +34,8 @@ import org.wazir.build.elemenophee.R;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class EditStuProfileActivity extends AppCompatActivity {
 
     private EditText editTextName;
@@ -42,7 +43,8 @@ public class EditStuProfileActivity extends AppCompatActivity {
     private EditText editTextBio;
     private EditText editTextTarget;
     private TextView others;
-    private ImageView cam, profileImage;
+    private ImageView cam;
+    CircleImageView profileImage;
     private Button save;
 
     Boolean clicked = false;
@@ -79,8 +81,7 @@ public class EditStuProfileActivity extends AppCompatActivity {
         profileImage = findViewById(R.id.profile_image);
         mAuth = FirebaseAuth.getInstance();
         loader = new LoadingPopup(this);
-
-
+        Classs = new ArrayList<>();
         cam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,11 +133,8 @@ public class EditStuProfileActivity extends AppCompatActivity {
             public void onSuccess(Void aVoid) {
                 //file deleted
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                // error ocurred
-            }
+        }).addOnFailureListener(e -> {
+            // error ocurred
         });
     }
 
@@ -164,22 +162,19 @@ public class EditStuProfileActivity extends AppCompatActivity {
                                             FirebaseFirestore.getInstance()
                                                     .collection("STUDENTS")
                                                     .document(number)
-                                                    .update("imageUrl", imageUrl);
+                                                    .update("mImageUrl", imageUrl);
                                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                                     .setPhotoUri(uri)
                                                     .build();
 
                                             user.updateProfile(profileUpdates)
-                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                            if (task.isSuccessful()){
-                                                                loader.dialogDismiss();
-                                                                onBackPressed();
-                                                            } else {
-                                                                Toast.makeText(EditStuProfileActivity.this, "Failed To Update", Toast.LENGTH_SHORT).show();
-                                                            }
+                                                    .addOnCompleteListener(task -> {
+                                                        if (task.isSuccessful()) {
+                                                            loader.dialogDismiss();
+                                                            onBackPressed();
+                                                        } else {
+                                                            Toast.makeText(EditStuProfileActivity.this, "Failed To Update", Toast.LENGTH_SHORT).show();
                                                         }
                                                     });
                                         }
@@ -234,15 +229,19 @@ public class EditStuProfileActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = getIntent();
-        editTextName.setText(intent.getStringExtra("NAME"));
-        editTextSchool.setText(intent.getStringExtra("SCHOOL"));
-        bio = intent.getStringExtra("BIO");
-        editTextBio.setText(bio);
-        editTextTarget.setText(intent.getStringExtra("TARGET"));
-        text = intent.getStringExtra("OTH");
-        others.setText((intent.getStringExtra("OTH")));
-        phone = intent.getStringExtra("PHONE");
-        Classs = intent.getIntegerArrayListExtra("CLASS");
+        FirebaseFirestore.getInstance().collection("STUDENTS")
+                .document(FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult().exists()) {
+                        StudentObj obj = task.getResult().toObject(StudentObj.class);
+                        editTextName.setText(obj.getName());
+                        editTextSchool.setText(obj.getSchool());
+                        editTextBio.setText(obj.getBio());
+                        editTextTarget.setText(obj.getTarget());
+                        Glide.with(getApplicationContext()).load(obj.getmImageUrl()).into(profileImage);
+                        Classs = obj.getClasses();
+                    }
+                });
     }
 }

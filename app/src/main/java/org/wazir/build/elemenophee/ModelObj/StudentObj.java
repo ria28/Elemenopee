@@ -1,13 +1,11 @@
 package org.wazir.build.elemenophee.ModelObj;
 
-import android.net.Uri;
-
 import java.util.ArrayList;
 
 public class StudentObj {
     String school, bio, target, contact, name;
     ArrayList<Integer> classes;
-    ArrayList<String>contacts;
+    ArrayList<String> contacts;
     private String mImageUrl;
 
     public StudentObj() {

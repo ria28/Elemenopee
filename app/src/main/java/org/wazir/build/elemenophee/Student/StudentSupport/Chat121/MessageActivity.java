@@ -163,7 +163,7 @@ public class MessageActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot doc = task.getResult();
                             username.setText(doc.get("name").toString());
-                            String imageUrl = doc.get("imageUrl").toString();
+                            String imageUrl = doc.get("mImageUrl").toString();
                             Glide.with(profile_image.getContext()).load(imageUrl).into(profile_image);
                         }
 

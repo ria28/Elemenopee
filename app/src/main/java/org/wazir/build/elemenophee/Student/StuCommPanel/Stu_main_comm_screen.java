@@ -40,6 +40,7 @@ import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.Chapters;
 import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.SubComm;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.ChapterAdapter;
 import org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter.SubjectAdapter;
+import org.wazir.build.elemenophee.Student.StuProfile.EditStuProfileActivity;
 import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
 import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 
@@ -216,6 +217,12 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         second_rv = findViewById(R.id.second_recycler_view);
         viewClass = findViewById(R.id.viewClassSpinner);
         db = FirebaseFirestore.getInstance();
+        name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Stu_main_comm_screen.this, EditStuProfileActivity.class));
+            }
+        });
     }
 
     private void onClickEvents() {
@@ -259,6 +266,9 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful() && task.getResult().exists()) {
                             StudentObj obj = task.getResult().toObject(StudentObj.class);
+                            for (int i = 0; i < 1; i++) {
+                                System.out.println(i);
+                            }
                             Collections.sort(obj.getClasses());
                             ArrayList<String> classes = new ArrayList<>();
                             for (int i : obj.getClasses()) {
