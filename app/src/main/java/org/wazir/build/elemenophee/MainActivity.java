@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -28,14 +27,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.wazir.build.elemenophee.Student.Community.MainCommScreen;
 import org.wazir.build.elemenophee.Student.StuCommPanel.Stu_main_comm_screen;
-import org.wazir.build.elemenophee.Student.StudentMainPanel.StudentMainAct;
 import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
@@ -75,29 +72,30 @@ public class MainActivity extends AppCompatActivity {
         phoneNoSu.addTextChangedListener(pnSuTw);
         liPb = findViewById(R.id.progressBar4);
         suPb = findViewById(R.id.progressBar3);
+
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        loginUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (otpLi.getEditText().getText().toString().equals("")) {
-                    Toast.makeText(MainActivity.this, "Where is the OTP ??????", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                siWiOt(otpLi.getEditText().getText().toString(), null);
+
+        loginUser.setOnClickListener(v -> {
+            if (otpLi.getEditText().getText().toString().equals("")) {
+                Toast.makeText(MainActivity.this, "Where is the OTP ??????", Toast.LENGTH_SHORT).show();
+                return;
             }
+            loadingPopup.dialogRaise();
+            siWiOt(otpLi.getEditText().getText().toString(), null);
         });
-        signUpUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signUpUser();
-                loadingPopup.dialogRaise();
-            }
+        signUpUser.setOnClickListener(v -> {
+            signUpUser();
+            loadingPopup.dialogRaise();
         });
-        verifyBtnSu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                siWiOtSu(otpSu.getText().toString(), null);
+        verifyBtnSu.setOnClickListener(v -> {
+            if (otpSu.getText().toString().equals("")) {
+                Toast.makeText(this, "Enter a valid OTP", Toast.LENGTH_SHORT).show();
+            } else {
+                if (otpSu.getText().toString().length() == 6)
+                    siWiOtSu(otpSu.getText().toString(), null);
+                else
+                    Toast.makeText(this, "Enter A Valid OTP", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -142,9 +140,13 @@ public class MainActivity extends AppCompatActivity {
     };
 
     void sendOtp(String phoneNumber) {
-        number = phoneNumber;
+        if (phoneNumber.length() > 10) {
+            number = phoneNumber;
+        } else {
+            number = "+91" + phoneNumber;
+        }
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phoneNumber,
+                number,
                 60,
                 TimeUnit.SECONDS,
                 this,
@@ -153,9 +155,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void sendOtpSu(String phoneNumber) {
-        number = "+91" + phoneNumber;
+        if (phoneNumber.length() > 10) {
+            number = phoneNumber;
+        } else {
+            number = "+91" + phoneNumber;
+        }
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                "+91" + phoneNumber,
+                number,
                 60,
                 TimeUnit.SECONDS,
                 this,
@@ -178,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
                             stuOrTea();
                         } else {
                             liPb.setVisibility(View.INVISIBLE);
+                            loadingPopup.dialogDismiss();
                         }
                     }
                 });
@@ -214,27 +221,22 @@ public class MainActivity extends AppCompatActivity {
         if (number == null) {
             return;
         }
-        db.collection("TEACHERS")
-                .document(number)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful() && task.getResult().exists()) {
-                            navigate("TEACHER");
-                        }
-                    }
-                });
         db.collection("STUDENTS")
                 .document(number)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful() && task.getResult().exists()) {
-                            navigate("STUDENT");
-                        }
-                    }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult().exists()) {
+                        navigate("STUDENT");
+                    } else
+                        db.collection("TEACHERS")
+                                .document(number)
+                                .get()
+                                .addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful() && task1.getResult().exists()) {
+                                        navigate("TEACHER");
+                                    }
+                                    loadingPopup.dialogDismiss();
+                                });
                 });
     }
 
@@ -257,19 +259,11 @@ public class MainActivity extends AppCompatActivity {
                 .setDisplayName(nameSu.getText().toString())
                 .build();
         user.updateProfile(profileUpdates)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        user.updateEmail(emailSu.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                loadingPopup.dialogDismiss();
-                                startActivity(new Intent(MainActivity.this, SignUpUserActivity.class));
-                                finish();
-                            }
-                        });
-                    }
-                });
+                .addOnCompleteListener(task -> user.updateEmail(emailSu.getText().toString()).addOnCompleteListener(task1 -> {
+                    loadingPopup.dialogDismiss();
+                    startActivity(new Intent(MainActivity.this, SignUpUserActivity.class));
+                    finish();
+                }));
     }
 
     boolean checkEnDat() {
@@ -334,25 +328,21 @@ public class MainActivity extends AppCompatActivity {
 
     void checkUserPresent(final String userId) {
         db.collection("STUDENTS").document(userId).get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful() && task.getResult().exists()) {
-                            sendOtp(userId);
-                        } else {
-                            db.collection("TEACHERS").document(userId).get()
-                                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            if (task.isSuccessful() && task.getResult().exists()) {
-                                                sendOtp(userId);
-                                            } else {
-                                                Toast.makeText(MainActivity.this, "User Don't Exists", Toast.LENGTH_SHORT).show();
-                                                liPb.setVisibility(View.INVISIBLE);
-                                            }
-                                        }
-                                    });
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && Objects.requireNonNull(task.getResult()).exists()) {
+                        sendOtp(userId);
+                    } else {
+                        db.collection("TEACHERS")
+                                .document(userId)
+                                .get()
+                                .addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful() && Objects.requireNonNull(task1.getResult()).exists()) {
+                                        sendOtp(userId);
+                                    } else {
+                                        Toast.makeText(MainActivity.this, "User Don't Exists", Toast.LENGTH_SHORT).show();
+                                        liPb.setVisibility(View.INVISIBLE);
+                                    }
+                                });
                     }
                 });
     }

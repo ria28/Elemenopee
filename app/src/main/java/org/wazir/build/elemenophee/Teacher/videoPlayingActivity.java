@@ -351,25 +351,31 @@ public class videoPlayingActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        //stop video when ready
-        simpleExoPlayer.setPlayWhenReady(false);
-        //get the PlayBack state
-        simpleExoPlayer.getPlaybackState();
+        if (simpleExoPlayer != null) {
+            //stop video when ready
+            simpleExoPlayer.setPlayWhenReady(false);
+            //get the PlayBack state
+            simpleExoPlayer.getPlaybackState();
+        }
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
         //play video when ready
-        simpleExoPlayer.setPlayWhenReady(true);
-        //get the PlayBack state
-        simpleExoPlayer.getPlaybackState();
+        if (simpleExoPlayer != null) {
+            simpleExoPlayer.setPlayWhenReady(true);
+            //get the PlayBack state
+            simpleExoPlayer.getPlaybackState();
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        simpleExoPlayer.release();
+        if (simpleExoPlayer != null) {
+            simpleExoPlayer.release();
+        }
     }
 
     void init() {

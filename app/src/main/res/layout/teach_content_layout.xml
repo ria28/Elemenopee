@@ -221,7 +221,8 @@
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:background="@drawable/custom_ripple_white">
 
                             <TextView
                                 android:id="@+id/textView8"
@@ -283,7 +284,8 @@
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/viewUploadCardTeacher"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:background="@drawable/custom_ripple_white">
 
                             <TextView
                                 android:id="@+id/textView9"
@@ -344,7 +346,8 @@
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/community_card"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:background="@drawable/custom_ripple_white">
 
                             <TextView
                                 android:layout_width="wrap_content"

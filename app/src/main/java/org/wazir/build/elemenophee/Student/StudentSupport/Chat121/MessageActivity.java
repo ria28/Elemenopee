@@ -139,12 +139,9 @@ public class MessageActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String message = text_send.getText().toString();
 
-//                if (!message.equals("")) {
+
                 sendMessage(fuser.getPhoneNumber(), userId, message, fuser.getDisplayName());
-//                }
-//                else
-//                    Toast.makeText(MessageActivity.this, "YOU CAN'T SEND EMPTY MESSAGE", Toast.LENGTH_SHORT).show();
-//                text_send.setText("");
+
 
             }
         });
