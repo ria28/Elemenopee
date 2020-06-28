@@ -107,11 +107,15 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s.toString().length() == 10) {
+            String tempNumber = s.toString();
+            if (tempNumber.length() > 10) {
+                if (tempNumber.substring(0, 3).equals("+91") && tempNumber.length() == 13) {
+                    checkUserPresent(s.toString());
+                    liPb.setVisibility(View.VISIBLE);
+                }
+            } else if (tempNumber.length() == 10 && !tempNumber.substring(0, 3).equals("+91")) {
                 checkUserPresent("+91" + s.toString());
                 liPb.setVisibility(View.VISIBLE);
-            } else {
-                // TODO: 6/10/2020 Do Nothing Here
             }
         }
 
@@ -128,12 +132,17 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (s.toString().length() == 10) {
-                sendOtpSu(s.toString());
+            String tempNumber = s.toString();
+            if (tempNumber.length() > 10) {
+                if (tempNumber.substring(0, 3).equals("+91") && tempNumber.length() == 13) {
+                    sendOtpSu(tempNumber);
+                    suPb.setVisibility(View.VISIBLE);
+                }
+            } else if (tempNumber.length() == 10 && !tempNumber.substring(0, 3).equals("+91")) {
+                sendOtpSu("+91" + tempNumber);
                 suPb.setVisibility(View.VISIBLE);
             }
         }
-
         @Override
         public void afterTextChanged(Editable editable) {
         }
@@ -280,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
         public void onVerificationCompleted(PhoneAuthCredential credential) {
             liPb.setVisibility(View.INVISIBLE);
             siWiOt(null, credential);
+            Toast.makeText(MainActivity.this, "Login Success ", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -304,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     verIcon.setProgress(animation.getAnimatedFraction());
+                    Toast.makeText(MainActivity.this, "User Verified", Toast.LENGTH_SHORT).show();
                 }
             });
             animator.start();
