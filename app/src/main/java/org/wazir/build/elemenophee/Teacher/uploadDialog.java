@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -86,7 +87,28 @@ class uploadDialog {
         selectClass.setAdapter(classAdapter);
         selectSubject.setAdapter(subjectAdapter);
 
-        getChapters(selectClass.getSelectedItem() + "", selectSubject.getSelectedItem() + "");
+        selectClass.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                getChapters(selectClass.getSelectedItem() + "", selectSubject.getSelectedItem() + "");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        selectSubject.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                getChapters(selectClass.getSelectedItem() + "", selectSubject.getSelectedItem() + "");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
 
         title.setText("Upload " + UploadType);
@@ -215,7 +237,6 @@ class uploadDialog {
             }
         });
     }
-
 
     public class showChapterAdpater extends RecyclerView.Adapter<uploadDialog.showChapterAdpater.ViewHolder> {
         ArrayList<addExistingModel> data;
