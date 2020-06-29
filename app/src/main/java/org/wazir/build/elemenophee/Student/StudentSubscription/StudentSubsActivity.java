@@ -145,7 +145,7 @@ public class StudentSubsActivity extends AppCompatActivity {
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         if (queryDocumentSnapshots.isEmpty()) {
-                            loadingPopup.dismiss();
+                            loadingPopup.dialogDismiss();
                             return;
                         }
                         for (DocumentSnapshot doc : queryDocumentSnapshots) {
@@ -161,9 +161,9 @@ public class StudentSubsActivity extends AppCompatActivity {
                             adapter = new StuTeacherAdapter(pagingOptions, StudentSubsActivity.this);
                             adapter.startListening();
                             recyclerView.setAdapter(adapter);
-
                         }
-                        loadingPopup.dismiss();
+                        loadingPopup.dialogDismiss();
+
                     }).addOnFailureListener(e -> {
                 Toast.makeText(StudentSubsActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 loadingPopup.dialogDismiss();
