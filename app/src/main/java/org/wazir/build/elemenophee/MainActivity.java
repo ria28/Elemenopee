@@ -323,7 +323,6 @@ public class MainActivity extends AppCompatActivity {
             animator.start();
             verIcon.setRepeatMode(LottieDrawable.RESTART);
             suPb.setVisibility(View.INVISIBLE);
-            loadingPopup.dialogDismiss();
             siWiOtSu(null, credential);
         }
 
