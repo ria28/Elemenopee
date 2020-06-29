@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,7 +15,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
@@ -26,20 +24,23 @@ import org.wazir.build.elemenophee.ModelObj.SubscribedTOmodel;
 import org.wazir.build.elemenophee.ModelObj.SubscribersModel;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 
 public class PaymentActivity extends AppCompatActivity implements PaymentResultListener {
 
-    CardView basic_pay,standard_pay,plus_pay;
+    CardView basic_pay, standard_pay, plus_pay;
     String tID;
     String basicAmount = "49";
     String standardAmount = "149";
     String plusAmount = "249";
+    String name = "Elemenophee", email, phone;
     TeacherObj obj;
 
     CollectionReference TeacherRef = FirebaseFirestore.getInstance().collection("TEACHERS");
     CollectionReference StudentRef = FirebaseFirestore.getInstance().collection("STUDENTS");
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
 
 
     @Override
@@ -52,20 +53,21 @@ public class PaymentActivity extends AppCompatActivity implements PaymentResultL
         plus_pay = findViewById(R.id.plus_pay);
 
         tID = getIntent().getStringExtra("TEACHER_ID");
-        TeacherRef
-                .document(tID)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                obj = documentSnapshot.toObject(TeacherObj.class);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(PaymentActivity.this,  e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+
+        if(tID == null){
+            tID = "null";
+        }
+
+        if (!tID.equals("null"))
+            TeacherRef
+                    .document(tID)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        obj = documentSnapshot.toObject(TeacherObj.class);
+                        name = obj.getName();
+                        email = obj.getEmail();
+                        phone = obj.getPhone();
+                    }).addOnFailureListener(e -> Toast.makeText(PaymentActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
 
 
         basic_pay.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +99,7 @@ public class PaymentActivity extends AppCompatActivity implements PaymentResultL
         final Checkout co = new Checkout();
         try {
             JSONObject options = new JSONObject();
-            options.put("name", obj.getName());
+            options.put("name", name);
             options.put("description", "App Payment");
             //You can omit the image option to fetch the image from dashboard
             options.put("image", "https://rzp-mobile.s3.amazonaws.com/images/rzp.png");
@@ -108,7 +110,8 @@ public class PaymentActivity extends AppCompatActivity implements PaymentResultL
             total = total * 100;
             options.put("amount", total);
             JSONObject preFill = new JSONObject();
-            preFill.put("contact", tID);
+            if (phone != null && !phone.isEmpty())
+                preFill.put("contact", phone);
             options.put("prefill", preFill);
             co.open(activity, options);
         } catch (Exception e) {
@@ -119,41 +122,66 @@ public class PaymentActivity extends AppCompatActivity implements PaymentResultL
 
     @Override
     public void onPaymentSuccess(String s) {
-        Toast.makeText(this, "Payment successfully done! " +s, Toast.LENGTH_SHORT).show();
 
-        TeacherRef.document(tID)
-                .collection("SUBSCRIBERS")
-                .document(user.getPhoneNumber())//TODO:place Student ID here
-                .set(new SubscribersModel(user.getPhoneNumber()))//TODO:add Student data acoordingly
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getApplicationContext(),"Subscription",Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
-        StudentRef.document(user.getPhoneNumber())
-                .collection("SUBSCRIBED_TO")
-                .document(tID)//TODO:place Teacher Id here
-                .set(new SubscribedTOmodel(tID))//TODO: add Teacher data Accordingly
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getApplicationContext(),"Done",Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        c.add(Calendar.DATE, 30);  // number of days to add
+        String end_date = df.format(c.getTime());
+        Log.d("TAG", "onPaymentSuccess: "+end_date);
+
+        if (!tID.equals("null")) {
+
+            TeacherRef.document(tID)
+                    .collection("SUBSCRIBERS")
+                    .document(user.getPhoneNumber())//TODO:place Student ID here
+                    .set(new SubscribersModel(user.getPhoneNumber(),end_date))//TODO:add Student data acoordingly
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getApplicationContext(), "Subscription", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
+            StudentRef.document(user.getPhoneNumber())
+                    .collection("SUBSCRIBED_TO")
+                    .document(tID)//TODO:place Teacher Id here
+                    .set(new SubscribedTOmodel(tID))//TODO: add Teacher data Accordingly
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getApplicationContext(), "Done", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
+        } else {
+            StudentRef.document(user.getPhoneNumber())
+                    .update("expiry", end_date)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(getApplicationContext(), "Done", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
+        }
+
     }
 
     @Override

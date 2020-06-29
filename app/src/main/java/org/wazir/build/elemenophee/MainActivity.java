@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
                                     if (task1.isSuccessful() && task1.getResult().exists()) {
                                         navigate("TEACHER");
                                     }
-                                    loadingPopup.dialogDismiss();
+//                                    loadingPopup.dialogDismiss();
                                 });
                 });
     }
@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
         public void onVerificationCompleted(PhoneAuthCredential credential) {
             liPb.setVisibility(View.INVISIBLE);
             siWiOt(null, credential);
-            loadingPopup.dialogDismiss();
+//            loadingPopup.dialogDismiss();
             Toast.makeText(MainActivity.this, "Login Success ", Toast.LENGTH_SHORT).show();
         }
 

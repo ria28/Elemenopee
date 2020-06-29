@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,8 +44,11 @@ import org.wazir.build.elemenophee.Student.StuProfile.EditStuProfileActivity;
 import org.wazir.build.elemenophee.Student.StudentSubscription.StudentSubsActivity;
 import org.wazir.build.elemenophee.Student.StudentSupport.ChatActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -70,7 +72,7 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     RecyclerView first_rv;
     RecyclerView second_rv;
     RecyclerView.Adapter adapter1;
-    RecyclerView.Adapter adapter2;
+    ChapterAdapter adapter2;
 
     CollectionReference reference;
     FirebaseAuth mAuth;
@@ -169,10 +171,22 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
                                             .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                         @Override
                                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                            if (queryDocumentSnapshots.size() == 1) {
+                                            DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
+                                            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+                                            String expiryDate = doc.get("expiry").toString();
+
+                                            Date date = null;
+                                            try {
+                                                date = df.parse(expiryDate);
+                                            } catch (ParseException e) {
+                                                e.printStackTrace();
+                                            }
+                                            Date today = new Date();
+                                            if (today.after(date)) {
                                                 chapList.add(new Chapters(doc.get("CHAPTER").toString(), doc.get("TEACHER_ID").toString(), SubName, viewClass.getSelectedItem().toString(), true));
-                                            } else
+                                            } else {
                                                 chapList.add(new Chapters(doc.get("CHAPTER").toString(), doc.get("TEACHER_ID").toString(), SubName, viewClass.getSelectedItem().toString(), false));
+                                            }
                                             adapter2.notifyDataSetChanged();
                                         }
                                     }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
