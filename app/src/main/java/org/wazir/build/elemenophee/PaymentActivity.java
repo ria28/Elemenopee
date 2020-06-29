@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,9 +29,11 @@ import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 
 public class PaymentActivity extends AppCompatActivity implements PaymentResultListener {
 
-    Button payBtn;
+    CardView basic_pay,standard_pay,plus_pay;
     String tID;
-
+    String basicAmount = "49";
+    String standardAmount = "149";
+    String plusAmount = "249";
     TeacherObj obj;
 
     CollectionReference TeacherRef = FirebaseFirestore.getInstance().collection("TEACHERS");
@@ -43,6 +46,10 @@ public class PaymentActivity extends AppCompatActivity implements PaymentResultL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
+
+        basic_pay = findViewById(R.id.basic_pay);
+        standard_pay = findViewById(R.id.standard_pay);
+        plus_pay = findViewById(R.id.plus_pay);
 
         tID = getIntent().getStringExtra("TEACHER_ID");
         TeacherRef
@@ -60,18 +67,29 @@ public class PaymentActivity extends AppCompatActivity implements PaymentResultL
             }
         });
 
-        payBtn = findViewById(R.id.PayBtnPaymentScreen);
 
-        payBtn.setOnClickListener(new View.OnClickListener() {
+        basic_pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startPayment();
+                startPayment(basicAmount);
+            }
+        });
+        standard_pay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startPayment(standardAmount);
+            }
+        });
+        plus_pay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startPayment(plusAmount);
             }
         });
     }
 
 
-    public void startPayment() {
+    public void startPayment(String payment) {
         /**
          * You need to pass current activity in order to let Razorpay create CheckoutActivity
          */
@@ -84,7 +102,6 @@ public class PaymentActivity extends AppCompatActivity implements PaymentResultL
             //You can omit the image option to fetch the image from dashboard
             options.put("image", "https://rzp-mobile.s3.amazonaws.com/images/rzp.png");
             options.put("currency", "INR");
-            String payment = "100";
             // amount is in paise so please multiple it by 100
             //Payment failed Invalid amount (should be passed in integer paise. Minimum value is 100 paise, i.e. ₹ 1)
             double total = Double.parseDouble(payment);

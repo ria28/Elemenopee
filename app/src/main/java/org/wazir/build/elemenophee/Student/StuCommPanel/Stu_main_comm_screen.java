@@ -3,6 +3,7 @@ package org.wazir.build.elemenophee.Student.StuCommPanel;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
@@ -157,39 +158,31 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
                     .document(SubName).collection("CONTENT");
 
             reference.get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                chapList.clear();
-                                if (!task.getResult().isEmpty()) {
-                                    for (final QueryDocumentSnapshot doc : task.getResult()) {
-                                        isSubs.document(doc.get("TEACHER_ID").toString())
-                                                .collection("SUBSCRIBERS")
-                                                .whereEqualTo("studentId", user.getPhoneNumber())
-                                                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                                if (queryDocumentSnapshots.size() == 1) {
-                                                    chapList.add(new Chapters(doc.get("CHAPTER").toString(), doc.get("TEACHER_ID").toString(), SubName, viewClass.getSelectedItem().toString(), true));
-                                                } else
-                                                    chapList.add(new Chapters(doc.get("CHAPTER").toString(), doc.get("TEACHER_ID").toString(), SubName, viewClass.getSelectedItem().toString(), false));
-                                                adapter2.notifyDataSetChanged();
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    }
-                                } else {
-                                    chapList.add(new Chapters("No Chapters", SubName));
-                                    adapter2.notifyDataSetChanged();
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            chapList.clear();
+                            if (!task.getResult().isEmpty()) {
+                                for (final QueryDocumentSnapshot doc : task.getResult()) {
+                                    isSubs.document(doc.get("TEACHER_ID").toString())
+                                            .collection("SUBSCRIBERS")
+                                            .whereEqualTo("studentID", user.getPhoneNumber())
+                                            .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            if (queryDocumentSnapshots.size() == 1) {
+                                                chapList.add(new Chapters(doc.get("CHAPTER").toString(), doc.get("TEACHER_ID").toString(), SubName, viewClass.getSelectedItem().toString(), true));
+                                            } else
+                                                chapList.add(new Chapters(doc.get("CHAPTER").toString(), doc.get("TEACHER_ID").toString(), SubName, viewClass.getSelectedItem().toString(), false));
+                                            adapter2.notifyDataSetChanged();
+                                        }
+                                    }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
                                 }
-                            } else
-                                Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
+                            } else {
+                                chapList.add(new Chapters("No Chapters", SubName));
+                                adapter2.notifyDataSetChanged();
+                            }
+                        } else
+                            Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     });
 
         } else
@@ -217,12 +210,7 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         second_rv = findViewById(R.id.second_recycler_view);
         viewClass = findViewById(R.id.viewClassSpinner);
         db = FirebaseFirestore.getInstance();
-        name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Stu_main_comm_screen.this, EditStuProfileActivity.class));
-            }
-        });
+        name.setOnClickListener(v -> startActivity(new Intent(Stu_main_comm_screen.this, EditStuProfileActivity.class)));
     }
 
     private void onClickEvents() {
@@ -263,7 +251,6 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
                             for (int i : obj.getClasses()) {
                                 classes.add("Class " + i);
                             }
-
                             spinnerSetup(classes);
                         }
                     }
@@ -294,11 +281,13 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
             public void onItemSelected(NiceSpinner parent, View view, int position, long id) {
                 list1 = getIconsForClass(parent.getItemAtPosition(position).toString());
                 adapter1 = new SubjectAdapter(Stu_main_comm_screen.this, list1, Stu_main_comm_screen.this);
+                Log.d("TAG", "onItemSelected: "+adapter2);
                 setUpRecyclerView();
             }
         });
         adapter1 = new SubjectAdapter(this, list1, this);
         adapter2 = new ChapterAdapter(this, chapList);
+        adapter2.notifyDataSetChanged();
 
     }
 }

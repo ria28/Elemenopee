@@ -2,6 +2,7 @@ package org.wazir.build.elemenophee.Student.StuCommPanel.StuCommAdapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,69 +80,69 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHo
                         .whereEqualTo("TEACHER_ID", data.get(position).gettID())
                         .whereEqualTo("CHAPTER", data.get(position).getTitle())
                         .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    videoList.clear();
-                                    pdfList.clear();
-                                    otherList.clear();
-                                    if (!task.getResult().isEmpty()) {
-                                        for (QueryDocumentSnapshot doc : task.getResult()) {
-                                            if (doc.get("VIDEOS") != null) {
-                                                for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("VIDEOS")) {
-                                                    if (obj.get("privacy").toString().equalsIgnoreCase("private")) {
-                                                        if (data.get(position).getIsSubscriber())
-                                                            videoList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                                    , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + ""));
-                                                    } else
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                videoList.clear();
+                                pdfList.clear();
+                                otherList.clear();
+                                if (!task.getResult().isEmpty()) {
+                                    Log.d("TAG", "onComplete: got here");
+                                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                                        if (doc.get("VIDEOS") != null) {
+                                            for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("VIDEOS")) {
+                                                if (obj.get("privacy").toString().equalsIgnoreCase("private")) {
+                                                    if (data.get(position).getIsSubscriber())
                                                         videoList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
                                                                 , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + ""));
+                                                } else{
+                                                    videoList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
+                                                            , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "",
+                                                            obj.get("teacherID") + "", obj.get("mime") + ""));
                                                 }
                                             }
                                         }
-                                        for (QueryDocumentSnapshot doc : task.getResult()) {
-                                            if (doc.get("NOTES") != null) {
-                                                for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("NOTES")) {
-                                                    if (obj.get("privacy").toString().equalsIgnoreCase("private")) {
-                                                        if (data.get(position).getIsSubscriber())
-                                                            pdfList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                                    , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + ""));
-                                                    } else
+                                    }
+                                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                                        if (doc.get("NOTES") != null) {
+                                            for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("NOTES")) {
+                                                if (obj.get("privacy").toString().equalsIgnoreCase("private")) {
+                                                    if (data.get(position).getIsSubscriber())
                                                         pdfList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
                                                                 , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + ""));
-                                                }
+                                                } else
+                                                    pdfList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
+                                                            , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + ""));
                                             }
                                         }
-                                        for (QueryDocumentSnapshot doc : task.getResult()) {
-                                            if (doc.get("OTHER") != null) {
-                                                for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("OTHERS")) {
-                                                    if (obj.get("privacy").toString().equalsIgnoreCase("private")) {
-                                                        if (data.get(position).getIsSubscriber())
-                                                            otherList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                                    , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + ""));
-                                                    } else
+                                    }
+                                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                                        if (doc.get("OTHER") != null) {
+                                            for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("OTHERS")) {
+                                                if (obj.get("privacy").toString().equalsIgnoreCase("private")) {
+                                                    if (data.get(position).getIsSubscriber())
                                                         otherList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
                                                                 , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + ""));
-                                                }
+                                                } else
+                                                    otherList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
+                                                            , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + ""));
                                             }
                                         }
-
-                                        Intent intent = new Intent(mContext, videoPlayingActivity.class);
-                                        if (videoList.size() > 0)
-                                            intent.putExtra("VIDEO_LINK", videoList.get(position).getFileUrl());
-                                        intent.putExtra("VIDEO_LIST", videoList);
-                                        intent.putExtra("OTHER_LIST", otherList);
-                                        intent.putExtra("PDF_LIST", pdfList);
-                                        mContext.startActivity(intent);
-
-                                    } else {
-                                        Toast.makeText(mContext, "No Data found Related to this Chapter", Toast.LENGTH_SHORT).show();
                                     }
 
-                                } else
-                                    Toast.makeText(mContext, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            }
+                                    Intent intent = new Intent(mContext, videoPlayingActivity.class);
+                                    if (videoList.size() > 0)
+                                        intent.putExtra("VIDEO_LINK", videoList.get(position).getFileUrl());
+                                    intent.putExtra("VIDEO_LIST", videoList);
+                                    intent.putExtra("OTHER_LIST", otherList);
+                                    intent.putExtra("PDF_LIST", pdfList);
+                                    mContext.startActivity(intent);
+
+                                } else {
+                                    Toast.makeText(mContext, "No Data found Related to this Chapter", Toast.LENGTH_SHORT).show();
+                                }
+
+                            } else
+                                Toast.makeText(mContext, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         });
             }
         });

@@ -32,20 +32,16 @@ public class StuTeacherAdapter extends FirestorePagingAdapter<TeacherObj, StuTea
 
     @Override
     protected void onBindViewHolder(@NonNull MyViewHolder holder, int position, @NonNull final TeacherObj model) {
-
         holder.name.setText(model.getName());
         holder.description.setText(model.getExperience());
         if (model.getProPicURL() != null && !model.getProPicURL().isEmpty())
             Glide.with(context).load(model.getProPicURL()).into(holder.profileImage);
         else
             Glide.with(context).load(context.getDrawable(R.drawable.profile_dummy)).into(holder.profileImage);
-        holder.view_Profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ViewTeacherProfile.class);
-                intent.putExtra("TEACHER_ID", model.getPhone());
-                context.startActivity(intent);
-            }
+        holder.view_Profile.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ViewTeacherProfile.class);
+            intent.putExtra("TEACHER_ID", model.getPhone());
+            context.startActivity(intent);
         });
     }
 
