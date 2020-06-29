@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="7dp"
     app:cardElevation="5dp">
 
@@ -11,7 +12,8 @@
         android:id="@+id/single_Teacher_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="4dp">
+        android:layout_margin="4dp"
+        android:background="@drawable/custom_ripple">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/teacherPic"
@@ -40,7 +42,7 @@
             android:fontFamily="@font/nunito"
             android:hint="Teacher"
             android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
@@ -49,8 +51,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/teacher_name"
             android:layout_alignStart="@+id/teacher_name"
+            android:layout_alignBottom="@+id/teacherPic"
             android:text="Description"
-            android:textSize="15sp" />
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/viewProfileText"
@@ -62,6 +65,6 @@
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
             android:text="View Profile"
-            android:textColor="#FF7D43" />
+            android:textColor="@color/black" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

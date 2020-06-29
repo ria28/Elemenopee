@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -43,9 +44,7 @@ public class EditStuProfileActivity extends AppCompatActivity {
     private EditText editTextBio;
     private EditText editTextTarget;
     private TextView others;
-    private ImageView cam;
     CircleImageView profileImage;
-    private Button save;
 
     Boolean clicked = false;
 
@@ -61,7 +60,6 @@ public class EditStuProfileActivity extends AppCompatActivity {
     private Uri mImageUri;
     private static final int PICK_IMAGE_REQUEST = 1;
     private StorageReference mStorageRef;
-    private StorageTask mUploadTask;
     StorageReference fileReference;
     String imageUrl;
     LoadingPopup loader;
@@ -76,8 +74,8 @@ public class EditStuProfileActivity extends AppCompatActivity {
         editTextBio = findViewById(R.id.bio_edit);
         editTextTarget = findViewById(R.id.target_edit);
         others = findViewById(R.id.others_edit);
-        save = findViewById(R.id.save_edit);
-        cam = findViewById(R.id.camera);
+        CardView save = findViewById(R.id.save_edit);
+        ImageView cam = findViewById(R.id.camera);
         profileImage = findViewById(R.id.profile_image);
         mAuth = FirebaseAuth.getInstance();
         loader = new LoadingPopup(this);
@@ -149,7 +147,7 @@ public class EditStuProfileActivity extends AppCompatActivity {
         if (mImageUri != null) {
             fileReference = mStorageRef.child(number + ".png");
 
-            mUploadTask = fileReference.putFile(mImageUri)
+            StorageTask mUploadTask = fileReference.putFile(mImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {

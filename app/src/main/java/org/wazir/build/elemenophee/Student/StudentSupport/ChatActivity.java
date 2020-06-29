@@ -33,22 +33,33 @@ import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
 
+    // basics
+    List<User> mUsers = new ArrayList<>();
+    ArrayList<String> doc_id;
+    String number;
 
+    // Android Views
     RecyclerView recyclerView;
     UserAdapter userAdapter;
-    List<User> mUsers = new ArrayList<>();
+    ChipNavigationBar navigationBar;
+
+    // Firebase Stuff
     FirebaseUser fuser;
     FirebaseFirestore db;
     CollectionReference reference;
-    ArrayList<String> doc_id;
 
-    FirebaseAuth mAuth;
-    ChipNavigationBar navigationBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        initUi();
+        checkStuTea(number);
+        setUpRcView();
+        initActiUi();
+    }
+
+    private void initUi() {
         doc_id = new ArrayList<>();
         userAdapter = new UserAdapter(this, mUsers);
         recyclerView = findViewById(R.id.chats_list_rv_);
@@ -59,18 +70,14 @@ public class ChatActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         reference = db.collection("ChatRoom");
-        mAuth = FirebaseAuth.getInstance();
-        String number = mAuth.getCurrentUser().getPhoneNumber();
+        if (fuser != null) {
+            number = fuser.getPhoneNumber();
+        }
         doc_id = new ArrayList<>();
-
-        checkStuTea(number);
-        setUpRcView();
-        initActiUi();
     }
 
     private void checkStuTea(final String number) {
-
-        if (mAuth.getCurrentUser() != null) {
+        if (fuser != null) {
             db.collection("STUDENTS").document(number).get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override

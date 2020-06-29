@@ -289,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
         public void onVerificationCompleted(PhoneAuthCredential credential) {
             liPb.setVisibility(View.INVISIBLE);
             siWiOt(null, credential);
+            loadingPopup.dialogDismiss();
             Toast.makeText(MainActivity.this, "Login Success ", Toast.LENGTH_SHORT).show();
         }
 
@@ -320,6 +321,7 @@ public class MainActivity extends AppCompatActivity {
             animator.start();
             verIcon.setRepeatMode(LottieDrawable.RESTART);
             suPb.setVisibility(View.INVISIBLE);
+            loadingPopup.dialogDismiss();
             siWiOtSu(null, credential);
         }
 
