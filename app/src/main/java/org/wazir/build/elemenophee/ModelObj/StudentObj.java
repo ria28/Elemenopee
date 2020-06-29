@@ -3,7 +3,7 @@ package org.wazir.build.elemenophee.ModelObj;
 import java.util.ArrayList;
 
 public class StudentObj {
-    String school, bio, target, contact, name;
+    String school, bio, target, contact, name, sMail;
     ArrayList<Integer> classes;
     ArrayList<String> contacts;
     private String mImageUrl;
@@ -11,6 +11,13 @@ public class StudentObj {
     public StudentObj() {
     }
 
+    public String getsMail() {
+        return sMail;
+    }
+
+    public void setsMail(String sMail) {
+        this.sMail = sMail;
+    }
 
     public ArrayList<String> getContacts() {
         return contacts;

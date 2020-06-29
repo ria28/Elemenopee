@@ -155,7 +155,7 @@ public class videoPlayingActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Glide.with(videoPlayingActivity.this)
+                        Glide.with(getApplicationContext())
                                 .load(documentSnapshot.get("proPicURL"))
                                 .into(proPic);
                         TeacherName.setText(documentSnapshot.get("name") + "");

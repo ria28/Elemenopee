@@ -3,7 +3,7 @@ package org.wazir.build.elemenophee.ModelObj;
 import java.util.ArrayList;
 
 public class TeacherObj {
-    String school, bio, experience, name,phone;
+    String school, bio, experience, name, phone, email;
     ArrayList<String> subs;
     ArrayList<Integer> classes;
     String proPicURL;
@@ -12,6 +12,13 @@ public class TeacherObj {
     public TeacherObj() {
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public int getVideoCount() {
         return videoCount;

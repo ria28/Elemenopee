@@ -31,12 +31,11 @@
         <activity android:name=".PaymentActivity" />
         <activity android:name=".Teacher.TeacherProfile" />
         <activity android:name=".Student.StudentProfile.StudentProfileActivity" />
-        <activity android:name=".Student.Community.MainCommScreen" />
         <activity android:name=".Student.Lecture.Subject.ViewVideoListActivity" />
-        <activity android:name=".ViewTeacherProfile" />
+        <activity android:name=".ViewTeacherProfile"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Student.Lecture.Subject.ViewVideosChapActivity" />
         <activity android:name=".Student.StudentSupport.MainChatPanel.ChatMainActivity" />
-        <activity android:name=".Student.Community.ViewNotesActivity" />
         <activity
             android:name=".Student.StudentSupport.Chat121.MessageActivity"
             android:windowSoftInputMode="adjustPan" />

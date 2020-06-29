@@ -17,7 +17,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import org.wazir.build.elemenophee.IntLogSigScreens.OnboardingActivity;
 import org.wazir.build.elemenophee.ModelObj.StudentObj;
 import org.wazir.build.elemenophee.ModelObj.TeacherObj;
-import org.wazir.build.elemenophee.Student.Community.MainCommScreen;
 import org.wazir.build.elemenophee.Student.StuCommPanel.Stu_main_comm_screen;
 import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 

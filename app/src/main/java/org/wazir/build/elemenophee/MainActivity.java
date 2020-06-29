@@ -270,7 +270,9 @@ public class MainActivity extends AppCompatActivity {
         user.updateProfile(profileUpdates)
                 .addOnCompleteListener(task -> user.updateEmail(emailSu.getText().toString()).addOnCompleteListener(task1 -> {
                     loadingPopup.dialogDismiss();
-                    startActivity(new Intent(MainActivity.this, SignUpUserActivity.class));
+                    Intent intent = new Intent(MainActivity.this, SignUpUserActivity.class);
+                    intent.putExtra("MAIL", emailSu.getText().toString());
+                    startActivity(intent);
                     finish();
                 }));
     }

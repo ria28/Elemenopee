@@ -87,11 +87,12 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
     }
 
     void signUpTeacher() {
-        String ts, tb, te, tn;
+        String ts, tb, te, tn, tMail;
         ts = teachSchool.getEditText().getText().toString();
         tb = teachBio.getEditText().getText().toString();
         te = teachExperience.getEditText().getText().toString();
         tn = teachName.getEditText().getText().toString();
+        tMail = getIntent().getStringExtra("MAIL");
 
         if (ts.equals("") || tb.equals("") || te.equals("") || tn.equals("")){
             Toast.makeText(this, "Some Fields are missing", Toast.LENGTH_SHORT).show();
@@ -118,6 +119,7 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
         teacherObj.setClasses(classes_string);
         teacherObj.setPhone(phoneNumber);
         teacherObj.setSubs(subject_string);
+        teacherObj.setEmail(tMail);
 
         db.collection("TEACHERS")
                 .document(phoneNumber)
@@ -160,6 +162,7 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
         obj.setTarget(se);
         obj.setContact(phoneNumber);
         obj.setName(sn);
+        obj.setsMail(getIntent().getStringExtra("MAIL"));
 
         db.collection("STUDENTS").document(phoneNumber).set(obj)
                 .addOnCompleteListener(task -> {
