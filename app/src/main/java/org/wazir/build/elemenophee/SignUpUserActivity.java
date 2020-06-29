@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -27,7 +28,10 @@ import org.wazir.build.elemenophee.ModelObj.TempObj;
 import org.wazir.build.elemenophee.Student.StuCommPanel.Stu_main_comm_screen;
 import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHandler {
     ArrayList<ChooseMoObj> classes;
@@ -155,6 +159,12 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
             classes_string.add(obj.getClas());
         }
 
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        c.add(Calendar.DATE, 15);  // number of days to add
+        String end_date = df.format(c.getTime());
+
         StudentObj obj = new StudentObj();
         obj.setBio(sb);
         obj.setClasses(classes_string);
@@ -163,6 +173,7 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
         obj.setContact(phoneNumber);
         obj.setName(sn);
         obj.setsMail(getIntent().getStringExtra("MAIL"));
+        obj.setExpiry(end_date);
 
         db.collection("STUDENTS").document(phoneNumber).set(obj)
                 .addOnCompleteListener(task -> {

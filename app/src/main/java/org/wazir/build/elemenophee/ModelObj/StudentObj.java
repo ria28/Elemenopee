@@ -2,8 +2,10 @@ package org.wazir.build.elemenophee.ModelObj;
 
 import java.util.ArrayList;
 
+
 public class StudentObj {
     String school, bio, target, contact, name, sMail;
+    String expiry;
     ArrayList<Integer> classes;
     ArrayList<String> contacts;
     private String mImageUrl;
@@ -27,16 +29,13 @@ public class StudentObj {
         this.contacts = contacts;
     }
 
-    public StudentObj(String school, String bio, String target, String contact, String name, ArrayList<Integer> classes) {
-        this.school = school;
-        this.bio = bio;
-        this.target = target;
-        this.contact = contact;
-        this.name = name;
-        this.classes = classes;
+    public String getExpiry() {
+        return expiry;
     }
 
-
+    public void setExpiry(String expiry) {
+        this.expiry = expiry;
+    }
 
     public StudentObj(String mImageUrl){
         this.mImageUrl=mImageUrl;

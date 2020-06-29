@@ -3,6 +3,7 @@ package org.wazir.build.elemenophee;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,10 @@ import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.Student.StuCommPanel.Stu_main_comm_screen;
 import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class SplashScreen extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseFirestore db;
@@ -36,35 +41,43 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        for (int i = 0; i < 1; i++) {
-            System.out.println(i);
-        }
         if (mAuth.getCurrentUser() != null) {
             String number = mAuth.getCurrentUser().getPhoneNumber();
             db.collection("STUDENTS").document(number).get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful() && task.getResult().exists()) {
-                                StudentObj obj = task.getResult().toObject(StudentObj.class);
-                                Intent intent = new Intent(SplashScreen.this, Stu_main_comm_screen.class);
-                                intent.putExtra("STUDENT_CLASSES", obj.getClasses());
-                                startActivity(intent);
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult().exists()) {
+                            StudentObj obj = task.getResult().toObject(StudentObj.class);
+                            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+                            String expiryDate = obj.getExpiry();
+
+                            Date date = null;
+                            try {
+                                date = df.parse(expiryDate);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            Date today = new Date();
+                            if(today.after(date)){
+                                Log.d("TAG", "onStart: "+ today + date);
+                                startActivity(new Intent(SplashScreen.this,PaymentActivity.class));
                                 finish();
+                            }
+                            else{
+                            Intent intent = new Intent(SplashScreen.this, Stu_main_comm_screen.class);
+                            intent.putExtra("STUDENT_CLASSES", obj.getClasses());
+                            startActivity(intent);
+                            finish();
                             }
                         }
                     });
             db.collection("TEACHERS").document(number).get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful() && task.getResult().exists()) {
-                                TeacherObj obj = task.getResult().toObject(TeacherObj.class);
-                                Intent intent = new Intent(SplashScreen.this, mainDashBoardTeacher.class);
-                                intent.putExtra("TEACHER_CLASSES", obj.getClasses());
-                                startActivity(intent);
-                                finish();
-                            }
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult().exists()) {
+                            TeacherObj obj = task.getResult().toObject(TeacherObj.class);
+                            Intent intent = new Intent(SplashScreen.this, mainDashBoardTeacher.class);
+                            intent.putExtra("TEACHER_CLASSES", obj.getClasses());
+                            startActivity(intent);
+                            finish();
                         }
                     });
         } else {
