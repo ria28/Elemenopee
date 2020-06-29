@@ -153,6 +153,7 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     @Override
     public void onSubjClick(int position) {
         final String SubName = list1.get(position).getSubName();
+
         if(SubName!=null) {
             reference = FirebaseFirestore.getInstance().collection("CLASSES")
                     .document(viewClass.getSelectedItem().toString())
@@ -171,21 +172,24 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
                                             .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                         @Override
                                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                            DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
-                                            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-                                            String expiryDate = doc.get("expiry").toString();
+                                            if (queryDocumentSnapshots.size() != 0) {
+                                                Log.d("TAG", "onSuccess: "+queryDocumentSnapshots.getDocuments().get(0).get("expiry"));
+                                                DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
+                                                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+                                                String expiryDate = doc.get("expiry").toString();
 
-                                            Date date = null;
-                                            try {
-                                                date = df.parse(expiryDate);
-                                            } catch (ParseException e) {
-                                                e.printStackTrace();
-                                            }
-                                            Date today = new Date();
-                                            if (today.after(date)) {
-                                                chapList.add(new Chapters(doc.get("CHAPTER").toString(), doc.get("TEACHER_ID").toString(), SubName, viewClass.getSelectedItem().toString(), true));
-                                            } else {
-                                                chapList.add(new Chapters(doc.get("CHAPTER").toString(), doc.get("TEACHER_ID").toString(), SubName, viewClass.getSelectedItem().toString(), false));
+                                                Date date = null;
+                                                try {
+                                                    date = df.parse(expiryDate);
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                Date today = new Date();
+                                                if (today.after(date)) {
+                                                    chapList.add(new Chapters(doc.get("CHAPTER").toString(), doc.get("TEACHER_ID").toString(), SubName, viewClass.getSelectedItem().toString(), true));
+                                                } else {
+                                                    chapList.add(new Chapters(doc.get("CHAPTER").toString(), doc.get("TEACHER_ID").toString(), SubName, viewClass.getSelectedItem().toString(), false));
+                                                }
                                             }
                                             adapter2.notifyDataSetChanged();
                                         }
