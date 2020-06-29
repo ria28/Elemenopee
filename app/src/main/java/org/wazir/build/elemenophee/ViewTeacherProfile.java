@@ -48,6 +48,7 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
     TeacherObj teacherObj;
     LoadingPopup loadingPopup;
     ImageView message;
+    TextView bio;
 
     Spinner FileType;
 
@@ -69,13 +70,9 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_teacher_profile);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-
-
         message = findViewById(R.id.message_imageView);
-
-
+        bio = findViewById(R.id.textView58);
         teacher_ID = getIntent().getStringExtra("TEACHER_ID");
-
         reference = FirebaseFirestore.getInstance().collection(
                 "/TEACHERS/" +
                         teacher_ID +
@@ -178,6 +175,7 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
                     videoCount.setText(String.valueOf(teacherObj.getVideoCount()));
                     teacherName.setText(teacherObj.getName());
                     schoolName.setText(teacherObj.getSchool());
+                    bio.setText(teacherObj.getBio());
                     Glide.with(ViewTeacherProfile.this).load(teacherObj.getProPicURL()).into(profilePic);
                     SubsRef.whereEqualTo("studentID" +
                             "", user.getPhoneNumber())
