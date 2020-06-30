@@ -4,7 +4,7 @@ public class Chapters {
 
     private String title;
     private String tID;
-    private  String SubName;
+    private String SubName;
     private String Classs;
     private boolean isSubscriber;
 

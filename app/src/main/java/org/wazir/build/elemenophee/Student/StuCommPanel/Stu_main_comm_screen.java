@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +63,7 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     ArrayList<SubComm> list1 = new ArrayList<>();
     ArrayList<Chapters> chapList = new ArrayList<>();
     ArrayAdapter<String> classSpinnerViewAdapter;
+    ProgressBar chapPb;
 
 
     NiceSpinner viewClass;
@@ -89,6 +92,8 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
     // activity Specific
     ChipNavigationBar navigationBar;
 
+    SearchView chapSearch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,8 +105,41 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         getProfilePic();
         onClickEvents();
         getClasses();
-
         setUpRecyclerView();
+        context = this;
+        chapSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                ArrayList<Chapters> tempArray = new ArrayList<>();
+                for (Chapters chapters : chapList) {
+                    if (chapters.getTitle().contains(query)) {
+                        tempArray.add(chapters);
+                    }
+                }
+                if (query.equals("")) {
+                    adapter2.setData(chapList);
+                } else {
+                    adapter2.setData(tempArray);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                ArrayList<Chapters> tempArray = new ArrayList<>();
+                for (Chapters chapters : chapList) {
+                    if (chapters.getTitle().contains(newText)) {
+                        tempArray.add(chapters);
+                    }
+                }
+                if (newText.equals("")) {
+                    adapter2.setData(chapList);
+                } else {
+                    adapter2.setData(tempArray);
+                }
+                return true;
+            }
+        });
     }
 
     private void initActiUi() {
@@ -143,6 +181,7 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
 
     @Override
     public void onSubjClick(int position) {
+        chapPb.setVisibility(View.VISIBLE);
         final String SubName = list1.get(position).getSubName();
         String selectedClass = viewClass.getSelectedItem().toString();
 
@@ -187,6 +226,7 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
                                                     } else {
                                                         chapList.add(new Chapters(chap, teachId, SubName, selectedClass, false));
                                                     }
+                                                    chapPb.setVisibility(View.INVISIBLE);
                                                 }
                                             adapter2.notifyDataSetChanged();
                                         }
@@ -223,6 +263,8 @@ public class Stu_main_comm_screen extends AppCompatActivity implements SubjectAd
         second_rv = findViewById(R.id.second_recycler_view);
         viewClass = findViewById(R.id.viewClassSpinner);
         db = FirebaseFirestore.getInstance();
+        chapSearch = findViewById(R.id.searchView);
+        chapPb = findViewById(R.id.progressBar7);
         name.setOnClickListener(v -> startActivity(new Intent(Stu_main_comm_screen.this, EditStuProfileActivity.class)));
     }
 

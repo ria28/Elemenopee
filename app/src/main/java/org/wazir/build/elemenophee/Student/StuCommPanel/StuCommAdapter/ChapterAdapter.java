@@ -14,13 +14,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Student.StuCommPanel.ComObject.Chapters;
@@ -49,8 +46,12 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHo
     public ChapterAdapter(Context mContext, ArrayList<Chapters> data) {
         this.mContext = mContext;
         this.data = data;
-        dataListFull=new ArrayList<>(data);
+        dataListFull = new ArrayList<>(data);
+    }
 
+    public void setData(ArrayList<Chapters> data) {
+        this.data = data;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -170,11 +171,10 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHo
                 for (Chapters item : dataListFull) {
                     if (item.getTitle().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
-                    }else {
-                        Toast.makeText(mContext,"NO such chapter",Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(mContext, "NO such chapter", Toast.LENGTH_SHORT).show();
                     }
                 }
-
             }
             FilterResults results = new FilterResults();
             results.values = filteredList;
@@ -189,13 +189,11 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHo
     };
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView title, description;
+        TextView title;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title_comm);
-            description = itemView.findViewById(R.id.description_comm);
-
         }
     }
 }
