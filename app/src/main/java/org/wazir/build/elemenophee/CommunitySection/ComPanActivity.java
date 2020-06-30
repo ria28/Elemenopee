@@ -46,16 +46,21 @@ import java.util.ArrayList;
 
 
 public class ComPanActivity extends AppCompatActivity implements QuesInteract {
-    Spinner claSpiMain, subSpiMain;
+    //JAVA objs
     String claSpiMainStr, subSpiMainStr;
-    CardView raiseQuestionCard;
     LoadingPopup loading;
-    RecyclerView commRcView;
-    FirebaseFirestore db;
     ArrayList<QuesDispObj> questions;
+
+    // Android widgets
+    Spinner claSpiMain, subSpiMain;
+    CardView raiseQuestionCard;
+    RecyclerView commRcView;
     Context context;
-    FirebaseAuth mAuth;
     ChipNavigationBar navigationBar;
+
+    // Firebase Stuff
+    FirebaseFirestore db;
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,29 +130,26 @@ public class ComPanActivity extends AppCompatActivity implements QuesInteract {
         CollectionReference reference = db.collection("QUESTIONS").document(cla).collection(sub);
         reference
                 .orderBy("likes", Query.Direction.DESCENDING)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                        if (queryDocumentSnapshots != null) {
-                            questions.clear();
-                            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
-                                QuestionObj obj = snapshot.toObject(QuestionObj.class);
-                                QuesDispObj obj1 = new QuesDispObj();
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                    if (queryDocumentSnapshots != null) {
+                        questions.clear();
+                        for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                            QuestionObj obj = snapshot.toObject(QuestionObj.class);
+                            QuesDispObj obj1 = new QuesDispObj();
 
-                                obj1.setQuestion(obj.getQuestion());
-                                obj1.setDate(obj.getTime());
-                                obj1.setAnswersCount(obj.getAnsCount());
-                                obj1.setQuesId(obj.getQues_id());
-                                obj1.setAnswersCount(obj.getAnsCount());
-                                obj1.setStuName(obj.getStuName());
-                                obj1.setStuProPic(obj.getStuProfile());
-                                obj1.setUpVotes(obj.getLikes());
-                                questions.add(obj1);
-                            }
-                            setupAdapter();
-                        } else {
-                            Toast.makeText(context, "No Querys", Toast.LENGTH_SHORT).show();
+                            obj1.setQuestion(obj.getQuestion());
+                            obj1.setDate(obj.getTime());
+                            obj1.setAnswersCount(obj.getAnsCount());
+                            obj1.setQuesId(obj.getQues_id());
+                            obj1.setAnswersCount(obj.getAnsCount());
+                            obj1.setStuName(obj.getStuName());
+                            obj1.setStuProPic(obj.getStuProfile());
+                            obj1.setUpVotes(obj.getLikes());
+                            questions.add(obj1);
                         }
+                        setupAdapter();
+                    } else {
+                        Toast.makeText(context, "No Querys", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -167,22 +169,13 @@ public class ComPanActivity extends AppCompatActivity implements QuesInteract {
         final CollectionReference toQuestions = db.collection("QUESTIONS").document(claSpiMainStr).collection(subSpiMainStr);
         final DocumentReference reference = toQuestions.document(quesId).collection("LIKES").document(mAuth.getCurrentUser().getPhoneNumber());
 
-        reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful() && !task.getResult().exists()) {
-                    reference
-                            .set(new LikeObject(mAuth.getCurrentUser().getPhoneNumber()))
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    toQuestions.document(quesId)
-                                            .update("likes", FieldValue.increment(1));
-                                }
-                            });
-                } else {
-                    Toast.makeText(context, "Already Voted", Toast.LENGTH_SHORT).show();
-                }
+        reference.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && !task.getResult().exists()) {
+                reference
+                        .set(new LikeObject(mAuth.getCurrentUser().getPhoneNumber()))
+                        .addOnCompleteListener(task1 -> toQuestions.document(quesId).update("likes", FieldValue.increment(1)));
+            } else {
+                Toast.makeText(context, "Already Voted", Toast.LENGTH_SHORT).show();
             }
         });
     }
