@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/poiret_one"
         android:text="elemenophee"
-        android:textColor="@color/color5"
+        android:textColor="@color/blue"
         android:textSize="35sp"
         tools:layout_editor_absoluteX="64dp"
         tools:layout_editor_absoluteY="7dp" />

@@ -98,7 +98,6 @@ public class ChatActivity extends AppCompatActivity {
                         }
                     });
         }
-
     }
 
     private void Student(String number) {
@@ -170,6 +169,9 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void getTeacherContacts(ArrayList<String> doc_id) {
+        for (int i = 0; i < 1; i++) {
+            System.out.println(i);
+        }
         if (doc_id != null) {
             for (String s : doc_id) {
                 final String str = s;
@@ -191,7 +193,7 @@ public class ChatActivity extends AppCompatActivity {
                                         System.out.println(i);
                                     }
 
-                                    if (!obj1.getmImageUrl().equals("")) {
+                                    if (obj1.getmImageUrl() != null) {
                                         imageUrl = obj1.getmImageUrl();
                                     } else
                                         imageUrl = "";

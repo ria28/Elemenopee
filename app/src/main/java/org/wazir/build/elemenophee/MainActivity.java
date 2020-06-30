@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     String verId, number;
     FirebaseAuth mAuth;
     FirebaseFirestore db;
-    Button verifyBtnSu;
+    CardView verifyBtnSu;
     LoadingPopup loadingPopup;
 
 
@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         init();
     }
 
@@ -263,6 +264,27 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Please Enter Valid Data", Toast.LENGTH_SHORT).show();
             return;
         }
+        String userId = phoneNoSu.getText().toString();
+        db.collection("STUDENTS").document(userId).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && Objects.requireNonNull(task.getResult()).exists()) {
+                        Toast.makeText(this, "STUDENT already Registered", Toast.LENGTH_SHORT).show();
+                    } else {
+                        db.collection("TEACHERS")
+                                .document(userId)
+                                .get()
+                                .addOnCompleteListener(task1 -> {
+                                    if (task1.isSuccessful() && Objects.requireNonNull(task1.getResult()).exists()) {
+                                        Toast.makeText(this, "TEACHER already Registered", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        proceedSignUp();
+                                    }
+                                });
+                    }
+                });
+    }
+
+    void proceedSignUp() {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(nameSu.getText().toString())

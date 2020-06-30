@@ -46,7 +46,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignUpUserActivity" />
+        <activity
+            android:name=".SignUpUserActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".IntLogSigScreens.OnboardingActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
@@ -67,6 +69,7 @@
 
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
 
         <meta-data

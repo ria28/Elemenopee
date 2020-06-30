@@ -1,12 +1,9 @@
 package org.wazir.build.elemenophee.Student.StudentSupport.Chat121;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
-import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -16,13 +13,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,8 +31,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
-import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import org.wazir.build.elemenophee.R;
@@ -70,7 +63,6 @@ public class MessageActivity extends AppCompatActivity {
     ImageView tempImage;
     private StorageReference mStorageRef;
     Uri imageUri;
-    private StorageTask mUploadTask;
     FirebaseAuth mAuth;
     String userId;
     ScrollView scrollView;
@@ -134,20 +126,12 @@ public class MessageActivity extends AppCompatActivity {
         String doc_id = sdf.format(new Date());
         saveDocId = doc_id;
 
-        btn_send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String message = text_send.getText().toString();
-
-
-                sendMessage(fuser.getPhoneNumber(), userId, message, fuser.getDisplayName());
-
-
-            }
+        btn_send.setOnClickListener(v -> {
+            String message = text_send.getText().toString();
+            sendMessage(fuser.getPhoneNumber(), userId, message, fuser.getDisplayName());
         });
 
         readMessage(fuser.getPhoneNumber(), userId);
-
     }
 
     private void setStudent(String userId) {
@@ -160,7 +144,12 @@ public class MessageActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot doc = task.getResult();
                             username.setText(doc.get("name").toString());
-                            String imageUrl = doc.get("mImageUrl").toString();
+                            String imageUrl;
+                            if (doc.get("mImageUrl") != null) {
+                                imageUrl = doc.get("mImageUrl").toString();
+                            } else {
+                                imageUrl = "";
+                            }
                             Glide.with(profile_image.getContext()).load(imageUrl).into(profile_image);
                         }
 
@@ -172,17 +161,14 @@ public class MessageActivity extends AppCompatActivity {
         db.collection("TEACHERS")
                 .document(userId)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot doc = task.getResult();
-                            username.setText(doc.get("name").toString());
-                            String imageUrl = doc.get("proPicURL").toString();
-                            Glide.with(profile_image.getContext()).load(imageUrl).into(profile_image);
-                        }
-
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
+                        DocumentSnapshot doc = task.getResult();
+                        username.setText(doc.get("name").toString());
+                        String imageUrl = doc.get("proPicURL").toString();
+                        Glide.with(profile_image.getContext()).load(imageUrl).into(profile_image);
                     }
+
                 });
 
     }
@@ -257,7 +243,6 @@ public class MessageActivity extends AppCompatActivity {
             Toast.makeText(MessageActivity.this, "YOU CAN'T SEND EMPTY MESSAGE", Toast.LENGTH_SHORT).show();
 
         text_send.setText("");
-//        scrollView.fullScroll(ScrollView.FOCUS_DOWN);
     }
 
 
@@ -327,105 +312,6 @@ public class MessageActivity extends AppCompatActivity {
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-    }
-
-
-    private String getFileExtension(Uri uri) {
-        ContentResolver cR = getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(cR.getType(uri));
-    }
-
-    private void uploadFile() {
-        if (imageUri != null) {
-            final StorageReference fileReference = mStorageRef.child("images/" + System.currentTimeMillis() + "." + getFileExtension(imageUri));
-            mUploadTask = fileReference.putFile(imageUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            tempImage.setVisibility(View.INVISIBLE);
-                            Toast.makeText(MessageActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
-
-                            fileReference.getDownloadUrl()
-                                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                        @Override
-                                        public void onSuccess(Uri uri) {
-                                            final MessObj object = new MessObj(
-                                                    text_send.getText().toString(),
-                                                    mAuth.getCurrentUser().getPhoneNumber(),
-                                                    userId,
-                                                    mAuth.getCurrentUser().getDisplayName()
-                                            );
-                                            object.setImageUrl(uri.toString());
-
-                                            mchats = messageAdapter.getMessages();
-                                            mchats.add(0, object);
-                                            messageAdapter.setMessages(mchats);
-
-                                            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-                                            String doc_id = sdf.format(new Date());
-                                            saveDocId = doc_id;
-
-
-                                            String sender, receiver;
-                                            if (mAuth.getCurrentUser() != null) {
-                                                if (userIsTeacher) {
-                                                    db.collection("ChatRoom")
-                                                            .document(mAuth.getCurrentUser().getPhoneNumber())
-                                                            .collection("Chats")
-                                                            .document(userId)
-                                                            .collection("Chats")
-                                                            .document(saveDocId)
-                                                            .set(object)
-                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        imageUri = null;
-                                                                        tempImage.setVisibility(View.INVISIBLE);
-                                                                        tempImage.setImageBitmap(null);
-                                                                        Toast.makeText(MessageActivity.this, "Message Posted", Toast.LENGTH_SHORT).show();
-                                                                    }
-                                                                }
-                                                            });
-                                                } else {
-                                                    db.collection("ChatRoom")
-                                                            .document(userId)
-                                                            .collection("Chats")
-                                                            .document(mAuth.getCurrentUser().getPhoneNumber())
-                                                            .collection("Chats")
-                                                            .document(saveDocId)
-                                                            .set(object)
-                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task<Void> task) {
-                                                                    if (task.isSuccessful()) {
-                                                                        imageUri = null;
-                                                                        tempImage.setVisibility(View.INVISIBLE);
-                                                                        tempImage.setImageBitmap(null);
-                                                                        Toast.makeText(MessageActivity.this, "Message Posted", Toast.LENGTH_SHORT).show();
-                                                                    }
-                                                                }
-                                                            });
-                                                }
-                                            }
-                                        }
-                            });
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(MessageActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        } else {
-            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
-        }
-
-        tempImage.setVisibility(View.INVISIBLE);
-        tempImage.setImageBitmap(null);
-        imageUri=null;
     }
 
     @Override
