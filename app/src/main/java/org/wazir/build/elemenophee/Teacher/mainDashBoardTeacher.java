@@ -122,7 +122,6 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
 
         FileType.setAdapter(FileTypeSpinnerViewAdapter);
 
-
         progress = new ProgressDialog(this);
         progress.setMessage("Retreiving data..");
         progress.setIndeterminate(true);
@@ -343,8 +342,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     }
 
     private void UploadDialog() {
-        uploadDialog dialog = new uploadDialog(mainDashBoardTeacher.this
-                ,UploadType,classes,subjects,selectedFilePath,user);
+        uploadDialog dialog = new uploadDialog(mainDashBoardTeacher.this, UploadType, classes, subjects, selectedFilePath, user);
         dialog.openDialog();
     }
 
@@ -415,14 +413,13 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult().exists()) {
                         TeacherObj obj = task.getResult().toObject(TeacherObj.class);
-                        // TODO: 6/7/2020 Here just Take the Classes and Subjects
                         mainPageName.setText(obj.getName());
                         name.setText(obj.getName());
                         designation.setText("TEACHER");
 
                         classes = new ArrayList<>();
                         for (int i : obj.getClasses()) {
-                            classes.add("Class " + Integer.toString(i));
+                            classes.add("Class " + i);
                         }
                         subjects = obj.getSubs();
                     }
