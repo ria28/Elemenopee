@@ -88,7 +88,9 @@ public class ChatActivity extends AppCompatActivity {
                         }
                     });
 
-            db.collection("TEACHERS").document(number).get()
+            db.collection("TEACHERS")
+                    .document(number)
+                    .get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -121,7 +123,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void getStudentContacts(ArrayList<String> doc_id) {
-        if (doc_id != null) {
+        if (doc_id != null && !doc_id.isEmpty()) {
             FirebaseFirestore.getInstance().collection("TEACHERS")
                     .whereIn("phone", doc_id)
                     .get()
