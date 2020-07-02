@@ -54,7 +54,7 @@ public class otherFrag extends Fragment {
 
     private void setUpRecyclerView() {
 
-        otherAdapter = new otherAdapter(getContext(), otherList);
+        otherAdapter = new otherAdapter(getContext(), otherList,false);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);

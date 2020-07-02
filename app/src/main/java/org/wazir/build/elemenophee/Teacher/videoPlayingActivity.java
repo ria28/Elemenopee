@@ -152,22 +152,14 @@ public class videoPlayingActivity extends AppCompatActivity {
         reference
                 .document(videoList.get(playingVideoPosition).getTeacherID())
                 .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Glide.with(getApplicationContext())
-                                .load(documentSnapshot.get("proPicURL"))
-                                .into(proPic);
-                        TeacherName.setText(documentSnapshot.get("name") + "");
+                .addOnSuccessListener(documentSnapshot -> {
+                    Glide.with(getApplicationContext())
+                            .load(documentSnapshot.get("proPicURL"))
+                            .into(proPic);
+                    TeacherName.setText(documentSnapshot.get("name") + "");
 
-                    }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
 
 
     }

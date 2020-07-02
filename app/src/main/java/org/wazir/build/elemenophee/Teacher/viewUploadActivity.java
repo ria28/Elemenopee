@@ -96,9 +96,9 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
         }
 
 
-        videoAdapter = new videoRecyclerAdapter(viewUploadActivity.this, false, videoList, this, -1);
-        notesAdapter = new notesRecyclerAdapter(viewUploadActivity.this, pdfList);
-        otherAdapter = new otherAdapter(viewUploadActivity.this, otherList);
+        videoAdapter = new videoRecyclerAdapter(viewUploadActivity.this, false, videoList, this, -1,true);
+        notesAdapter = new notesRecyclerAdapter(viewUploadActivity.this, pdfList,true);
+        otherAdapter = new otherAdapter(viewUploadActivity.this, otherList,true);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);
@@ -182,7 +182,9 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
                                         if (doc.get("VIDEOS") != null) {
                                             for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("VIDEOS")) {
                                                 videoList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                        , (Timestamp) obj.get("timeStamp"),obj.get("privacy")+"",obj.get("teacherID")+"",obj.get("mime")+""));
+                                                        , (Timestamp) obj.get("timeStamp"), obj.get("privacy").toString(), obj.get("teacherID").toString(), obj.get("mime").toString(),
+                                                        obj.get("clas").toString(), obj.get("subject").toString(), obj.get("chapter").toString()
+                                                ));
                                             }
                                             videoAdapter.notifyDataSetChanged();
                                         }
@@ -191,7 +193,9 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
                                         if (doc.get("NOTES") != null) {
                                             for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("NOTES")) {
                                                 pdfList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                        , (Timestamp) obj.get("timeStamp"),obj.get("privacy")+"",obj.get("teacherID")+"",obj.get("mime")+""));
+                                                        , (Timestamp) obj.get("timeStamp"), obj.get("privacy").toString(), obj.get("teacherID").toString(), obj.get("mime").toString(),
+                                                        obj.get("clas").toString(), obj.get("subject").toString(), obj.get("chapter").toString()
+                                                ));
                                             }
                                             notesAdapter.notifyDataSetChanged();
                                         }
@@ -200,7 +204,9 @@ public class viewUploadActivity extends AppCompatActivity implements videoRecycl
                                         if (doc.get("OTHER") != null) {
                                             for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("OTHER")) {
                                                 otherList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                        , (Timestamp) obj.get("timeStamp"),obj.get("privacy")+"",obj.get("teacherID")+"",obj.get("mime")+""));
+                                                        , (Timestamp) obj.get("timeStamp"), obj.get("privacy").toString(), obj.get("teacherID").toString(), obj.get("mime").toString(),
+                                                        obj.get("clas").toString(), obj.get("subject").toString(), obj.get("chapter").toString()
+                                                ));
                                             }
                                             otherAdapter.notifyDataSetChanged();
                                         }

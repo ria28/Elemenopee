@@ -53,7 +53,7 @@ public class notesFrag extends Fragment {
 
     private void setUpRecyclerView() {
 
-        notesAdapter = new notesRecyclerAdapter(getContext(), pdfList);
+        notesAdapter = new notesRecyclerAdapter(getContext(), pdfList,false);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);

@@ -100,9 +100,9 @@ public class ViewTeacherProfile extends AppCompatActivity implements videoRecycl
         FileType.setAdapter(FileTypeSpinnerViewAdapter);
 
 
-        videoAdapter = new videoRecyclerAdapter(ViewTeacherProfile.this, false, videoList, this, -1);
-        notesAdapter = new notesRecyclerAdapter(ViewTeacherProfile.this, pdfList);
-        otherAdapter = new otherAdapter(ViewTeacherProfile.this, otherList);
+        videoAdapter = new videoRecyclerAdapter(ViewTeacherProfile.this, false, videoList, this, -1,false);
+        notesAdapter = new notesRecyclerAdapter(ViewTeacherProfile.this, pdfList,false);
+        otherAdapter = new otherAdapter(ViewTeacherProfile.this, otherList,false);
 
         loadData("VIDEOS");
         loadData("NOTES");

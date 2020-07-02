@@ -3,6 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/video_download"
+        android:id="@+id/downloadOption"
         android:title="Download" />
+    <item
+        android:id="@+id/deleteOption"
+        android:title="Delete" />
 </menu>

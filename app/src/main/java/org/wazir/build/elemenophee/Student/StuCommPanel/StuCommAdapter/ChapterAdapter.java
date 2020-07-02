@@ -94,11 +94,14 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHo
                                                 if (obj.get("privacy").toString().equalsIgnoreCase("private")) {
                                                     if (data.get(position).getIsSubscriber())
                                                         videoList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                                , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + ""));
-                                                } else{
+                                                                , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + "",
+                                                                obj.get("clas") + "", obj.get("subject") + "", obj.get("chapter") + ""
+                                                        ));
+                                                } else {
                                                     videoList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                            , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "",
-                                                            obj.get("teacherID") + "", obj.get("mime") + ""));
+                                                            , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + "",
+                                                            obj.get("clas") + "", obj.get("subject") + "", obj.get("chapter") + ""
+                                                    ));
                                                 }
                                             }
                                         }
@@ -109,10 +112,14 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHo
                                                 if (obj.get("privacy").toString().equalsIgnoreCase("private")) {
                                                     if (data.get(position).getIsSubscriber())
                                                         pdfList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                                , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + ""));
+                                                                , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + "",
+                                                                obj.get("clas") + "", obj.get("subject") + "", obj.get("chapter") + ""
+                                                        ));
                                                 } else
                                                     pdfList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                            , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + ""));
+                                                            , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + "",
+                                                            obj.get("clas") + "", obj.get("subject") + "", obj.get("chapter") + ""
+                                                    ));
                                             }
                                         }
                                     }
@@ -122,10 +129,14 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.MyViewHo
                                                 if (obj.get("privacy").toString().equalsIgnoreCase("private")) {
                                                     if (data.get(position).getIsSubscriber())
                                                         otherList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                                , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + ""));
+                                                                , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + "",
+                                                                obj.get("clas") + "", obj.get("subject") + "", obj.get("chapter") + ""
+                                                        ));
                                                 } else
                                                     otherList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                            , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + ""));
+                                                            , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + "",
+                                                            obj.get("clas") + "", obj.get("subject") + "", obj.get("chapter") + ""
+                                                    ));
                                             }
                                         }
                                     }

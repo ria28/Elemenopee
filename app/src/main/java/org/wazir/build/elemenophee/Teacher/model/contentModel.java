@@ -12,17 +12,23 @@ public class contentModel implements Parcelable {
     private String privacy;
     private String teacherID;
     private String mime;
+    private String clas;
+    private String subject;
+    private String chapter;
 
     public contentModel() {
     }
 
-    public contentModel(String fileTitle, String fileUrl, Timestamp timeStamp, String privacy, String teacherID, String mime) {
+    public contentModel(String fileTitle, String fileUrl, Timestamp timeStamp, String privacy, String teacherID, String mime, String clas, String subject, String chapter) {
         this.fileTitle = fileTitle;
         this.fileUrl = fileUrl;
         this.timeStamp = timeStamp;
         this.privacy = privacy;
         this.teacherID = teacherID;
         this.mime = mime;
+        this.clas = clas;
+        this.subject = subject;
+        this.chapter = chapter;
     }
 
     protected contentModel(Parcel in) {
@@ -32,6 +38,9 @@ public class contentModel implements Parcelable {
         privacy = in.readString();
         teacherID = in.readString();
         mime = in.readString();
+        clas = in.readString();
+        subject = in.readString();
+        chapter = in.readString();
     }
 
     public static final Creator<contentModel> CREATOR = new Creator<contentModel>() {
@@ -59,6 +68,9 @@ public class contentModel implements Parcelable {
         dest.writeString(privacy);
         dest.writeString(teacherID);
         dest.writeString(mime);
+        dest.writeString(clas);
+        dest.writeString(subject);
+        dest.writeString(chapter);
 
     }
 
@@ -109,4 +121,27 @@ public class contentModel implements Parcelable {
         this.mime = mime;
     }
 
+    public String getClas() {
+        return clas;
+    }
+
+    public void setClas(String clas) {
+        this.clas = clas;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getChapter() {
+        return chapter;
+    }
+
+    public void setChapter(String chapter) {
+        this.chapter = chapter;
+    }
 }

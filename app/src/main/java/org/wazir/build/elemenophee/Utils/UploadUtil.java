@@ -14,10 +14,8 @@ import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,7 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.wazir.build.elemenophee.ModelObj.TeacherObj;
 import org.wazir.build.elemenophee.R;
 import org.wazir.build.elemenophee.Teacher.model.contentModel;
 
@@ -84,22 +81,10 @@ public class UploadUtil extends Worker {
                 .set(model).addOnSuccessListener(aVoid -> {
             TeacherRef
                     .document(Objects.requireNonNull(user.getPhoneNumber()))
-                    .get()
+                    .update("videoCount", FieldValue.increment(1))
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            TeacherObj obj = task.getResult().toObject(TeacherObj.class);
-                            videoCount = obj.getVideoCount();
-                            TeacherRef
-                                    .document(Objects.requireNonNull(user.getPhoneNumber()))
-                                    .update("videoCount", videoCount + 1)
-                                    .addOnCompleteListener(task1 -> {
-                                        if(task1.isSuccessful()){
-                                            Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
-                                        }
-                                        else{
-                                            Toast.makeText(getApplicationContext(), Objects.requireNonNull(task.getException()).getMessage() + "", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+                            Toast.makeText(getApplicationContext(), "Uploaded", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(getApplicationContext(), Objects.requireNonNull(task.getException()).getMessage() + "", Toast.LENGTH_SHORT).show();
                         }
@@ -128,12 +113,14 @@ public class UploadUtil extends Worker {
             public void onSuccess(final Uri uri) {
                 reference.getMetadata().addOnSuccessListener(storageMetadata -> collectionReference.document(fileData[5])
                         .update(fileData[4], FieldValue.arrayUnion(new contentModel(fileData[3],
-                                uri.toString(), Timestamp.now(), fileData[6], user.getPhoneNumber(), storageMetadata.getContentType())))
+                                uri.toString(), Timestamp.now(), fileData[6], user.getPhoneNumber(), storageMetadata.getContentType(),
+                                fileData[0], fileData[1],fileData[2])))
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 addToRECENTS(new contentModel(fileData[3],
                                         uri.toString(), Timestamp.now(), fileData[6], user.getPhoneNumber()
-                                        , storageMetadata.getContentType()));
+                                        , storageMetadata.getContentType(),
+                                        fileData[0], fileData[1],fileData[2]));
                             } else
                                 Toast.makeText(getApplicationContext(), task.getException() + "", Toast.LENGTH_SHORT).show();
                         }));
@@ -167,30 +154,29 @@ public class UploadUtil extends Worker {
 
         displayNotification(fileData[3], "0%");
 
-        reference.putFile(selectedFilePath).addOnSuccessListener(taskSnapshot -> reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(final Uri uri) {
-                reference.getMetadata().addOnSuccessListener(storageMetadata -> {
-                    ArrayList<contentModel> nM = new ArrayList<>();
-                    nM.add(new contentModel(fileData[3],
-                            uri.toString(), Timestamp.now(), fileData[6], user.getPhoneNumber(), storageMetadata.getContentType()));
-                    Map<String, Object> chapter = new HashMap<>();
-                    chapter.put("CHAPTER", fileData[2]);
-                    chapter.put("TEACHER_ID", userPhone);
-                    chapter.put(fileData[4], nM);
+        reference.putFile(selectedFilePath).addOnSuccessListener(taskSnapshot -> reference.getDownloadUrl()
+                .addOnSuccessListener(uri -> reference.getMetadata()
+                        .addOnSuccessListener(storageMetadata -> {
+            ArrayList<contentModel> nM = new ArrayList<>();
+            nM.add(new contentModel(fileData[3],
+                    uri.toString(), Timestamp.now(), fileData[6], user.getPhoneNumber(), storageMetadata.getContentType(),
+                    fileData[0], fileData[1],fileData[2]));
+            Map<String, Object> chapter = new HashMap<>();
+            chapter.put("CHAPTER", fileData[2]);
+            chapter.put("TEACHER_ID", userPhone);
+            chapter.put(fileData[4], nM);
 
-                    collectionReference.document(userPhone + Timestamp.now().toDate())
-                            .set(chapter)
-                            .addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    addToRECENTS(new contentModel(fileData[3],
-                                            uri.toString(), Timestamp.now(), fileData[6], user.getPhoneNumber(), storageMetadata.getContentType()));
-                                } else
-                                    Toast.makeText(getApplicationContext(), task.getException() + "", Toast.LENGTH_SHORT).show();
-                            });
-                });
-            }
-        }).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show())).addOnFailureListener(new OnFailureListener() {
+            collectionReference.document(userPhone + Timestamp.now().toDate())
+                    .set(chapter)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            addToRECENTS(new contentModel(fileData[3],
+                                    uri.toString(), Timestamp.now(), fileData[6], user.getPhoneNumber(), storageMetadata.getContentType(),
+                                    fileData[0], fileData[1],fileData[2]));
+                        } else
+                            Toast.makeText(getApplicationContext(), task.getException() + "", Toast.LENGTH_SHORT).show();
+                    });
+        })).addOnFailureListener(e -> Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show())).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();

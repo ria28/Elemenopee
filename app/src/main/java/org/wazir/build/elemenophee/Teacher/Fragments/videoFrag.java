@@ -73,7 +73,7 @@ public class videoFrag extends Fragment implements videoRecyclerAdapter.onLayout
         if (fromDownloads)
             adapter = new videoRecyclerAdapter(getContext(), true, downList, true, this, playingVideoPosition);
         else
-            adapter = new videoRecyclerAdapter(getContext(), true, videoList, this, playingVideoPosition);
+            adapter = new videoRecyclerAdapter(getContext(), true, videoList, this, playingVideoPosition,false);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);

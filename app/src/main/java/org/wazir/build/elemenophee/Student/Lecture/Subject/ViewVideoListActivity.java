@@ -1,13 +1,13 @@
 package org.wazir.build.elemenophee.Student.Lecture.Subject;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -47,7 +47,7 @@ public class ViewVideoListActivity extends AppCompatActivity implements videoRec
         Intent intent = getIntent();
         chapterTitle = intent.getStringExtra("CHAPTER_TITLE");
         SubName = intent.getStringExtra("SUBJECT_NAME");
-        videoAdapter = new videoRecyclerAdapter(ViewVideoListActivity.this, false, videoList, this, -1);
+        videoAdapter = new videoRecyclerAdapter(ViewVideoListActivity.this, false, videoList, this, -1,false);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) layoutManager).setOrientation(RecyclerView.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
@@ -76,7 +76,9 @@ public class ViewVideoListActivity extends AppCompatActivity implements videoRec
                                     if (doc.get("VIDEOS") != null) {
                                         for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("VIDEOS")) {
                                             videoList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                    , (Timestamp) obj.get("timeStamp"),obj.get("privacy")+"",obj.get("teacherID")+"",obj.get("mime")+""));
+                                                    , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + "",
+                                                    obj.get("clas") + "", obj.get("subject") + "", obj.get("chapter") + ""
+                                            ));
                                         }
                                         videoAdapter.notifyDataSetChanged();
                                     }
@@ -86,7 +88,9 @@ public class ViewVideoListActivity extends AppCompatActivity implements videoRec
                                     if (doc.get("NOTES") != null) {
                                         for (Map<String, Object> obj : (ArrayList<Map<String, Object>>) doc.getData().get("NOTES")) {
                                             pdfList.add(new contentModel(obj.get("fileTitle").toString(), obj.get("fileUrl").toString()
-                                                    , (Timestamp) obj.get("timeStamp"),obj.get("privacy")+"",obj.get("teacherID")+"",obj.get("mime")+""));
+                                                    , (Timestamp) obj.get("timeStamp"), obj.get("privacy") + "", obj.get("teacherID") + "", obj.get("mime") + "",
+                                                    obj.get("clas") + "", obj.get("subject") + "", obj.get("chapter") + ""
+                                            ));
                                         }
                                         notesAdapter.notifyDataSetChanged();
                                     }

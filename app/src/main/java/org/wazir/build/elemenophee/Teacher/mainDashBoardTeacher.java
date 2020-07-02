@@ -103,6 +103,7 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
 
         reference = FirebaseFirestore.getInstance().collection("/TEACHERS/" + user.getPhoneNumber() + "/RECENT_UPLOADS");
 
+
         init();
         getTeacherInfo();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -128,9 +129,9 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
 
         progress.show();
 
-        videoAdapter = new videoRecyclerAdapter(mainDashBoardTeacher.this, false, videoList, this, -1);
-        notesAdapter = new notesRecyclerAdapter(mainDashBoardTeacher.this, pdfList);
-        otherAdapter = new otherAdapter(mainDashBoardTeacher.this, otherList);
+        videoAdapter = new videoRecyclerAdapter(mainDashBoardTeacher.this, false, videoList, this, -1, false);
+        notesAdapter = new notesRecyclerAdapter(mainDashBoardTeacher.this, pdfList, false);
+        otherAdapter = new otherAdapter(mainDashBoardTeacher.this, otherList, false);
         recentSubscriberAdapter = new recentSubscriberAdapter(subsribersList, mainDashBoardTeacher.this);
 
         loadData("VIDEOS");
@@ -266,16 +267,19 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
     private void loadData(final String type) {
         reference.document("UPLOADS")
                 .collection(type)
-                .get().addOnSuccessListener(queryDocumentSnapshots -> {
-            switch (type) {
-                case "VIDEOS":
-                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        contentModel temp = doc.toObject(contentModel.class);
-                        videoList.add(temp);
-                        videoAdapter.notifyDataSetChanged();
-                    }
-                    break;
-                case "NOTES":
+                .orderBy("timeStamp")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    switch (type) {
+                        case "VIDEOS":
+                            for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                                contentModel temp = doc.toObject(contentModel.class);
+                                videoList.add(temp);
+                                Log.d("TAG", "loadData: " + temp.getTeacherID());
+                                videoAdapter.notifyDataSetChanged();
+                            }
+                            break;
+                        case "NOTES":
                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
                         contentModel temp = doc.toObject(contentModel.class);
                         pdfList.add(temp);
@@ -375,13 +379,10 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         search_teach = findViewById(R.id.to_downloads);
         search_teach.setVisibility(View.GONE);
 
-        communityCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mainDashBoardTeacher.this, ComPanActivity.class);
-                intent.putExtra("SHOWBN", false);
-                startActivity(intent);
-            }
+        communityCard.setOnClickListener(v -> {
+            Intent intent = new Intent(mainDashBoardTeacher.this, ComPanActivity.class);
+            intent.putExtra("SHOWBN", false);
+            startActivity(intent);
         });
 
 
@@ -390,12 +391,9 @@ public class mainDashBoardTeacher extends AppCompatActivity implements Permissio
         subsRef = FirebaseFirestore.getInstance().collection("TEACHERS")
                 .document(user.getPhoneNumber()).collection("SUBSCRIBERS");
 
-        editProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mainDashBoardTeacher.this, TeacherProfile.class);
-                startActivity(intent);
-            }
+        editProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(mainDashBoardTeacher.this, TeacherProfile.class);
+            startActivity(intent);
         });
     }
 
