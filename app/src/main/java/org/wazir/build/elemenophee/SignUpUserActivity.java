@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -31,7 +30,6 @@ import org.wazir.build.elemenophee.Teacher.mainDashBoardTeacher;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHandler {
     ArrayList<ChooseMoObj> classes;
@@ -175,6 +173,7 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
         obj.setsMail(getIntent().getStringExtra("MAIL"));
         obj.setExpiry(end_date);
 
+        TempObj obj1 = new TempObj();
         db.collection("STUDENTS").document(phoneNumber).set(obj)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -188,7 +187,7 @@ public class SignUpUserActivity extends AppCompatActivity implements ChooseEveHa
                 .document(phoneNumber)
                 .collection("Contacts")
                 .document("list")
-                .set(obj);
+                .set(obj1);
     }
 
     void setupRcviews() {
