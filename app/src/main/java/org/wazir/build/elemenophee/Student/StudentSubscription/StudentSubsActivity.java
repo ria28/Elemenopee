@@ -98,7 +98,6 @@ public class StudentSubsActivity extends AppCompatActivity {
                 return false;
             }
         });
-
         getTeacherList();
         initActiUi();
     }
@@ -174,7 +173,8 @@ public class StudentSubsActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        adapter.stopListening();
+        if (adapter != null)
+            adapter.stopListening();
     }
 
     private void initActiUi() {
