@@ -165,8 +165,14 @@ public class MessageActivity extends AppCompatActivity {
                     if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
                         DocumentSnapshot doc = task.getResult();
                         username.setText(doc.get("name").toString());
-                        String imageUrl = doc.get("proPicURL").toString();
-                        Glide.with(profile_image.getContext()).load(imageUrl).into(profile_image);
+                        if(doc.get("proPicURL")==null) {
+                            Glide.with(profile_image.getContext()).load(R.drawable.ic_person).into(profile_image);
+                        }
+                        else {
+                            String imageUrl = doc.get("proPicURL").toString();
+                            Glide.with(profile_image.getContext()).load(imageUrl).into(profile_image);
+                        }
+
                     }
 
                 });
